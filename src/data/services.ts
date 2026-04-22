@@ -30,30 +30,37 @@ import {
   Brush, Dog, Utensils, type LucideIcon,
 } from "lucide-react";
 
+// "both" = ready stock available + custom orders accepted
+// "custom" = made-to-order only (manufacturing/installation)
+// "service" = on-site service (cleaning, installation visits)
+export type Availability = "both" | "custom" | "service";
+
 export type Service = {
   slug: string;
   cover: string;
   gallery: string[];
   icon: LucideIcon;
+  availability: Availability;
+  leadTimeDays: [number, number]; // [min, max]
 };
 
 // Order MUST match i18n services.items order (15 items)
 export const SERVICES: Service[] = [
-  { slug: "wardrobes-manufacturing", cover: wardrobes, icon: Shirt, gallery: [wardrobes, bedroom, bedroom2, library] },
-  { slug: "modern-kitchen-installations", cover: kitchens, icon: ChefHat, gallery: [kitchens, kitchen, dining, heroLiving] },
-  { slug: "media-tv-wall-installation", cover: tvwall, icon: Tv, gallery: [tvwall, lounge, heroLiving, ceiling] },
-  { slug: "office-equipment-supply", cover: office, icon: Briefcase, gallery: [office, officeAlt, library, partitioning] },
-  { slug: "fabric-replacement", cover: fabric, icon: Scissors, gallery: [fabric, sofa, lounge, bedroom2] },
-  { slug: "sofa-cleaning", cover: sofaClean, icon: Sparkles, gallery: [sofaClean, sofa, lounge, heroLiving] },
-  { slug: "curtains-supply-installation", cover: curtains, icon: Blinds, gallery: [curtains, heroLiving, bedroom2, lounge] },
-  { slug: "soundproof-installation", cover: soundproof, icon: Volume2, gallery: [soundproof, tvwall, ceiling, lounge] },
-  { slug: "wall-partitioning", cover: partitioning, icon: LayoutPanelTop, gallery: [partitioning, office, officeAlt, heroLiving] },
-  { slug: "baby-beds-manufacturing", cover: babyBed, icon: Baby, gallery: [babyBed, bedroom, bedroom2, library] },
-  { slug: "sofa-manufacturing", cover: sofa, icon: Sofa, gallery: [sofa, lounge, heroLiving, fabric] },
-  { slug: "ceiling-installation", cover: ceiling, icon: PanelTop, gallery: [ceiling, entryway, lounge, heroLiving] },
-  { slug: "carpet-cleaning", cover: carpetClean, icon: Brush, gallery: [carpetClean, lounge, heroLiving, bedroom] },
-  { slug: "pet-houses-manufacturing", cover: petHouse, icon: Dog, gallery: [petHouse, babyBed, dining, library] },
-  { slug: "dining-tables-manufacturing", cover: dining, icon: Utensils, gallery: [dining, kitchen, kitchens, lounge] },
+  { slug: "wardrobes-manufacturing", cover: wardrobes, icon: Shirt, gallery: [wardrobes, bedroom, bedroom2, library], availability: "custom", leadTimeDays: [10, 21] },
+  { slug: "modern-kitchen-installations", cover: kitchens, icon: ChefHat, gallery: [kitchens, kitchen, dining, heroLiving], availability: "custom", leadTimeDays: [14, 30] },
+  { slug: "media-tv-wall-installation", cover: tvwall, icon: Tv, gallery: [tvwall, lounge, heroLiving, ceiling], availability: "custom", leadTimeDays: [7, 14] },
+  { slug: "office-equipment-supply", cover: office, icon: Briefcase, gallery: [office, officeAlt, library, partitioning], availability: "both", leadTimeDays: [2, 7] },
+  { slug: "fabric-replacement", cover: fabric, icon: Scissors, gallery: [fabric, sofa, lounge, bedroom2], availability: "service", leadTimeDays: [3, 7] },
+  { slug: "sofa-cleaning", cover: sofaClean, icon: Sparkles, gallery: [sofaClean, sofa, lounge, heroLiving], availability: "service", leadTimeDays: [1, 3] },
+  { slug: "curtains-supply-installation", cover: curtains, icon: Blinds, gallery: [curtains, heroLiving, bedroom2, lounge], availability: "both", leadTimeDays: [3, 10] },
+  { slug: "soundproof-installation", cover: soundproof, icon: Volume2, gallery: [soundproof, tvwall, ceiling, lounge], availability: "service", leadTimeDays: [5, 14] },
+  { slug: "wall-partitioning", cover: partitioning, icon: LayoutPanelTop, gallery: [partitioning, office, officeAlt, heroLiving], availability: "custom", leadTimeDays: [5, 14] },
+  { slug: "baby-beds-manufacturing", cover: babyBed, icon: Baby, gallery: [babyBed, bedroom, bedroom2, library], availability: "both", leadTimeDays: [7, 14] },
+  { slug: "sofa-manufacturing", cover: sofa, icon: Sofa, gallery: [sofa, lounge, heroLiving, fabric], availability: "both", leadTimeDays: [10, 21] },
+  { slug: "ceiling-installation", cover: ceiling, icon: PanelTop, gallery: [ceiling, entryway, lounge, heroLiving], availability: "service", leadTimeDays: [5, 14] },
+  { slug: "carpet-cleaning", cover: carpetClean, icon: Brush, gallery: [carpetClean, lounge, heroLiving, bedroom], availability: "service", leadTimeDays: [1, 3] },
+  { slug: "pet-houses-manufacturing", cover: petHouse, icon: Dog, gallery: [petHouse, babyBed, dining, library], availability: "both", leadTimeDays: [5, 10] },
+  { slug: "dining-tables-manufacturing", cover: dining, icon: Utensils, gallery: [dining, kitchen, kitchens, lounge], availability: "both", leadTimeDays: [10, 21] },
 ];
 
 export const getServiceBySlug = (slug: string) => SERVICES.find((s) => s.slug === slug);
