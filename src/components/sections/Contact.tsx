@@ -29,12 +29,22 @@ export const Contact = ({ preview = false }: { preview?: boolean }) => {
   return (
     <section id="contact" className="relative py-28 lg:py-36">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="mb-16 max-w-2xl">
-          <span className="text-xs uppercase tracking-[0.3em] text-gold">— 04</span>
-          <h2 className="mt-4 font-display text-5xl font-semibold leading-tight lg:text-6xl">
-            {t("contact.title")}
-          </h2>
-          <p className="mt-4 text-muted-foreground">{t("contact.subtitle")}</p>
+        <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <span className="text-xs uppercase tracking-[0.3em] text-gold">— 04</span>
+            <h2 className="mt-4 font-display text-5xl font-semibold leading-tight lg:text-6xl">
+              {t("contact.title")}
+            </h2>
+            <p className="mt-4 text-muted-foreground">{t("contact.subtitle")}</p>
+          </div>
+          {preview && (
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-xs uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold/10"
+            >
+              {t("common.view_all")} <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
