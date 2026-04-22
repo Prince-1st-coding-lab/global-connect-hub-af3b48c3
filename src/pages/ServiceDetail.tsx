@@ -195,9 +195,7 @@ const ServiceDetail = () => {
           </Link>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </>
   );
 };
 
