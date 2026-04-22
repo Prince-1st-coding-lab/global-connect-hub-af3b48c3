@@ -3,8 +3,6 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { BookingDialog } from "@/components/BookingDialog";
 import { SERVICES, getServiceBySlug, getServiceIndex } from "@/data/services";
 
@@ -35,16 +33,12 @@ const ServiceDetail = () => {
 
   if (!svc || !item) {
     return (
-      <main className="relative overflow-x-hidden bg-background text-foreground">
-        <Navbar />
-        <section className="mx-auto max-w-3xl px-6 py-40 text-center">
-          <h1 className="font-display text-4xl">Service not found</h1>
-          <Link to="/#services" className="mt-6 inline-flex items-center gap-2 text-gold">
-            <ArrowLeft className="h-4 w-4" /> Back to services
-          </Link>
-        </section>
-        <Footer />
-      </main>
+      <section className="mx-auto max-w-3xl px-6 py-40 text-center">
+        <h1 className="font-display text-4xl">Service not found</h1>
+        <Link to="/services" className="mt-6 inline-flex items-center gap-2 text-gold">
+          <ArrowLeft className="h-4 w-4" /> Back to services
+        </Link>
+      </section>
     );
   }
 
@@ -55,14 +49,13 @@ const ServiceDetail = () => {
   const Icon = svc.icon;
 
   return (
-    <main className="relative overflow-x-hidden bg-background text-foreground">
-      <Navbar />
+    <>
 
       {/* Hero */}
       <section className="relative pt-36 pb-16 lg:pt-44">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <Link
-            to="/#services"
+            to="/services"
             className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-gold/80 hover:text-gold"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> {t("nav.services")}
@@ -202,9 +195,7 @@ const ServiceDetail = () => {
           </Link>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </>
   );
 };
 

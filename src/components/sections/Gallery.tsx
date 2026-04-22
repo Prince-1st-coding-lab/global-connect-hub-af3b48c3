@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import library from "@/assets/service-library.jpg";
 import bedroom from "@/assets/service-bedroom.jpg";
 import kitchen from "@/assets/service-kitchen.jpg";
@@ -12,9 +14,9 @@ import dining from "@/assets/services/dining-tables-manufacturing/cover.jpg";
 import curtains from "@/assets/services/curtains-supply-installation/cover.jpg";
 import ceiling from "@/assets/services/ceiling-installation/cover.jpg";
 
-export const Gallery = () => {
+export const Gallery = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
-  const items = [
+  const all = [
     { src: hero, label: "Living" },
     { src: kitchen, label: "Kitchen" },
     { src: bedroom2, label: "Bedroom" },
@@ -28,6 +30,7 @@ export const Gallery = () => {
     { src: ceiling, label: "Ceiling" },
     { src: bedroom, label: "Bedroom Suite" },
   ];
+  const items = preview ? all.slice(0, 8) : all;
   return (
     <section id="gallery" className="relative py-28 lg:py-36">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -39,6 +42,14 @@ export const Gallery = () => {
             </h2>
             <p className="mt-3 text-muted-foreground">{t("gallery.subtitle")}</p>
           </div>
+          {preview && (
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-xs uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold/10"
+            >
+              {t("common.view_all")} <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">

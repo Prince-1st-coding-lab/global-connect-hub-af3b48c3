@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import heroImg from "@/assets/hero-living.jpg";
 
@@ -37,19 +38,19 @@ export const Hero = () => {
             {t("hero.subtitle")}
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               className="group inline-flex items-center gap-3 rounded-full bg-gold px-7 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-primary-foreground shadow-gold transition-transform hover:scale-[1.02]"
             >
               {t("hero.cta_primary")}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
-            <a
-              href="#services"
+            </Link>
+            <Link
+              to="/services"
               className="inline-flex items-center gap-3 rounded-full border border-gold/40 px-7 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-gold transition-colors hover:bg-secondary"
             >
               {t("hero.cta_secondary")}
-            </a>
+            </Link>
           </div>
         </div>
 
