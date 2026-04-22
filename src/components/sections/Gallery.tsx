@@ -7,10 +7,10 @@ import bedroom2 from "@/assets/gallery/bedroom-2.jpg";
 import bathroom from "@/assets/gallery/bathroom.jpg";
 import entryway from "@/assets/gallery/entryway.jpg";
 import lounge from "@/assets/gallery/lounge.jpg";
-import sofa from "@/assets/services/sofa.jpg";
-import dining from "@/assets/services/dining.jpg";
-import curtains from "@/assets/services/curtains.jpg";
-import ceiling from "@/assets/services/ceiling.jpg";
+import sofa from "@/assets/services/sofa-manufacturing/cover.jpg";
+import dining from "@/assets/services/dining-tables-manufacturing/cover.jpg";
+import curtains from "@/assets/services/curtains-supply-installation/cover.jpg";
+import ceiling from "@/assets/services/ceiling-installation/cover.jpg";
 
 export const Gallery = () => {
   const { t } = useTranslation();
