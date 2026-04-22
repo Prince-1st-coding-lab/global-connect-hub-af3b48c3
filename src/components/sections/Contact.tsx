@@ -84,7 +84,7 @@ export const Contact = () => {
           <div className="overflow-hidden rounded-3xl border border-gold/20 shadow-deep">
             <iframe
               title="Noble Spaces location — Kigali, Kicukiro, Gikondo"
-              src="https://www.google.com/maps?q=Gikondo,+Kicukiro,+Kigali,+Rwanda&output=embed"
+              src="https://www.google.com/maps?q=-1.9681974586988202,30.0738030981466&hl=en&z=17&output=embed"
               width="100%"
               height="450"
               style={{ border: 0, filter: "saturate(0.85) brightness(0.9)" }}
@@ -93,6 +93,14 @@ export const Contact = () => {
               referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
+          <a
+            href="https://www.google.com/maps?q=-1.9681974586988202,30.0738030981466"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-gold hover:underline"
+          >
+            <MapPin className="h-3.5 w-3.5" /> Open in Google Maps
+          </a>
         </div>
       </div>
     </section>
