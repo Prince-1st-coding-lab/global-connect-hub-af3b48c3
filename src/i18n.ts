@@ -79,8 +79,8 @@ const resources = {
         submit_email: "Send via Email",
         required: "Please fill all required fields.",
       },
+      common: { view_all: "View all", view_all_services: "View all 15 services" },
       whatsapp: {
-        title: "Chat with us on WhatsApp",
         subtitle: "We usually reply within a few minutes.",
         aria: "Chat on WhatsApp",
       },
@@ -163,8 +163,8 @@ const resources = {
         submit_email: "Envoyer par Email",
         required: "Veuillez remplir tous les champs requis.",
       },
+      common: { view_all: "Tout voir", view_all_services: "Voir les 15 services" },
       whatsapp: {
-        title: "Discutez avec nous sur WhatsApp",
         subtitle: "Nous répondons généralement en quelques minutes.",
         aria: "Discuter sur WhatsApp",
       },
@@ -247,8 +247,8 @@ const resources = {
         submit_email: "Ohereza kuri Imeyili",
         required: "Uzuza ibisabwa byose.",
       },
+      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 15 zose" },
       whatsapp: {
-        title: "Tuvugishe kuri WhatsApp",
         subtitle: "Tubasubiza mu minota mike.",
         aria: "Vugisha kuri WhatsApp",
       },
