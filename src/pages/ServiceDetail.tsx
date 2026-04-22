@@ -39,7 +39,7 @@ const ServiceDetail = () => {
         <Navbar />
         <section className="mx-auto max-w-3xl px-6 py-40 text-center">
           <h1 className="font-display text-4xl">Service not found</h1>
-          <Link to="/#services" className="mt-6 inline-flex items-center gap-2 text-gold">
+          <Link to="/services" className="mt-6 inline-flex items-center gap-2 text-gold">
             <ArrowLeft className="h-4 w-4" /> Back to services
           </Link>
         </section>
@@ -62,7 +62,7 @@ const ServiceDetail = () => {
       <section className="relative pt-36 pb-16 lg:pt-44">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <Link
-            to="/#services"
+            to="/services"
             className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-gold/80 hover:text-gold"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> {t("nav.services")}
