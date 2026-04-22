@@ -2,9 +2,10 @@ import "@/i18n";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ArrowRight, Phone, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { BookingDialog } from "@/components/BookingDialog";
 import { SERVICES, getServiceBySlug, getServiceIndex } from "@/data/services";
 
 type ServiceItem = { title: string; desc: string };
@@ -84,10 +85,36 @@ const ServiceDetail = () => {
                 {item.desc}
               </p>
 
-              <div className="mt-10 flex flex-wrap gap-3">
+              {/* Availability card */}
+              <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-gold/20 bg-card/60 p-4">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-gold/80">
+                    {svc.availability === "both" ? <CheckCircle2 className="h-4 w-4" />
+                      : svc.availability === "custom" ? <Hammer className="h-4 w-4" />
+                      : <CalendarClock className="h-4 w-4" />}
+                    {t("booking.availability")}
+                  </div>
+                  <div className="mt-2 font-display text-base text-foreground">
+                    {svc.availability === "both" && t("booking.ready_stock")}
+                    {svc.availability === "custom" && t("booking.custom_only")}
+                    {svc.availability === "service" && t("booking.on_site")}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-gold/20 bg-card/60 p-4">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-gold/80">
+                    <Clock className="h-4 w-4" /> {t("booking.lead_time")}
+                  </div>
+                  <div className="mt-2 font-display text-base text-foreground">
+                    {svc.leadTimeDays[0]}–{svc.leadTimeDays[1]} {t("booking.days")}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <BookingDialog serviceTitle={item.title} availability={svc.availability} />
                 <a
                   href="tel:+250788906410"
-                  className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
+                  className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/10"
                 >
                   <Phone className="h-4 w-4" /> {t("hero.cta_primary")}
                 </a>
