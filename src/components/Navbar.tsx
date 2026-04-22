@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { NavLink, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Instagram, Facebook } from "lucide-react";
 
 export const Navbar = () => {
   const { t } = useTranslation();
@@ -48,7 +48,25 @@ export const Navbar = () => {
             </NavLink>
           ))}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
+          >
+            <Instagram className="h-3.5 w-3.5" />
+          </a>
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
+          >
+            <Facebook className="h-3.5 w-3.5" />
+          </a>
           <LanguageSwitcher />
           <button
             onClick={() => setOpen(!open)}
