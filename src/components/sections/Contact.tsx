@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { Phone, Mail, MapPin, Instagram, Facebook } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Phone, Mail, MapPin, Instagram, Facebook, ArrowRight } from "lucide-react";
 
-export const Contact = () => {
+export const Contact = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
 
   const cards = [
