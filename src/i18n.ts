@@ -84,7 +84,7 @@ const resources = {
         subtitle: "We usually reply within a few minutes.",
         aria: "Chat on WhatsApp",
       },
-      footer: { rights: "All rights reserved.", follow: "Follow us" },
+      footer: { rights: "All rights reserved.", follow: "Follow us", explore: "Explore" },
     },
   },
   fr: {
@@ -168,7 +168,7 @@ const resources = {
         subtitle: "Nous répondons généralement en quelques minutes.",
         aria: "Discuter sur WhatsApp",
       },
-      footer: { rights: "Tous droits réservés.", follow: "Suivez-nous" },
+      footer: { rights: "Tous droits réservés.", follow: "Suivez-nous", explore: "Explorer" },
     },
   },
   rw: {
@@ -252,7 +252,7 @@ const resources = {
         subtitle: "Tubasubiza mu minota mike.",
         aria: "Vugisha kuri WhatsApp",
       },
-      footer: { rights: "Uburenganzira bwose burabitswe.", follow: "Tukurikire" },
+      footer: { rights: "Uburenganzira bwose burabitswe.", follow: "Tukurikire", explore: "Sura" },
     },
   },
 };
