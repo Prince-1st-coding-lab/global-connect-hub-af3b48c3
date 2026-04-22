@@ -1,27 +1,40 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { SERVICES } from "@/data/services";
 
 type ServiceItem = { title: string; desc: string };
 
-export const Services = () => {
+const PREVIEW_COUNT = 6;
+
+export const Services = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
+  const shown = preview ? items.slice(0, PREVIEW_COUNT) : items;
 
   return (
     <section id="services" className="relative py-28 lg:py-36">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="mb-16 max-w-2xl">
-          <span className="text-xs uppercase tracking-[0.3em] text-gold">— 01</span>
-          <h2 className="mt-4 font-display text-5xl font-semibold leading-tight lg:text-6xl">
-            {t("services.title")}
-          </h2>
-          <p className="mt-4 text-muted-foreground">{t("services.subtitle")}</p>
+        <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <span className="text-xs uppercase tracking-[0.3em] text-gold">— 01</span>
+            <h2 className="mt-4 font-display text-5xl font-semibold leading-tight lg:text-6xl">
+              {t("services.title")}
+            </h2>
+            <p className="mt-4 text-muted-foreground">{t("services.subtitle")}</p>
+          </div>
+          {preview && (
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-xs uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold/10"
+            >
+              {t("common.view_all")} <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-gold/15 bg-gold/15 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item, i) => {
+          {shown.map((item, i) => {
             const svc = SERVICES[i];
             const Icon = svc?.icon;
             return (
@@ -47,6 +60,17 @@ export const Services = () => {
             );
           })}
         </div>
+
+        {preview && items.length > PREVIEW_COUNT && (
+          <div className="mt-10 text-center">
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
+            >
+              {t("common.view_all_services")} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
