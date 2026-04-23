@@ -58,7 +58,7 @@ const baseServices: Service[] = [
   { slug: "office-equipment-supply",       icon: Briefcase,       availability: "both",    leadTimeDays: [2, 7],   fallbackGallery: [officeAlt, library, entryway] },
   { slug: "fabric-replacement",            icon: Scissors,        availability: "service", leadTimeDays: [3, 7],   fallbackGallery: [lounge, bedroom2, heroLiving] },
   { slug: "sofa-cleaning",                 icon: Sparkles,        availability: "service", leadTimeDays: [1, 3],   fallbackGallery: [lounge, heroLiving, entryway] },
-  { slug: "curtains-supply-installation",  icon: Blinds,          availability: "both",    leadTimeDays: [3, 10],  fallbackGallery: [heroLiving, bedroom2, lounge] },
+  
   { slug: "soundproof-installation",       icon: Volume2,         availability: "service", leadTimeDays: [5, 14],  fallbackGallery: [lounge, entryway, heroLiving] },
   { slug: "wall-partitioning",             icon: LayoutPanelTop,  availability: "custom",  leadTimeDays: [5, 14],  fallbackGallery: [officeAlt, entryway, library] },
   { slug: "baby-beds-manufacturing",       icon: Baby,            availability: "both",    leadTimeDays: [7, 14],  fallbackGallery: [bedroom, bedroom2, library] },

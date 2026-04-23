@@ -18,7 +18,7 @@ const resources = {
       },
       services: {
         title: "Core Offerings",
-        subtitle: "Eighteen disciplines, one signature of craftsmanship.",
+        subtitle: "Seventeen disciplines, one signature of craftsmanship.",
         items: [
           { title: "Wardrobes Manufacturing & Supply", desc: "Custom-designed wardrobes crafted to maximize space, style, and functionality, tailored to your exact needs." },
           { title: "Modern Kitchen Installations", desc: "We design and install sleek, modern kitchens that combine beauty, efficiency, and smart storage solutions." },
@@ -26,7 +26,7 @@ const resources = {
           { title: "Office Equipment Supply", desc: "Reliable supply of quality office furniture and equipment to create a productive and professional workspace." },
           { title: "Fabric Replacement Services", desc: "Give your furniture a fresh new look with high-quality fabric replacement that restores comfort and beauty." },
           { title: "Sofa Cleaning Services", desc: "Professional deep cleaning services that remove dirt, stains, and odors, bringing your sofas back to life." },
-          { title: "Curtains Supply & Installation", desc: "Stylish and durable curtains supplied and expertly installed to enhance privacy and interior décor." },
+          
           { title: "Soundproof Installation", desc: "Effective soundproofing solutions designed to reduce noise and improve comfort in homes and offices." },
           { title: "Wall Partitioning Works", desc: "Smart partitioning solutions to divide spaces efficiently while maintaining a modern and clean look." },
           { title: "Baby Beds Manufacturing", desc: "Safe, comfortable, and beautifully crafted baby beds designed with care for your child's well-being." },
@@ -82,7 +82,7 @@ const resources = {
         submit_email: "Send via Email",
         required: "Please fill all required fields.",
       },
-      common: { view_all: "View all", view_all_services: "View all 18 services" },
+      common: { view_all: "View all", view_all_services: "View all 17 services" },
       whatsapp: {
         title: "Message Us",
         subtitle: "We usually reply within a few minutes.",
@@ -106,7 +106,7 @@ const resources = {
       },
       services: {
         title: "Nos prestations",
-        subtitle: "Dix-huit disciplines, une seule signature d'artisanat.",
+        subtitle: "Dix-sept disciplines, une seule signature d'artisanat.",
         items: [
           { title: "Fabrication & fourniture d'armoires", desc: "Armoires sur mesure conçues pour maximiser l'espace, le style et la fonctionnalité, adaptées à vos besoins." },
           { title: "Installations de cuisines modernes", desc: "Conception et installation de cuisines modernes alliant beauté, efficacité et rangements intelligents." },
@@ -114,7 +114,7 @@ const resources = {
           { title: "Fourniture de mobilier de bureau", desc: "Fourniture fiable de mobilier et d'équipements de bureau de qualité pour un espace de travail productif et professionnel." },
           { title: "Remplacement de tissus", desc: "Offrez une nouvelle vie à vos meubles grâce à un remplacement de tissus de haute qualité qui restaure confort et beauté." },
           { title: "Nettoyage de canapés", desc: "Nettoyage en profondeur professionnel qui élimine saletés, taches et odeurs, et redonne vie à vos canapés." },
-          { title: "Fourniture & pose de rideaux", desc: "Rideaux stylés et durables fournis et installés avec expertise pour améliorer l'intimité et le décor intérieur." },
+          
           { title: "Installation d'isolation phonique", desc: "Solutions d'insonorisation efficaces pour réduire le bruit et améliorer le confort à la maison et au bureau." },
           { title: "Travaux de cloisonnement", desc: "Solutions de cloisonnement intelligentes pour diviser les espaces tout en gardant un rendu moderne et épuré." },
           { title: "Fabrication de lits bébé", desc: "Lits pour bébé sûrs, confortables et joliment conçus, pensés avec soin pour le bien-être de votre enfant." },
@@ -170,7 +170,7 @@ const resources = {
         submit_email: "Envoyer par Email",
         required: "Veuillez remplir tous les champs requis.",
       },
-      common: { view_all: "Tout voir", view_all_services: "Voir les 18 services" },
+      common: { view_all: "Tout voir", view_all_services: "Voir les 17 services" },
       whatsapp: {
         title: "Écrivez-nous",
         subtitle: "Nous répondons généralement en quelques minutes.",
@@ -194,7 +194,7 @@ const resources = {
       },
       services: {
         title: "Serivisi z'Ingenzi",
-        subtitle: "Inzobere cumi n'umunani, ubuhanga bumwe.",
+        subtitle: "Inzobere cumi na zirindwi, ubuhanga bumwe.",
         items: [
           { title: "Gukora no gutanga ama-wardrobe", desc: "Ama-wardrobe yakorewe ku gahato wifuza, akoreshwa neza umwanya, asa neza kandi ari ingirakamaro." },
           { title: "Kwinjiza ibikoni bya kijyambere", desc: "Dushushanya kandi twinjiza ibikoni bya kijyambere bihuza ubwiza, ubushobozi n'ububiko bw'ubwenge." },
@@ -202,7 +202,7 @@ const resources = {
           { title: "Gutanga ibikoresho bya biro", desc: "Dutanga ibikoresho bya biro by'ubunyangamugayo bituma akazi gakorwa neza kandi mu buryo bw'umwuga." },
           { title: "Guhindura imyenda y'ibikoresho", desc: "Ha ibikoresho byawe isura nshya ukoresheje imyenda yo mu rwego rwo hejuru igarura ubwiza n'ubworoherwe." },
           { title: "Gusukura intebe (sofa)", desc: "Serivisi y'umwuga yo gusukura cyane intebe, ikuraho ibyanduye, amabara n'umunuko." },
-          { title: "Gutanga no gushyira amarido", desc: "Amarido meza arambye atangwa kandi agashyirwa neza kugira ngo arinde ibanga kandi yongere ubwiza bw'imbere." },
+          
           { title: "Gushyira ibikuza urusaku", desc: "Ibisubizo byo guca urusaku kugira ngo hagabanuke ijwi kandi habeho ituze mu ngo no muri biro." },
           { title: "Gutandukanya inkuta", desc: "Uburyo bw'ubwenge bwo gutandukanya imyanya bukomeza ku kuba kijyambere kandi gisukuye." },
           { title: "Gukora ibitanda by'abana", desc: "Ibitanda by'abana bifite umutekano, byoroshye, kandi byakozwe n'ubwitonzi ku bw'ubuzima bw'umwana wawe." },
@@ -258,7 +258,7 @@ const resources = {
         submit_email: "Ohereza kuri Imeyili",
         required: "Uzuza ibisabwa byose.",
       },
-      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 18 zose" },
+      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 17 zose" },
       whatsapp: {
         title: "Twandikire",
         subtitle: "Tubasubiza mu minota mike.",
