@@ -5,6 +5,8 @@ import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Menu, X, Instagram, Facebook, ChevronDown } from "lucide-react";
 import { SERVICES } from "@/data/services";
+import { SOCIAL_LINKS } from "@/data/socials";
+import { TikTokIcon } from "@/components/icons/TikTokIcon";
 
 type ServiceItem = { title: string; desc: string };
 
@@ -130,7 +132,7 @@ export const Navbar = () => {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <a
-            href="https://instagram.com"
+            href={SOCIAL_LINKS.instagram}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -139,13 +141,22 @@ export const Navbar = () => {
             <Instagram className="h-3.5 w-3.5" />
           </a>
           <a
-            href="https://facebook.com"
+            href={SOCIAL_LINKS.facebook}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
             className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
           >
             <Facebook className="h-3.5 w-3.5" />
+          </a>
+          <a
+            href={SOCIAL_LINKS.tiktok}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+            className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
+          >
+            <TikTokIcon className="h-3.5 w-3.5" />
           </a>
           <LanguageSwitcher />
           <button

@@ -70,7 +70,7 @@ export const Contact = ({ preview = false }: { preview?: boolean }) => {
         <div className="mt-10 flex items-center gap-4">
           <span className="text-xs uppercase tracking-[0.25em] text-muted-foreground">{t("footer.follow")}</span>
           <a
-            href="https://instagram.com"
+            href={SOCIAL_LINKS.instagram}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -79,13 +79,22 @@ export const Contact = ({ preview = false }: { preview?: boolean }) => {
             <Instagram className="h-4 w-4" />
           </a>
           <a
-            href="https://facebook.com"
+            href={SOCIAL_LINKS.facebook}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
             className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
           >
             <Facebook className="h-4 w-4" />
+          </a>
+          <a
+            href={SOCIAL_LINKS.tiktok}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+          >
+            <TikTokIcon className="h-4 w-4" />
           </a>
         </div>
 
