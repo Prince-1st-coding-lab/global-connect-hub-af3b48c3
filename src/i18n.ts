@@ -202,7 +202,7 @@ const resources = {
           { title: "Gutanga ibikoresho bya biro", desc: "Dutanga ibikoresho bya biro by'ubunyangamugayo bituma akazi gakorwa neza kandi mu buryo bw'umwuga." },
           { title: "Guhindura imyenda y'ibikoresho", desc: "Ha ibikoresho byawe isura nshya ukoresheje imyenda yo mu rwego rwo hejuru igarura ubwiza n'ubworoherwe." },
           { title: "Gusukura intebe (sofa)", desc: "Serivisi y'umwuga yo gusukura cyane intebe, ikuraho ibyanduye, amabara n'umunuko." },
-          { title: "Gutanga no gushyira amarido", desc: "Amarido meza arambye atangwa kandi agashyirwa neza kugira ngo arinde ibanga kandi yongere ubwiza bw'imbere." },
+          
           { title: "Gushyira ibikuza urusaku", desc: "Ibisubizo byo guca urusaku kugira ngo hagabanuke ijwi kandi habeho ituze mu ngo no muri biro." },
           { title: "Gutandukanya inkuta", desc: "Uburyo bw'ubwenge bwo gutandukanya imyanya bukomeza ku kuba kijyambere kandi gisukuye." },
           { title: "Gukora ibitanda by'abana", desc: "Ibitanda by'abana bifite umutekano, byoroshye, kandi byakozwe n'ubwitonzi ku bw'ubuzima bw'umwana wawe." },
