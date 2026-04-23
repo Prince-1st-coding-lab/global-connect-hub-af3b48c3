@@ -26,7 +26,7 @@ const resources = {
           { title: "Office Equipment Supply", desc: "Reliable supply of quality office furniture and equipment to create a productive and professional workspace." },
           { title: "Fabric Replacement Services", desc: "Give your furniture a fresh new look with high-quality fabric replacement that restores comfort and beauty." },
           { title: "Sofa Cleaning Services", desc: "Professional deep cleaning services that remove dirt, stains, and odors, bringing your sofas back to life." },
-          { title: "Curtains Supply & Installation", desc: "Stylish and durable curtains supplied and expertly installed to enhance privacy and interior décor." },
+          
           { title: "Soundproof Installation", desc: "Effective soundproofing solutions designed to reduce noise and improve comfort in homes and offices." },
           { title: "Wall Partitioning Works", desc: "Smart partitioning solutions to divide spaces efficiently while maintaining a modern and clean look." },
           { title: "Baby Beds Manufacturing", desc: "Safe, comfortable, and beautifully crafted baby beds designed with care for your child's well-being." },
@@ -114,7 +114,7 @@ const resources = {
           { title: "Fourniture de mobilier de bureau", desc: "Fourniture fiable de mobilier et d'équipements de bureau de qualité pour un espace de travail productif et professionnel." },
           { title: "Remplacement de tissus", desc: "Offrez une nouvelle vie à vos meubles grâce à un remplacement de tissus de haute qualité qui restaure confort et beauté." },
           { title: "Nettoyage de canapés", desc: "Nettoyage en profondeur professionnel qui élimine saletés, taches et odeurs, et redonne vie à vos canapés." },
-          { title: "Fourniture & pose de rideaux", desc: "Rideaux stylés et durables fournis et installés avec expertise pour améliorer l'intimité et le décor intérieur." },
+          
           { title: "Installation d'isolation phonique", desc: "Solutions d'insonorisation efficaces pour réduire le bruit et améliorer le confort à la maison et au bureau." },
           { title: "Travaux de cloisonnement", desc: "Solutions de cloisonnement intelligentes pour diviser les espaces tout en gardant un rendu moderne et épuré." },
           { title: "Fabrication de lits bébé", desc: "Lits pour bébé sûrs, confortables et joliment conçus, pensés avec soin pour le bien-être de votre enfant." },
