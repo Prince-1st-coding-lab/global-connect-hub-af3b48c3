@@ -123,6 +123,9 @@ const resources = {
           { title: "Nettoyage de tapis", desc: "Nettoyage minutieux des tapis qui élimine les saletés en profondeur et restaure fraîcheur, hygiène et douceur." },
           { title: "Fabrication de niches pour animaux", desc: "Niches durables et confortables conçues pour offrir un foyer sûr et douillet à vos animaux." },
           { title: "Fabrication de tables à manger", desc: "Tables à manger magnifiquement conçues pour réunir les gens, alliant durabilité, élégance et fonctionnalité au quotidien." },
+          { title: "Pose de consoles", desc: "Consoles élégantes conçues et installées pour sublimer entrées, couloirs et salons avec style et rangement." },
+          { title: "Fourniture & pose de moquettes", desc: "Moquettes haut de gamme fournies et posées par des professionnels pour apporter chaleur, confort et caractère raffiné à vos intérieurs." },
+          { title: "Travaux de peinture", desc: "Services de peinture intérieure et extérieure offrant des finitions impeccables, des revêtements durables et des couleurs riches et tenaces." },
         ],
       },
       about: {
