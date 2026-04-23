@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Instagram, Facebook } from "lucide-react";
 import { Logo } from "./Logo";
 import { SERVICES } from "@/data/services";
+import { SOCIAL_LINKS } from "@/data/socials";
+import { TikTokIcon } from "@/components/icons/TikTokIcon";
 
 type ServiceItem = { title: string; desc: string };
 
@@ -65,7 +67,7 @@ export const Footer = () => {
           </p>
           <div className="flex items-center gap-3 pt-2">
             <a
-              href="https://instagram.com"
+              href={SOCIAL_LINKS.instagram}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -74,13 +76,22 @@ export const Footer = () => {
               <Instagram className="h-4 w-4" />
             </a>
             <a
-              href="https://facebook.com"
+              href={SOCIAL_LINKS.facebook}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-gold hover:bg-gold hover:text-primary-foreground"
             >
               <Facebook className="h-4 w-4" />
+            </a>
+            <a
+              href={SOCIAL_LINKS.tiktok}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-gold hover:bg-gold hover:text-primary-foreground"
+            >
+              <TikTokIcon className="h-4 w-4" />
             </a>
           </div>
         </div>
