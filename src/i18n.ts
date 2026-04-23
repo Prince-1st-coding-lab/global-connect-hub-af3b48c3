@@ -18,7 +18,7 @@ const resources = {
       },
       services: {
         title: "Core Offerings",
-        subtitle: "Fifteen disciplines, one signature of craftsmanship.",
+        subtitle: "Eighteen disciplines, one signature of craftsmanship.",
         items: [
           { title: "Wardrobes Manufacturing & Supply", desc: "Custom-designed wardrobes crafted to maximize space, style, and functionality, tailored to your exact needs." },
           { title: "Modern Kitchen Installations", desc: "We design and install sleek, modern kitchens that combine beauty, efficiency, and smart storage solutions." },
