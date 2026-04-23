@@ -35,6 +35,9 @@ const resources = {
           { title: "Carpet Cleaning Services", desc: "Thorough carpet cleaning that removes deep dirt and restores freshness, hygiene, and softness." },
           { title: "Pet Houses Manufacturing", desc: "Durable and comfortable pet houses designed to provide a safe and cozy home for your pets." },
           { title: "Dining Tables Manufacturing", desc: "Beautifully crafted dining tables designed to bring people together, combining durability, elegance, and everyday functionality." },
+          { title: "Console Installation", desc: "Elegant console units designed and installed to elevate entryways, hallways, and living spaces with style and storage." },
+          { title: "Carpet Supply & Installation", desc: "Premium carpets supplied and professionally installed to bring warmth, comfort, and refined character to your interiors." },
+          { title: "Painting Works", desc: "Professional interior and exterior painting services delivering flawless finishes, durable coatings, and rich, long-lasting color." },
         ],
       },
       about: {
