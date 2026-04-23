@@ -23,6 +23,9 @@ const SHORT_LABELS: Record<string, string> = {
   "carpet-cleaning": "Carpet Cleaning",
   "pet-houses-manufacturing": "Pet Houses",
   "dining-tables-manufacturing": "Dining Tables",
+  "console-installation": "Consoles",
+  "carpet-supply-installation": "Carpet Supply",
+  "painting-works": "Painting Works",
 };
 
 export const Footer = () => {

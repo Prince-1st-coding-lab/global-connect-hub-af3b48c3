@@ -18,7 +18,7 @@ const resources = {
       },
       services: {
         title: "Core Offerings",
-        subtitle: "Fifteen disciplines, one signature of craftsmanship.",
+        subtitle: "Eighteen disciplines, one signature of craftsmanship.",
         items: [
           { title: "Wardrobes Manufacturing & Supply", desc: "Custom-designed wardrobes crafted to maximize space, style, and functionality, tailored to your exact needs." },
           { title: "Modern Kitchen Installations", desc: "We design and install sleek, modern kitchens that combine beauty, efficiency, and smart storage solutions." },
@@ -35,6 +35,9 @@ const resources = {
           { title: "Carpet Cleaning Services", desc: "Thorough carpet cleaning that removes deep dirt and restores freshness, hygiene, and softness." },
           { title: "Pet Houses Manufacturing", desc: "Durable and comfortable pet houses designed to provide a safe and cozy home for your pets." },
           { title: "Dining Tables Manufacturing", desc: "Beautifully crafted dining tables designed to bring people together, combining durability, elegance, and everyday functionality." },
+          { title: "Console Installation", desc: "Elegant console units designed and installed to elevate entryways, hallways, and living spaces with style and storage." },
+          { title: "Carpet Supply & Installation", desc: "Premium carpets supplied and professionally installed to bring warmth, comfort, and refined character to your interiors." },
+          { title: "Painting Works", desc: "Professional interior and exterior painting services delivering flawless finishes, durable coatings, and rich, long-lasting color." },
         ],
       },
       about: {
@@ -79,7 +82,7 @@ const resources = {
         submit_email: "Send via Email",
         required: "Please fill all required fields.",
       },
-      common: { view_all: "View all", view_all_services: "View all 15 services" },
+      common: { view_all: "View all", view_all_services: "View all 18 services" },
       whatsapp: {
         title: "Message Us",
         subtitle: "We usually reply within a few minutes.",
@@ -103,7 +106,7 @@ const resources = {
       },
       services: {
         title: "Nos prestations",
-        subtitle: "Quinze disciplines, une seule signature d'artisanat.",
+        subtitle: "Dix-huit disciplines, une seule signature d'artisanat.",
         items: [
           { title: "Fabrication & fourniture d'armoires", desc: "Armoires sur mesure conçues pour maximiser l'espace, le style et la fonctionnalité, adaptées à vos besoins." },
           { title: "Installations de cuisines modernes", desc: "Conception et installation de cuisines modernes alliant beauté, efficacité et rangements intelligents." },
@@ -120,6 +123,9 @@ const resources = {
           { title: "Nettoyage de tapis", desc: "Nettoyage minutieux des tapis qui élimine les saletés en profondeur et restaure fraîcheur, hygiène et douceur." },
           { title: "Fabrication de niches pour animaux", desc: "Niches durables et confortables conçues pour offrir un foyer sûr et douillet à vos animaux." },
           { title: "Fabrication de tables à manger", desc: "Tables à manger magnifiquement conçues pour réunir les gens, alliant durabilité, élégance et fonctionnalité au quotidien." },
+          { title: "Pose de consoles", desc: "Consoles élégantes conçues et installées pour sublimer entrées, couloirs et salons avec style et rangement." },
+          { title: "Fourniture & pose de moquettes", desc: "Moquettes haut de gamme fournies et posées par des professionnels pour apporter chaleur, confort et caractère raffiné à vos intérieurs." },
+          { title: "Travaux de peinture", desc: "Services de peinture intérieure et extérieure offrant des finitions impeccables, des revêtements durables et des couleurs riches et tenaces." },
         ],
       },
       about: {
@@ -164,7 +170,7 @@ const resources = {
         submit_email: "Envoyer par Email",
         required: "Veuillez remplir tous les champs requis.",
       },
-      common: { view_all: "Tout voir", view_all_services: "Voir les 15 services" },
+      common: { view_all: "Tout voir", view_all_services: "Voir les 18 services" },
       whatsapp: {
         title: "Écrivez-nous",
         subtitle: "Nous répondons généralement en quelques minutes.",
@@ -188,7 +194,7 @@ const resources = {
       },
       services: {
         title: "Serivisi z'Ingenzi",
-        subtitle: "Inzobere cumi n'eshanu, ubuhanga bumwe.",
+        subtitle: "Inzobere cumi n'umunani, ubuhanga bumwe.",
         items: [
           { title: "Gukora no gutanga ama-wardrobe", desc: "Ama-wardrobe yakorewe ku gahato wifuza, akoreshwa neza umwanya, asa neza kandi ari ingirakamaro." },
           { title: "Kwinjiza ibikoni bya kijyambere", desc: "Dushushanya kandi twinjiza ibikoni bya kijyambere bihuza ubwiza, ubushobozi n'ububiko bw'ubwenge." },
@@ -205,6 +211,9 @@ const resources = {
           { title: "Gusukura amatapi", desc: "Gusukura amatapi byimbitse bikuraho ibyanduye kandi bigarura ubuziranenge n'uboroshye." },
           { title: "Gukora amazu y'amatungo", desc: "Amazu y'amatungo arambye kandi yoroheye, atanga umutekano n'ituze ku matungo yawe." },
           { title: "Gukora ameza yo kuriraho", desc: "Ameza yo kuriraho yakozwe neza, ahuza abantu, ahuza ireme, ubwiza n'akamaro k'umunsi ku munsi." },
+          { title: "Gushyira amakonsole", desc: "Amakonsole meza yashushanyijwe kandi ashyirwaho kugira ngo agire isura nziza ku miryango n'amazu yo kubamo." },
+          { title: "Gutanga no gushyira amatapi", desc: "Amatapi yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe, uburyohe n'isura nziza imbere mu nzu." },
+          { title: "Imirimo yo gusiga irangi", desc: "Serivisi z'umwuga zo gusiga irangi imbere n'inyuma zikora isura nziza, irangi rirambye kandi ririza imibumbe ku gihe kirekire." },
         ],
       },
       about: {
@@ -249,7 +258,7 @@ const resources = {
         submit_email: "Ohereza kuri Imeyili",
         required: "Uzuza ibisabwa byose.",
       },
-      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 15 zose" },
+      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 18 zose" },
       whatsapp: {
         title: "Twandikire",
         subtitle: "Tubasubiza mu minota mike.",
