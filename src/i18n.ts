@@ -81,6 +81,7 @@ const resources = {
       },
       common: { view_all: "View all", view_all_services: "View all 15 services" },
       whatsapp: {
+        title: "Message Us",
         subtitle: "We usually reply within a few minutes.",
         aria: "Chat on WhatsApp",
       },
@@ -165,6 +166,7 @@ const resources = {
       },
       common: { view_all: "Tout voir", view_all_services: "Voir les 15 services" },
       whatsapp: {
+        title: "Écrivez-nous",
         subtitle: "Nous répondons généralement en quelques minutes.",
         aria: "Discuter sur WhatsApp",
       },
@@ -249,6 +251,7 @@ const resources = {
       },
       common: { view_all: "Reba byose", view_all_services: "Reba serivisi 15 zose" },
       whatsapp: {
+        title: "Twandikire",
         subtitle: "Tubasubiza mu minota mike.",
         aria: "Vugisha kuri WhatsApp",
       },
