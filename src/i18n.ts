@@ -84,7 +84,7 @@ const resources = {
         subtitle: "We usually reply within a few minutes.",
         aria: "Chat on WhatsApp",
       },
-      footer: { rights: "All rights reserved.", follow: "Follow us", explore: "Explore" },
+      footer: { rights: "All rights reserved.", follow: "Follow us", explore: "Explore", more_services: "More Services" },
     },
   },
   fr: {
