@@ -211,6 +211,9 @@ const resources = {
           { title: "Gusukura amatapi", desc: "Gusukura amatapi byimbitse bikuraho ibyanduye kandi bigarura ubuziranenge n'uboroshye." },
           { title: "Gukora amazu y'amatungo", desc: "Amazu y'amatungo arambye kandi yoroheye, atanga umutekano n'ituze ku matungo yawe." },
           { title: "Gukora ameza yo kuriraho", desc: "Ameza yo kuriraho yakozwe neza, ahuza abantu, ahuza ireme, ubwiza n'akamaro k'umunsi ku munsi." },
+          { title: "Gushyira amakonsole", desc: "Amakonsole meza yashushanyijwe kandi ashyirwaho kugira ngo agire isura nziza ku miryango n'amazu yo kubamo." },
+          { title: "Gutanga no gushyira amatapi", desc: "Amatapi yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe, uburyohe n'isura nziza imbere mu nzu." },
+          { title: "Imirimo yo gusiga irangi", desc: "Serivisi z'umwuga zo gusiga irangi imbere n'inyuma zikora isura nziza, irangi rirambye kandi ririza imibumbe ku gihe kirekire." },
         ],
       },
       about: {
