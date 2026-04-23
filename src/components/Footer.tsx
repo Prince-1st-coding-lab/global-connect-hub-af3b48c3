@@ -24,7 +24,7 @@ const SHORT_LABELS: Record<string, string> = {
   "pet-houses-manufacturing": "Pet Houses",
   "dining-tables-manufacturing": "Dining Tables",
   "console-installation": "Consoles",
-  "carpet-supply-installation": "Carpet Supply",
+  "carpet-supply-installation": "Curtains Supply",
   "painting-works": "Painting Works",
 };
 
