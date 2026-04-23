@@ -30,9 +30,6 @@ Each subfolder corresponds to a service `slug` (see `src/data/services.ts`).
 | `carpet-cleaning/` | Carpet Cleaning Services |
 | `pet-houses-manufacturing/` | Pet Houses Manufacturing |
 | `dining-tables-manufacturing/` | Dining Tables Manufacturing |
-| `console-installation/` | Console Installation |
-| `carpet-supply-installation/` | Carpet Supply & Installation |
-| `painting-works/` | Painting Works |
 
 ## Tips
 
