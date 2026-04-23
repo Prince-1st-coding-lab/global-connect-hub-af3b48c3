@@ -106,7 +106,7 @@ const resources = {
       },
       services: {
         title: "Nos prestations",
-        subtitle: "Quinze disciplines, une seule signature d'artisanat.",
+        subtitle: "Dix-huit disciplines, une seule signature d'artisanat.",
         items: [
           { title: "Fabrication & fourniture d'armoires", desc: "Armoires sur mesure conçues pour maximiser l'espace, le style et la fonctionnalité, adaptées à vos besoins." },
           { title: "Installations de cuisines modernes", desc: "Conception et installation de cuisines modernes alliant beauté, efficacité et rangements intelligents." },
