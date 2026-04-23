@@ -67,6 +67,9 @@ const baseServices: Service[] = [
   { slug: "carpet-cleaning",               icon: Brush,           availability: "service", leadTimeDays: [1, 3],   fallbackGallery: [lounge, heroLiving, bedroom] },
   { slug: "pet-houses-manufacturing",      icon: Dog,             availability: "both",    leadTimeDays: [5, 10],  fallbackGallery: [bathroom, library, entryway] },
   { slug: "dining-tables-manufacturing",   icon: Utensils,        availability: "both",    leadTimeDays: [10, 21], fallbackGallery: [kitchen, lounge, heroLiving] },
+  { slug: "console-installation",          icon: Archive,         availability: "custom",  leadTimeDays: [7, 14],  fallbackGallery: [entryway, lounge, library] },
+  { slug: "carpet-supply-installation",    icon: Layers,          availability: "both",    leadTimeDays: [3, 10],  fallbackGallery: [lounge, heroLiving, bedroom2] },
+  { slug: "painting-works",                icon: PaintBucket,     availability: "service", leadTimeDays: [3, 10],  fallbackGallery: [bedroom, library, entryway] },
 ];
 
 export type ResolvedService = Service & {
