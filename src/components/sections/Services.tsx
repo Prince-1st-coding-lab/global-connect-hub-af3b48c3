@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import { SERVICES } from "@/data/services";
+import { useServices } from "@/hooks/useServices";
 
 type ServiceItem = { title: string; desc: string };
 
@@ -10,7 +10,8 @@ const PREVIEW_COUNT = 6;
 export const Services = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
-  const shown = preview ? items.slice(0, PREVIEW_COUNT) : items;
+  const { data: services } = useServices();
+  const shown = preview ? services.slice(0, PREVIEW_COUNT) : services;
 
   return (
     <section id="services" className="relative py-28 lg:py-36">
@@ -34,13 +35,14 @@ export const Services = ({ preview = false }: { preview?: boolean }) => {
         </div>
 
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-gold/15 bg-gold/15 sm:grid-cols-2 lg:grid-cols-3">
-          {shown.map((item, i) => {
-            const svc = SERVICES[i];
-            const Icon = svc?.icon;
+          {shown.map((svc, i) => {
+            const Icon = svc.icon;
+            const title = svc.title ?? items[i]?.title ?? svc.slug;
+            const desc = svc.description ?? items[i]?.desc ?? "";
             return (
               <Link
-                key={i}
-                to={`/services/${svc?.slug ?? ""}`}
+                key={svc.slug}
+                to={`/services/${svc.slug}`}
                 className="group relative flex flex-col gap-4 bg-card p-7 transition-colors hover:bg-secondary"
               >
                 <div className="flex items-center justify-between gap-4">
@@ -54,14 +56,14 @@ export const Services = ({ preview = false }: { preview?: boolean }) => {
                   </div>
                   <ArrowUpRight className="h-4 w-4 text-gold/60 transition-all group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-gold" />
                 </div>
-                <h3 className="font-display text-xl font-medium text-foreground">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
+                <h3 className="font-display text-xl font-medium text-foreground">{title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{desc}</p>
               </Link>
             );
           })}
         </div>
 
-        {preview && items.length > PREVIEW_COUNT && (
+        {preview && services.length > PREVIEW_COUNT && (
           <div className="mt-10 text-center">
             <Link
               to="/services"

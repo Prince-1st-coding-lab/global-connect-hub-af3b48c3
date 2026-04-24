@@ -4,21 +4,22 @@ import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock } from "lucide-react";
 import { BookingDialog } from "@/components/BookingDialog";
-import { SERVICES, getServiceBySlug, getServiceIndex } from "@/data/services";
+import { useService } from "@/hooks/useServices";
 
 type ServiceItem = { title: string; desc: string };
 
 const ServiceDetail = () => {
   const { slug = "" } = useParams();
   const { t } = useTranslation();
-  const svc = getServiceBySlug(slug);
-  const idx = getServiceIndex(slug);
+  const { service: svc, index: idx, all } = useService(slug);
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
-  const item = idx >= 0 ? items[idx] : undefined;
+  const fallback = idx >= 0 ? items[idx] : undefined;
+  const title = svc?.title ?? fallback?.title;
+  const description = svc?.description ?? fallback?.desc;
 
   useEffect(() => {
-    if (item) {
-      document.title = `${item.title} — Noble Spaces`;
+    if (title && description) {
+      document.title = `${title} — Noble Spaces`;
       const meta =
         document.querySelector('meta[name="description"]') ??
         (() => {
@@ -27,11 +28,11 @@ const ServiceDetail = () => {
           document.head.appendChild(m);
           return m;
         })();
-      meta.setAttribute("content", item.desc);
+      meta.setAttribute("content", description);
     }
-  }, [item]);
+  }, [title, description]);
 
-  if (!svc || !item) {
+  if (!svc || !title) {
     return (
       <section className="mx-auto max-w-3xl px-6 py-40 text-center">
         <h1 className="font-display text-4xl">Service not found</h1>
@@ -42,15 +43,14 @@ const ServiceDetail = () => {
     );
   }
 
-  const prev = SERVICES[(idx - 1 + SERVICES.length) % SERVICES.length];
-  const next = SERVICES[(idx + 1) % SERVICES.length];
-  const prevTitle = items[(idx - 1 + SERVICES.length) % SERVICES.length].title;
-  const nextTitle = items[(idx + 1) % SERVICES.length].title;
+  const prev = all[(idx - 1 + all.length) % all.length];
+  const next = all[(idx + 1) % all.length];
+  const prevTitle = prev.title ?? items[(idx - 1 + all.length) % all.length]?.title ?? prev.slug;
+  const nextTitle = next.title ?? items[(idx + 1) % all.length]?.title ?? next.slug;
   const Icon = svc.icon;
 
   return (
     <>
-
       {/* Hero */}
       <section className="relative pt-36 pb-16 lg:pt-44">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -68,14 +68,14 @@ const ServiceDetail = () => {
                   <Icon className="h-6 w-6" />
                 </div>
                 <span className="font-display text-xs uppercase tracking-[0.3em] text-gold/70">
-                  — {String(idx + 1).padStart(2, "0")} / {String(SERVICES.length).padStart(2, "0")}
+                  — {String(idx + 1).padStart(2, "0")} / {String(all.length).padStart(2, "0")}
                 </span>
               </div>
               <h1 className="mt-6 font-display text-5xl font-semibold leading-tight lg:text-6xl">
-                {item.title}
+                {title}
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                {item.desc}
+                {description}
               </p>
 
               {/* Availability card */}
@@ -104,7 +104,7 @@ const ServiceDetail = () => {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <BookingDialog serviceTitle={item.title} availability={svc.availability} />
+                <BookingDialog serviceTitle={title} availability={svc.availability} />
                 <a
                   href="tel:+250788906410"
                   className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/10"
@@ -123,7 +123,7 @@ const ServiceDetail = () => {
             <div className="overflow-hidden rounded-3xl border border-gold/20 shadow-deep">
               <img
                 src={svc.cover}
-                alt={item.title}
+                alt={title}
                 width={1280}
                 height={896}
                 className="h-full w-full object-cover"
@@ -153,7 +153,7 @@ const ServiceDetail = () => {
               >
                 <img
                   src={src}
-                  alt={`${item.title} ${i + 1}`}
+                  alt={`${title} ${i + 1}`}
                   loading="lazy"
                   width={1280}
                   height={896}
