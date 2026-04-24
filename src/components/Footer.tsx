@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Instagram, Facebook } from "lucide-react";
 import { Logo } from "./Logo";
-import { SERVICES } from "@/data/services";
+import { useServices, type UiService } from "@/hooks/useServices";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 
@@ -33,14 +33,15 @@ const SHORT_LABELS: Record<string, string> = {
 export const Footer = () => {
   const { t } = useTranslation();
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
+  const { data: services } = useServices();
 
   // Split services into two columns: primary (first 7) and more (rest)
-  const primary = SERVICES.slice(0, 7);
-  const more = SERVICES.slice(7);
+  const primary = services.slice(0, 7);
+  const more = services.slice(7);
 
-  const ServiceLink = ({ svc, idx }: { svc: typeof SERVICES[number]; idx: number }) => {
+  const ServiceLink = ({ svc, idx }: { svc: UiService; idx: number }) => {
     const Icon = svc.icon;
-    const label = SHORT_LABELS[svc.slug] ?? items[idx]?.title ?? svc.slug;
+    const label = SHORT_LABELS[svc.slug] ?? svc.title ?? items[idx]?.title ?? svc.slug;
     return (
       <li>
         <Link
