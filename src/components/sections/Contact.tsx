@@ -17,8 +17,8 @@ export const Contact = ({ preview = false }: { preview?: boolean }) => {
     {
       icon: Mail,
       label: t("contact.email"),
-      values: ["noblespaces4@gmail.com"],
-      href: "mailto:noblespaces4@gmail.com",
+      values: ["info@noblespaces.rw"],
+      href: "mailto:info@noblespaces.rw",
     },
     {
       icon: MapPin,

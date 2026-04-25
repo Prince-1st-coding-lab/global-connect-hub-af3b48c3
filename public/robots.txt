@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /zohoverify/
 
 Sitemap: https://noblespaces.rw/sitemap.xml

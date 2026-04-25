@@ -31,7 +31,7 @@ const titles: Record<string, Meta> = {
   },
   "/contact": {
     title: "Contact Noble Spaces — Kigali, Kicukiro, Gikondo | Rwanda",
-    desc: "Get in touch with Noble Spaces in Kigali, Kicukiro, Gikondo. Call +250 788 906 410 or email noblespaces4@gmail.com to book your interior design consultation.",
+    desc: "Get in touch with Noble Spaces in Kigali, Kicukiro, Gikondo. Call +250 788 906 410 or email info@noblespaces.rw to book your interior design consultation.",
     keywords: "contact Noble Spaces, interior designer Kigali contact, Gikondo design studio",
   },
 };
