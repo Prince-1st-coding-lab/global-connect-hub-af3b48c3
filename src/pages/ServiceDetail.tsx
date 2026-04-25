@@ -112,7 +112,7 @@ const ServiceDetail = () => {
                   <Phone className="h-4 w-4" /> {t("hero.cta_primary")}
                 </a>
                 <a
-                  href="mailto:noblespaces4@gmail.com"
+                  href="mailto:info@noblespaces.rw"
                   className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/10"
                 >
                   <Mail className="h-4 w-4" /> Email

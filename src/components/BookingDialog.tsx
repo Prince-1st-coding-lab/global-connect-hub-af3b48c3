@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import type { Availability } from "@/data/services";
 
 const WHATSAPP_NUMBER = "250788906410"; // no + or spaces
-const EMAIL = "noblespaces4@gmail.com";
+const EMAIL = "info@noblespaces.rw";
 
 type Props = {
   serviceTitle: string;
