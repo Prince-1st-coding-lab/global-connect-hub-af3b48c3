@@ -94,6 +94,14 @@ export const SiteLayout = () => {
     upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", meta.title);
     upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", meta.desc);
 
+    const sensitive = pathname.startsWith("/admin") || pathname === "/404";
+    upsertMeta(
+      'meta[name="robots"]',
+      "name",
+      "robots",
+      sensitive ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    );
+
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname]);
 
