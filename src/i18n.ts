@@ -7,14 +7,14 @@ const resources = {
     translation: {
       nav: { home: "Home", services: "Services", about: "About", gallery: "Gallery", contact: "Contact" },
       hero: {
-        eyebrow: "Noble Spaces",
+        eyebrow: "Welcome to Noble Spaces",
         tagline: "your space, our passion",
-        title: "Interior Design",
-        title_script: "Services",
+        title: "Welcome to",
+        title_script: "Noble Spaces",
         subtitle:
-          "Experience the difference with our professional interior design services, where creativity meets functionality to create spaces that inspire and delight.",
-        cta_primary: "Request a Consultation",
-        cta_secondary: "Explore Services",
+          "We are a multi-service company in Kigali, Rwanda, dedicated to transforming homes, offices, and commercial spaces. From bespoke furniture and modern kitchens to painting, ceilings, soundproofing and more — explore our full range of services crafted with passion and precision.",
+        cta_primary: "Explore Our Services",
+        cta_secondary: "Get in Touch",
       },
       services: {
         title: "Core Offerings",
@@ -95,14 +95,14 @@ const resources = {
     translation: {
       nav: { home: "Accueil", services: "Services", about: "À propos", gallery: "Galerie", contact: "Contact" },
       hero: {
-        eyebrow: "Noble Spaces",
+        eyebrow: "Bienvenue chez Noble Spaces",
         tagline: "votre espace, notre passion",
-        title: "Design",
-        title_script: "d'Intérieur",
+        title: "Bienvenue chez",
+        title_script: "Noble Spaces",
         subtitle:
-          "Découvrez la différence avec nos services professionnels de design d'intérieur, où la créativité rencontre la fonctionnalité pour créer des espaces qui inspirent et ravissent.",
-        cta_primary: "Demander une consultation",
-        cta_secondary: "Voir les services",
+          "Nous sommes une entreprise multi-services basée à Kigali, au Rwanda, dédiée à transformer maisons, bureaux et espaces commerciaux. Du mobilier sur mesure aux cuisines modernes, en passant par la peinture, les plafonds, l'insonorisation et bien plus — découvrez toute notre gamme de services réalisés avec passion et précision.",
+        cta_primary: "Découvrir nos services",
+        cta_secondary: "Nous contacter",
       },
       services: {
         title: "Nos prestations",
@@ -183,14 +183,14 @@ const resources = {
     translation: {
       nav: { home: "Ahabanza", services: "Serivisi", about: "Abo turi bo", gallery: "Amafoto", contact: "Twandikire" },
       hero: {
-        eyebrow: "Noble Spaces",
+        eyebrow: "Murakaza neza kuri Noble Spaces",
         tagline: "umwanya wawe, ishyaka ryacu",
-        title: "Igishushanyo",
-        title_script: "cy'Imbere",
+        title: "Murakaza neza kuri",
+        title_script: "Noble Spaces",
         subtitle:
-          "Bonera ubunyangamugayo bwa serivisi z'igishushanyo cy'imbere y'inzu, aho ubuhanga buhura n'akamaro mu kurema imyanya iteza imbere kandi inezeza.",
-        cta_primary: "Saba inama",
-        cta_secondary: "Reba serivisi",
+          "Turi isosiyete itanga serivisi nyinshi i Kigali, mu Rwanda, yiyemeje guhindura amazu, ibiro n'ahandi hantu ho ubucuruzi. Kuva ku bikoresho byakorewe ku gahato n'ibikoni bya kijyambere kugeza ku irangi, plafond, gukumira urusaku n'ibindi — reba serivisi zacu zose dukora ku ishyaka no ku buhanga.",
+        cta_primary: "Reba serivisi zacu",
+        cta_secondary: "Twandikire",
       },
       services: {
         title: "Serivisi z'Ingenzi",
