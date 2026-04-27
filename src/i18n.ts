@@ -202,7 +202,7 @@ const resources = {
           { title: "Gutanga ibikoresho bya biro", desc: "Dutanga ibikoresho bya biro by'ubunyangamugayo bituma akazi gakorwa neza kandi mu buryo bw'umwuga." },
           { title: "Guhindura imyenda y'ibikoresho", desc: "Ha ibikoresho byawe isura nshya ukoresheje imyenda yo mu rwego rwo hejuru igarura ubwiza n'ubworoherwe." },
           { title: "Gusukura intebe (sofa)", desc: "Serivisi y'umwuga yo gusukura cyane intebe, ikuraho ibyanduye, amabara n'umunuko." },
-          
+          { title: "Gutanga no gushyira amarido", desc: "Amarido yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe, uburyohe n'isura nziza imbere mu nzu." },
           { title: "Gushyira ibikuza urusaku", desc: "Ibisubizo byo guca urusaku kugira ngo hagabanuke ijwi kandi habeho ituze mu ngo no muri biro." },
           { title: "Gutandukanya inkuta", desc: "Uburyo bw'ubwenge bwo gutandukanya imyanya bukomeza ku kuba kijyambere kandi gisukuye." },
           { title: "Gukora ibitanda by'abana", desc: "Ibitanda by'abana bifite umutekano, byoroshye, kandi byakozwe n'ubwitonzi ku bw'ubuzima bw'umwana wawe." },
@@ -212,7 +212,7 @@ const resources = {
           { title: "Gukora amazu y'amatungo", desc: "Amazu y'amatungo arambye kandi yoroheye, atanga umutekano n'ituze ku matungo yawe." },
           { title: "Gukora ameza yo kuriraho", desc: "Ameza yo kuriraho yakozwe neza, ahuza abantu, ahuza ireme, ubwiza n'akamaro k'umunsi ku munsi." },
           { title: "Gushyira amakonsole", desc: "Amakonsole meza yashushanyijwe kandi ashyirwaho kugira ngo agire isura nziza ku miryango n'amazu yo kubamo." },
-          { title: "Gutanga no gushyira amarido", desc: "Amarido yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe, uburyohe n'isura nziza imbere mu nzu." },
+          { title: "Gutanga no gushyira amatapi", desc: "Amatapi yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe n'isura nziza mu cyumba cyose." },
           { title: "Imirimo yo gusiga irangi", desc: "Serivisi z'umwuga zo gusiga irangi imbere n'inyuma zikora isura nziza, irangi rirambye kandi ririza imibumbe ku gihe kirekire." },
         ],
       },
