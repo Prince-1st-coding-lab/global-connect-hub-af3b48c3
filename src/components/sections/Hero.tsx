@@ -30,7 +30,7 @@ export const Hero = () => {
           <h1 className="font-display text-6xl font-semibold leading-[0.95] text-foreground sm:text-7xl lg:text-8xl">
             {t("hero.title")}
             <br />
-            <span className="font-script text-5xl font-normal uppercase tracking-wide text-gradient-gold sm:text-6xl lg:text-7xl">
+            <span className="font-display text-5xl font-semibold uppercase tracking-wide text-gradient-gold sm:text-6xl lg:text-7xl">
               {t("hero.title_script")}
             </span>
           </h1>
