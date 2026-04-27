@@ -28,6 +28,8 @@ const SHORT_LABELS: Record<string, string> = {
   "console-installation": "Consoles",
   "carpet-supply-installation": "Curtains Supply",
   "painting-works": "Painting Works",
+  "interior-door-manufacturing": "Interior Doors",
+  "exterior-door-manufacturing": "Exterior Doors",
 };
 
 export const Footer = () => {

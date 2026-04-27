@@ -1,7 +1,8 @@
 import {
   Shirt, ChefHat, Tv, Briefcase, Scissors, Sparkles,
   Blinds, Volume2, LayoutPanelTop, Baby, Sofa, PanelTop,
-  Brush, Dog, Utensils, Archive, Layers, PaintBucket, type LucideIcon,
+  Brush, Dog, Utensils, Archive, Layers, PaintBucket,
+  DoorOpen, DoorClosed, type LucideIcon,
 } from "lucide-react";
 
 // Auto-import every image inside each service folder.
@@ -59,6 +60,8 @@ const baseServices: Service[] = [
   { slug: "console-installation",          icon: Archive,         availability: "custom",  leadTimeDays: [7, 14]  },
   { slug: "carpet-supply-installation",    icon: Layers,          availability: "both",    leadTimeDays: [3, 10]  },
   { slug: "painting-works",                icon: PaintBucket,     availability: "service", leadTimeDays: [3, 10]  },
+  { slug: "interior-door-manufacturing",   icon: DoorOpen,        availability: "both",    leadTimeDays: [7, 21]  },
+  { slug: "exterior-door-manufacturing",   icon: DoorClosed,      availability: "both",    leadTimeDays: [10, 28] },
 ];
 
 export type ResolvedService = Service & {

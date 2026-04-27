@@ -18,7 +18,7 @@ const resources = {
       },
       services: {
         title: "Core Offerings",
-        subtitle: "Eighteen disciplines, one signature of craftsmanship.",
+        subtitle: "Twenty disciplines, one signature of craftsmanship.",
         items: [
           { title: "Wardrobes Manufacturing & Supply", desc: "Custom-designed wardrobes crafted to maximize space, style, and functionality, tailored to your exact needs." },
           { title: "Modern Kitchen Installations", desc: "We design and install sleek, modern kitchens that combine beauty, efficiency, and smart storage solutions." },
@@ -38,6 +38,8 @@ const resources = {
           { title: "Console Installation", desc: "Elegant console units designed and installed to elevate entryways, hallways, and living spaces with style and storage." },
           { title: "Carpet Supply & Installation", desc: "Premium carpets supplied and expertly fitted to bring warmth, texture, and timeless comfort to every room." },
           { title: "Painting Works", desc: "Professional interior and exterior painting services delivering flawless finishes, durable coatings, and rich, long-lasting color." },
+          { title: "Interior Door Manufacturing & Installation", desc: "We design, manufacture, and install high-quality interior doors that combine durability, functionality, and modern aesthetics. Crafted from premium materials with precision techniques for a perfect fit, smooth operation, and a refined look that enhances every room." },
+          { title: "Exterior Door Manufacturing & Installation", desc: "Strong, secure, and stylish exterior doors built from weather-resistant materials to protect your property. Multiple designs, finishes, and security features, professionally installed for a perfect fit and impressive first impression." },
         ],
       },
       about: {
@@ -82,7 +84,7 @@ const resources = {
         submit_email: "Send via Email",
         required: "Please fill all required fields.",
       },
-      common: { view_all: "View all", view_all_services: "View all 18 services" },
+      common: { view_all: "View all", view_all_services: "View all 20 services" },
       whatsapp: {
         title: "Message Us",
         subtitle: "We usually reply within a few minutes.",
@@ -106,7 +108,7 @@ const resources = {
       },
       services: {
         title: "Nos prestations",
-        subtitle: "Dix-huit disciplines, une seule signature d'artisanat.",
+        subtitle: "Vingt disciplines, une seule signature d'artisanat.",
         items: [
           { title: "Fabrication & fourniture d'armoires", desc: "Armoires sur mesure conçues pour maximiser l'espace, le style et la fonctionnalité, adaptées à vos besoins." },
           { title: "Installations de cuisines modernes", desc: "Conception et installation de cuisines modernes alliant beauté, efficacité et rangements intelligents." },
@@ -126,6 +128,8 @@ const resources = {
           { title: "Pose de consoles", desc: "Consoles élégantes conçues et installées pour sublimer entrées, couloirs et salons avec style et rangement." },
           { title: "Fourniture & pose de tapis", desc: "Tapis haut de gamme fournis et posés avec expertise pour apporter chaleur, texture et confort intemporel à chaque pièce." },
           { title: "Travaux de peinture", desc: "Services de peinture intérieure et extérieure offrant des finitions impeccables, des revêtements durables et des couleurs riches et tenaces." },
+          { title: "Fabrication & pose de portes intérieures", desc: "Nous concevons, fabriquons et posons des portes intérieures de haute qualité alliant durabilité, fonctionnalité et esthétique moderne. Matériaux premium, ajustement parfait, fonctionnement souple et finition raffinée." },
+          { title: "Fabrication & pose de portes extérieures", desc: "Portes extérieures robustes, sûres et élégantes, fabriquées avec des matériaux résistants aux intempéries pour protéger votre propriété. Designs et finitions variés, pose professionnelle pour un ajustement parfait." },
         ],
       },
       about: {
@@ -170,7 +174,7 @@ const resources = {
         submit_email: "Envoyer par Email",
         required: "Veuillez remplir tous les champs requis.",
       },
-      common: { view_all: "Tout voir", view_all_services: "Voir les 18 services" },
+      common: { view_all: "Tout voir", view_all_services: "Voir les 20 services" },
       whatsapp: {
         title: "Écrivez-nous",
         subtitle: "Nous répondons généralement en quelques minutes.",
@@ -194,7 +198,7 @@ const resources = {
       },
       services: {
         title: "Serivisi z'Ingenzi",
-        subtitle: "Inzobere cumi n'umunani, ubuhanga bumwe.",
+        subtitle: "Inzobere makumyabiri, ubuhanga bumwe.",
         items: [
           { title: "Gukora no gutanga ama-wardrobe", desc: "Ama-wardrobe yakorewe ku gahato wifuza, akoreshwa neza umwanya, asa neza kandi ari ingirakamaro." },
           { title: "Kwinjiza ibikoni bya kijyambere", desc: "Dushushanya kandi twinjiza ibikoni bya kijyambere bihuza ubwiza, ubushobozi n'ububiko bw'ubwenge." },
@@ -214,6 +218,8 @@ const resources = {
           { title: "Gushyira amakonsole", desc: "Amakonsole meza yashushanyijwe kandi ashyirwaho kugira ngo agire isura nziza ku miryango n'amazu yo kubamo." },
           { title: "Gutanga no gushyira amatapi", desc: "Amatapi yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe n'isura nziza mu cyumba cyose." },
           { title: "Imirimo yo gusiga irangi", desc: "Serivisi z'umwuga zo gusiga irangi imbere n'inyuma zikora isura nziza, irangi rirambye kandi ririza imibumbe ku gihe kirekire." },
+          { title: "Gukora no gushyira inzugi z'imbere", desc: "Dushushanya, dukora kandi dushyira inzugi z'imbere zo mu rwego rwo hejuru zihuza ireme, akamaro n'isura ya kijyambere. Zikoze mu bikoresho byiza, zihuza neza, zigenda neza kandi zongera ubwiza icyumba cyose." },
+          { title: "Gukora no gushyira inzugi zo hanze", desc: "Inzugi zo hanze zikomeye, zifite umutekano kandi nziza, zikozwe mu bikoresho byihanganira ikirere kugira ngo zirinde inzu yawe. Amashusho n'imisozo itandukanye, zishyirwaho n'inzobere kugira ngo zihure neza." },
         ],
       },
       about: {
@@ -258,7 +264,7 @@ const resources = {
         submit_email: "Ohereza kuri Imeyili",
         required: "Uzuza ibisabwa byose.",
       },
-      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 18 zose" },
+      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 20 zose" },
       whatsapp: {
         title: "Twandikire",
         subtitle: "Tubasubiza mu minota mike.",
