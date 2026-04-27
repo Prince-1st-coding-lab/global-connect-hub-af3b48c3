@@ -38,6 +38,8 @@ const resources = {
           { title: "Console Installation", desc: "Elegant console units designed and installed to elevate entryways, hallways, and living spaces with style and storage." },
           { title: "Carpet Supply & Installation", desc: "Premium carpets supplied and expertly fitted to bring warmth, texture, and timeless comfort to every room." },
           { title: "Painting Works", desc: "Professional interior and exterior painting services delivering flawless finishes, durable coatings, and rich, long-lasting color." },
+          { title: "Interior Door Manufacturing & Installation", desc: "We design, manufacture, and install high-quality interior doors that combine durability, functionality, and modern aesthetics. Crafted from premium materials with precision techniques for a perfect fit, smooth operation, and a refined look that enhances every room." },
+          { title: "Exterior Door Manufacturing & Installation", desc: "Strong, secure, and stylish exterior doors built from weather-resistant materials to protect your property. Multiple designs, finishes, and security features, professionally installed for a perfect fit and impressive first impression." },
         ],
       },
       about: {
