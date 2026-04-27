@@ -128,6 +128,8 @@ const resources = {
           { title: "Pose de consoles", desc: "Consoles élégantes conçues et installées pour sublimer entrées, couloirs et salons avec style et rangement." },
           { title: "Fourniture & pose de tapis", desc: "Tapis haut de gamme fournis et posés avec expertise pour apporter chaleur, texture et confort intemporel à chaque pièce." },
           { title: "Travaux de peinture", desc: "Services de peinture intérieure et extérieure offrant des finitions impeccables, des revêtements durables et des couleurs riches et tenaces." },
+          { title: "Fabrication & pose de portes intérieures", desc: "Nous concevons, fabriquons et posons des portes intérieures de haute qualité alliant durabilité, fonctionnalité et esthétique moderne. Matériaux premium, ajustement parfait, fonctionnement souple et finition raffinée." },
+          { title: "Fabrication & pose de portes extérieures", desc: "Portes extérieures robustes, sûres et élégantes, fabriquées avec des matériaux résistants aux intempéries pour protéger votre propriété. Designs et finitions variés, pose professionnelle pour un ajustement parfait." },
         ],
       },
       about: {
