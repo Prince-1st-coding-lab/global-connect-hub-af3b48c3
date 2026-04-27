@@ -84,7 +84,7 @@ const resources = {
         submit_email: "Send via Email",
         required: "Please fill all required fields.",
       },
-      common: { view_all: "View all", view_all_services: "View all 18 services" },
+      common: { view_all: "View all", view_all_services: "View all 20 services" },
       whatsapp: {
         title: "Message Us",
         subtitle: "We usually reply within a few minutes.",
