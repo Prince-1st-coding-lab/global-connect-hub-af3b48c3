@@ -218,6 +218,8 @@ const resources = {
           { title: "Gushyira amakonsole", desc: "Amakonsole meza yashushanyijwe kandi ashyirwaho kugira ngo agire isura nziza ku miryango n'amazu yo kubamo." },
           { title: "Gutanga no gushyira amatapi", desc: "Amatapi yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe n'isura nziza mu cyumba cyose." },
           { title: "Imirimo yo gusiga irangi", desc: "Serivisi z'umwuga zo gusiga irangi imbere n'inyuma zikora isura nziza, irangi rirambye kandi ririza imibumbe ku gihe kirekire." },
+          { title: "Gukora no gushyira inzugi z'imbere", desc: "Dushushanya, dukora kandi dushyira inzugi z'imbere zo mu rwego rwo hejuru zihuza ireme, akamaro n'isura ya kijyambere. Zikoze mu bikoresho byiza, zihuza neza, zigenda neza kandi zongera ubwiza icyumba cyose." },
+          { title: "Gukora no gushyira inzugi zo hanze", desc: "Inzugi zo hanze zikomeye, zifite umutekano kandi nziza, zikozwe mu bikoresho byihanganira ikirere kugira ngo zirinde inzu yawe. Amashusho n'imisozo itandukanye, zishyirwaho n'inzobere kugira ngo zihure neza." },
         ],
       },
       about: {
