@@ -114,7 +114,7 @@ const resources = {
           { title: "Fourniture de mobilier de bureau", desc: "Fourniture fiable de mobilier et d'équipements de bureau de qualité pour un espace de travail productif et professionnel." },
           { title: "Remplacement de tissus", desc: "Offrez une nouvelle vie à vos meubles grâce à un remplacement de tissus de haute qualité qui restaure confort et beauté." },
           { title: "Nettoyage de canapés", desc: "Nettoyage en profondeur professionnel qui élimine saletés, taches et odeurs, et redonne vie à vos canapés." },
-          
+          { title: "Fourniture & pose de rideaux", desc: "Rideaux haut de gamme fournis et posés par des professionnels pour apporter chaleur, confort et caractère raffiné à vos intérieurs." },
           { title: "Installation d'isolation phonique", desc: "Solutions d'insonorisation efficaces pour réduire le bruit et améliorer le confort à la maison et au bureau." },
           { title: "Travaux de cloisonnement", desc: "Solutions de cloisonnement intelligentes pour diviser les espaces tout en gardant un rendu moderne et épuré." },
           { title: "Fabrication de lits bébé", desc: "Lits pour bébé sûrs, confortables et joliment conçus, pensés avec soin pour le bien-être de votre enfant." },
@@ -124,7 +124,7 @@ const resources = {
           { title: "Fabrication de niches pour animaux", desc: "Niches durables et confortables conçues pour offrir un foyer sûr et douillet à vos animaux." },
           { title: "Fabrication de tables à manger", desc: "Tables à manger magnifiquement conçues pour réunir les gens, alliant durabilité, élégance et fonctionnalité au quotidien." },
           { title: "Pose de consoles", desc: "Consoles élégantes conçues et installées pour sublimer entrées, couloirs et salons avec style et rangement." },
-          { title: "Fourniture & pose de rideaux", desc: "Rideaux haut de gamme fournis et posés par des professionnels pour apporter chaleur, confort et caractère raffiné à vos intérieurs." },
+          { title: "Fourniture & pose de tapis", desc: "Tapis haut de gamme fournis et posés avec expertise pour apporter chaleur, texture et confort intemporel à chaque pièce." },
           { title: "Travaux de peinture", desc: "Services de peinture intérieure et extérieure offrant des finitions impeccables, des revêtements durables et des couleurs riches et tenaces." },
         ],
       },
