@@ -26,7 +26,7 @@ const resources = {
           { title: "Office Equipment Supply", desc: "Reliable supply of quality office furniture and equipment to create a productive and professional workspace." },
           { title: "Fabric Replacement Services", desc: "Give your furniture a fresh new look with high-quality fabric replacement that restores comfort and beauty." },
           { title: "Sofa Cleaning Services", desc: "Professional deep cleaning services that remove dirt, stains, and odors, bringing your sofas back to life." },
-          
+          { title: "Curtains Supply & Installation", desc: "Premium curtains supplied and professionally installed to bring warmth, comfort, and refined character to your interiors." },
           { title: "Soundproof Installation", desc: "Effective soundproofing solutions designed to reduce noise and improve comfort in homes and offices." },
           { title: "Wall Partitioning Works", desc: "Smart partitioning solutions to divide spaces efficiently while maintaining a modern and clean look." },
           { title: "Baby Beds Manufacturing", desc: "Safe, comfortable, and beautifully crafted baby beds designed with care for your child's well-being." },
@@ -36,7 +36,7 @@ const resources = {
           { title: "Pet Houses Manufacturing", desc: "Durable and comfortable pet houses designed to provide a safe and cozy home for your pets." },
           { title: "Dining Tables Manufacturing", desc: "Beautifully crafted dining tables designed to bring people together, combining durability, elegance, and everyday functionality." },
           { title: "Console Installation", desc: "Elegant console units designed and installed to elevate entryways, hallways, and living spaces with style and storage." },
-          { title: "Curtains Supply & Installation", desc: "Premium curtains supplied and professionally installed to bring warmth, comfort, and refined character to your interiors." },
+          { title: "Carpet Supply & Installation", desc: "Premium carpets supplied and expertly fitted to bring warmth, texture, and timeless comfort to every room." },
           { title: "Painting Works", desc: "Professional interior and exterior painting services delivering flawless finishes, durable coatings, and rich, long-lasting color." },
         ],
       },
