@@ -7,19 +7,21 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
   const { data: services } = useServices();
 
-  // Build a curated gallery from real per-service photos.
-  // Take the cover of every service that has one, then top up with extra
-  // gallery images so we always show a rich, authentic grid.
+  // Build the gallery from real per-service photos.
+  // On the dedicated /gallery page we show EVERY image from EVERY service folder.
+  // On the homepage preview we show just a compact teaser (covers only).
   const covers = services
     .filter((s) => s.cover)
     .map((s) => ({ src: s.cover, label: s.slug.replace(/-/g, " ") }));
 
-  const extras = services.flatMap((s) =>
-    s.gallery.slice(1, 3).map((src) => ({ src, label: s.slug.replace(/-/g, " ") })),
+  const everything = services.flatMap((s) =>
+    s.gallery.map((src) => ({ src, label: s.slug.replace(/-/g, " ") })),
   );
 
+  const source = preview ? covers : everything;
+
   const seen = new Set<string>();
-  const all = [...covers, ...extras].filter((it) => {
+  const all = source.filter((it) => {
     if (seen.has(it.src)) return false;
     seen.add(it.src);
     return true;
