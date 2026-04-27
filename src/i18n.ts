@@ -18,7 +18,7 @@ const resources = {
       },
       services: {
         title: "Core Offerings",
-        subtitle: "Seventeen disciplines, one signature of craftsmanship.",
+        subtitle: "Eighteen disciplines, one signature of craftsmanship.",
         items: [
           { title: "Wardrobes Manufacturing & Supply", desc: "Custom-designed wardrobes crafted to maximize space, style, and functionality, tailored to your exact needs." },
           { title: "Modern Kitchen Installations", desc: "We design and install sleek, modern kitchens that combine beauty, efficiency, and smart storage solutions." },
@@ -26,7 +26,7 @@ const resources = {
           { title: "Office Equipment Supply", desc: "Reliable supply of quality office furniture and equipment to create a productive and professional workspace." },
           { title: "Fabric Replacement Services", desc: "Give your furniture a fresh new look with high-quality fabric replacement that restores comfort and beauty." },
           { title: "Sofa Cleaning Services", desc: "Professional deep cleaning services that remove dirt, stains, and odors, bringing your sofas back to life." },
-          
+          { title: "Curtains Supply & Installation", desc: "Premium curtains supplied and professionally installed to bring warmth, comfort, and refined character to your interiors." },
           { title: "Soundproof Installation", desc: "Effective soundproofing solutions designed to reduce noise and improve comfort in homes and offices." },
           { title: "Wall Partitioning Works", desc: "Smart partitioning solutions to divide spaces efficiently while maintaining a modern and clean look." },
           { title: "Baby Beds Manufacturing", desc: "Safe, comfortable, and beautifully crafted baby beds designed with care for your child's well-being." },
@@ -36,7 +36,7 @@ const resources = {
           { title: "Pet Houses Manufacturing", desc: "Durable and comfortable pet houses designed to provide a safe and cozy home for your pets." },
           { title: "Dining Tables Manufacturing", desc: "Beautifully crafted dining tables designed to bring people together, combining durability, elegance, and everyday functionality." },
           { title: "Console Installation", desc: "Elegant console units designed and installed to elevate entryways, hallways, and living spaces with style and storage." },
-          { title: "Curtains Supply & Installation", desc: "Premium curtains supplied and professionally installed to bring warmth, comfort, and refined character to your interiors." },
+          { title: "Carpet Supply & Installation", desc: "Premium carpets supplied and expertly fitted to bring warmth, texture, and timeless comfort to every room." },
           { title: "Painting Works", desc: "Professional interior and exterior painting services delivering flawless finishes, durable coatings, and rich, long-lasting color." },
         ],
       },
@@ -82,7 +82,7 @@ const resources = {
         submit_email: "Send via Email",
         required: "Please fill all required fields.",
       },
-      common: { view_all: "View all", view_all_services: "View all 17 services" },
+      common: { view_all: "View all", view_all_services: "View all 18 services" },
       whatsapp: {
         title: "Message Us",
         subtitle: "We usually reply within a few minutes.",
@@ -106,7 +106,7 @@ const resources = {
       },
       services: {
         title: "Nos prestations",
-        subtitle: "Dix-sept disciplines, une seule signature d'artisanat.",
+        subtitle: "Dix-huit disciplines, une seule signature d'artisanat.",
         items: [
           { title: "Fabrication & fourniture d'armoires", desc: "Armoires sur mesure conçues pour maximiser l'espace, le style et la fonctionnalité, adaptées à vos besoins." },
           { title: "Installations de cuisines modernes", desc: "Conception et installation de cuisines modernes alliant beauté, efficacité et rangements intelligents." },
@@ -114,7 +114,7 @@ const resources = {
           { title: "Fourniture de mobilier de bureau", desc: "Fourniture fiable de mobilier et d'équipements de bureau de qualité pour un espace de travail productif et professionnel." },
           { title: "Remplacement de tissus", desc: "Offrez une nouvelle vie à vos meubles grâce à un remplacement de tissus de haute qualité qui restaure confort et beauté." },
           { title: "Nettoyage de canapés", desc: "Nettoyage en profondeur professionnel qui élimine saletés, taches et odeurs, et redonne vie à vos canapés." },
-          
+          { title: "Fourniture & pose de rideaux", desc: "Rideaux haut de gamme fournis et posés par des professionnels pour apporter chaleur, confort et caractère raffiné à vos intérieurs." },
           { title: "Installation d'isolation phonique", desc: "Solutions d'insonorisation efficaces pour réduire le bruit et améliorer le confort à la maison et au bureau." },
           { title: "Travaux de cloisonnement", desc: "Solutions de cloisonnement intelligentes pour diviser les espaces tout en gardant un rendu moderne et épuré." },
           { title: "Fabrication de lits bébé", desc: "Lits pour bébé sûrs, confortables et joliment conçus, pensés avec soin pour le bien-être de votre enfant." },
@@ -124,7 +124,7 @@ const resources = {
           { title: "Fabrication de niches pour animaux", desc: "Niches durables et confortables conçues pour offrir un foyer sûr et douillet à vos animaux." },
           { title: "Fabrication de tables à manger", desc: "Tables à manger magnifiquement conçues pour réunir les gens, alliant durabilité, élégance et fonctionnalité au quotidien." },
           { title: "Pose de consoles", desc: "Consoles élégantes conçues et installées pour sublimer entrées, couloirs et salons avec style et rangement." },
-          { title: "Fourniture & pose de rideaux", desc: "Rideaux haut de gamme fournis et posés par des professionnels pour apporter chaleur, confort et caractère raffiné à vos intérieurs." },
+          { title: "Fourniture & pose de tapis", desc: "Tapis haut de gamme fournis et posés avec expertise pour apporter chaleur, texture et confort intemporel à chaque pièce." },
           { title: "Travaux de peinture", desc: "Services de peinture intérieure et extérieure offrant des finitions impeccables, des revêtements durables et des couleurs riches et tenaces." },
         ],
       },
@@ -170,7 +170,7 @@ const resources = {
         submit_email: "Envoyer par Email",
         required: "Veuillez remplir tous les champs requis.",
       },
-      common: { view_all: "Tout voir", view_all_services: "Voir les 17 services" },
+      common: { view_all: "Tout voir", view_all_services: "Voir les 18 services" },
       whatsapp: {
         title: "Écrivez-nous",
         subtitle: "Nous répondons généralement en quelques minutes.",
@@ -194,7 +194,7 @@ const resources = {
       },
       services: {
         title: "Serivisi z'Ingenzi",
-        subtitle: "Inzobere cumi na zirindwi, ubuhanga bumwe.",
+        subtitle: "Inzobere cumi n'umunani, ubuhanga bumwe.",
         items: [
           { title: "Gukora no gutanga ama-wardrobe", desc: "Ama-wardrobe yakorewe ku gahato wifuza, akoreshwa neza umwanya, asa neza kandi ari ingirakamaro." },
           { title: "Kwinjiza ibikoni bya kijyambere", desc: "Dushushanya kandi twinjiza ibikoni bya kijyambere bihuza ubwiza, ubushobozi n'ububiko bw'ubwenge." },
@@ -202,7 +202,7 @@ const resources = {
           { title: "Gutanga ibikoresho bya biro", desc: "Dutanga ibikoresho bya biro by'ubunyangamugayo bituma akazi gakorwa neza kandi mu buryo bw'umwuga." },
           { title: "Guhindura imyenda y'ibikoresho", desc: "Ha ibikoresho byawe isura nshya ukoresheje imyenda yo mu rwego rwo hejuru igarura ubwiza n'ubworoherwe." },
           { title: "Gusukura intebe (sofa)", desc: "Serivisi y'umwuga yo gusukura cyane intebe, ikuraho ibyanduye, amabara n'umunuko." },
-          
+          { title: "Gutanga no gushyira amarido", desc: "Amarido yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe, uburyohe n'isura nziza imbere mu nzu." },
           { title: "Gushyira ibikuza urusaku", desc: "Ibisubizo byo guca urusaku kugira ngo hagabanuke ijwi kandi habeho ituze mu ngo no muri biro." },
           { title: "Gutandukanya inkuta", desc: "Uburyo bw'ubwenge bwo gutandukanya imyanya bukomeza ku kuba kijyambere kandi gisukuye." },
           { title: "Gukora ibitanda by'abana", desc: "Ibitanda by'abana bifite umutekano, byoroshye, kandi byakozwe n'ubwitonzi ku bw'ubuzima bw'umwana wawe." },
@@ -212,7 +212,7 @@ const resources = {
           { title: "Gukora amazu y'amatungo", desc: "Amazu y'amatungo arambye kandi yoroheye, atanga umutekano n'ituze ku matungo yawe." },
           { title: "Gukora ameza yo kuriraho", desc: "Ameza yo kuriraho yakozwe neza, ahuza abantu, ahuza ireme, ubwiza n'akamaro k'umunsi ku munsi." },
           { title: "Gushyira amakonsole", desc: "Amakonsole meza yashushanyijwe kandi ashyirwaho kugira ngo agire isura nziza ku miryango n'amazu yo kubamo." },
-          { title: "Gutanga no gushyira amarido", desc: "Amarido yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe, uburyohe n'isura nziza imbere mu nzu." },
+          { title: "Gutanga no gushyira amatapi", desc: "Amatapi yo mu rwego rwo hejuru atangwa kandi agashyirwa n'inzobere kugira ngo yongere ubushyuhe n'isura nziza mu cyumba cyose." },
           { title: "Imirimo yo gusiga irangi", desc: "Serivisi z'umwuga zo gusiga irangi imbere n'inyuma zikora isura nziza, irangi rirambye kandi ririza imibumbe ku gihe kirekire." },
         ],
       },
@@ -258,7 +258,7 @@ const resources = {
         submit_email: "Ohereza kuri Imeyili",
         required: "Uzuza ibisabwa byose.",
       },
-      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 17 zose" },
+      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 18 zose" },
       whatsapp: {
         title: "Twandikire",
         subtitle: "Tubasubiza mu minota mike.",
