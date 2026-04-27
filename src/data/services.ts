@@ -1,7 +1,8 @@
 import {
   Shirt, ChefHat, Tv, Briefcase, Scissors, Sparkles,
   Blinds, Volume2, LayoutPanelTop, Baby, Sofa, PanelTop,
-  Brush, Dog, Utensils, Archive, Layers, PaintBucket, type LucideIcon,
+  Brush, Dog, Utensils, Archive, Layers, PaintBucket,
+  DoorOpen, DoorClosed, type LucideIcon,
 } from "lucide-react";
 
 // Auto-import every image inside each service folder.
