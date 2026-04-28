@@ -17,6 +17,30 @@ const ServiceDetail = () => {
   const fallback = idx >= 0 ? items[idx] : undefined;
   const title = svc?.title ?? fallback?.title;
   const description = svc?.description ?? fallback?.desc;
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const lightboxItems = useMemo(() => {
+    if (!svc) return [];
+    const list: { src: string; alt: string }[] = [];
+    const seen = new Set<string>();
+    if (svc.cover) {
+      list.push({ src: svc.cover, alt: title ?? "" });
+      seen.add(svc.cover);
+    }
+    svc.gallery.forEach((src, i) => {
+      if (seen.has(src)) return;
+      seen.add(src);
+      list.push({ src, alt: `${title ?? ""} ${i + 1}` });
+    });
+    return list;
+  }, [svc, title]);
+
+  const openLightbox = (src: string) => {
+    const i = lightboxItems.findIndex((it) => it.src === src);
+    setLightboxIndex(i >= 0 ? i : 0);
+    setLightboxOpen(true);
+  };
 
   useEffect(() => {
     if (title && description) {
