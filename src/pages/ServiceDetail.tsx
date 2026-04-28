@@ -145,15 +145,20 @@ const ServiceDetail = () => {
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-3xl border border-gold/20 shadow-deep">
+            <button
+              type="button"
+              onClick={() => openLightbox(svc.cover)}
+              aria-label={`Open ${title}`}
+              className="group block overflow-hidden rounded-3xl border border-gold/20 shadow-deep focus:outline-none focus:ring-2 focus:ring-gold/60"
+            >
               <img
                 src={svc.cover}
                 alt={title}
                 width={1280}
                 height={896}
-                className="h-full w-full object-cover"
+                className="h-full w-full cursor-zoom-in object-cover transition-transform duration-700 group-hover:scale-105"
               />
-            </div>
+            </button>
           </div>
         </div>
       </section>
