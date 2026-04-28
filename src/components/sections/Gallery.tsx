@@ -137,14 +137,21 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
                   }`}
                 />
               ))
-            : items.map((it, i) => (
-                <GalleryImage
-                  key={`${it.src}-${i}`}
-                  src={it.src}
-                  alt={it.label}
-                  featured={i === 0}
-                />
-              ))}
+            : items.map((it, i) => {
+                const absoluteIndex = preview ? i : (page - 1) * PAGE_SIZE + i;
+                return (
+                  <GalleryImage
+                    key={`${it.src}-${i}`}
+                    src={it.src}
+                    alt={it.label}
+                    featured={i === 0}
+                    onOpen={() => {
+                      setLightboxIndex(absoluteIndex);
+                      setLightboxOpen(true);
+                    }}
+                  />
+                );
+              })}
         </div>
 
         {!preview && totalPages > 1 && (
