@@ -199,6 +199,31 @@ export const Lightbox = ({ items, index, open, onClose, onIndexChange }: Lightbo
             <RotateCcw className="h-4 w-4" />
           </button>
           <button
+            onClick={async () => {
+              try {
+                const res = await fetch(current.src, { mode: "cors" });
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                const urlPath = new URL(current.src, window.location.href).pathname;
+                const base = urlPath.split("/").pop() || "image";
+                const safeAlt = (current.alt || "image").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
+                a.download = safeAlt ? `${safeAlt}-${base}` : base;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+              } catch {
+                window.open(current.src, "_blank", "noopener,noreferrer");
+              }
+            }}
+            aria-label="Download image"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
+          >
+            <Download className="h-4 w-4" />
+          </button>
+          <button
             onClick={onClose}
             aria-label="Close viewer"
             className="ml-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
