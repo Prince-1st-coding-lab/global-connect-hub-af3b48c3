@@ -175,9 +175,12 @@ const ServiceDetail = () => {
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {svc.gallery.map((src, i) => (
-              <div
+              <button
+                type="button"
                 key={i}
-                className={`group relative overflow-hidden rounded-2xl border border-gold/15 ${
+                onClick={() => openLightbox(src)}
+                aria-label={`Open ${title} image ${i + 1}`}
+                className={`group relative block w-full overflow-hidden rounded-2xl border border-gold/15 text-left focus:outline-none focus:ring-2 focus:ring-gold/60 ${
                   i === 0 ? "md:col-span-2 md:row-span-2 aspect-square md:aspect-auto" : "aspect-square"
                 }`}
               >
@@ -187,10 +190,10 @@ const ServiceDetail = () => {
                   loading="lazy"
                   width={1280}
                   height={896}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full cursor-zoom-in object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-              </div>
+              </button>
             ))}
           </div>
         </div>
