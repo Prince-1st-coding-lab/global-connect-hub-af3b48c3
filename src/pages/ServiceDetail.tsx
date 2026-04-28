@@ -1,10 +1,11 @@
 import "@/i18n";
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock } from "lucide-react";
 import { BookingDialog } from "@/components/BookingDialog";
 import { useService } from "@/hooks/useServices";
+import { Lightbox } from "@/components/Lightbox";
 
 type ServiceItem = { title: string; desc: string };
 
