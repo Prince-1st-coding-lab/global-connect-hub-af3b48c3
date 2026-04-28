@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, X, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 export type LightboxItem = { src: string; alt?: string };
 
