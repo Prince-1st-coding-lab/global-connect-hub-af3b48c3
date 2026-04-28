@@ -58,6 +58,8 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
   const { data: services, isLoading } = useServices();
   const [page, setPage] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   // Build the gallery from real per-service photos.
   // On the dedicated /gallery page we show EVERY image from EVERY service folder.
