@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Lightbox } from "@/components/Lightbox";
 
 const PAGE_SIZE = 24;
 
@@ -11,9 +12,10 @@ type GalleryImageProps = {
   src: string;
   alt: string;
   featured?: boolean;
+  onOpen: () => void;
 };
 
-const GalleryImage = ({ src, alt, featured }: GalleryImageProps) => {
+const GalleryImage = ({ src, alt, featured, onOpen }: GalleryImageProps) => {
   const [loaded, setLoaded] = useState(false);
 
   // Reset loaded state when src changes (e.g. on page change with reused DOM nodes)
@@ -22,8 +24,11 @@ const GalleryImage = ({ src, alt, featured }: GalleryImageProps) => {
   }, [src]);
 
   return (
-    <div
-      className={`group relative overflow-hidden rounded-3xl border border-gold/20 ${
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={`Open ${alt}`}
+      className={`group relative block w-full overflow-hidden rounded-3xl border border-gold/20 text-left focus:outline-none focus:ring-2 focus:ring-gold/60 ${
         featured ? "col-span-2 row-span-2 aspect-square md:aspect-auto" : "aspect-square"
       }`}
     >
@@ -45,7 +50,7 @@ const GalleryImage = ({ src, alt, featured }: GalleryImageProps) => {
       <div className="absolute bottom-4 left-4 translate-y-2 font-display text-lg capitalize text-gold opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
         {alt}
       </div>
-    </div>
+    </button>
   );
 };
 
@@ -53,6 +58,8 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
   const { data: services, isLoading } = useServices();
   const [page, setPage] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   // Build the gallery from real per-service photos.
   // On the dedicated /gallery page we show EVERY image from EVERY service folder.
@@ -130,14 +137,21 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
                   }`}
                 />
               ))
-            : items.map((it, i) => (
-                <GalleryImage
-                  key={`${it.src}-${i}`}
-                  src={it.src}
-                  alt={it.label}
-                  featured={i === 0}
-                />
-              ))}
+            : items.map((it, i) => {
+                const absoluteIndex = preview ? i : (page - 1) * PAGE_SIZE + i;
+                return (
+                  <GalleryImage
+                    key={`${it.src}-${i}`}
+                    src={it.src}
+                    alt={it.label}
+                    featured={i === 0}
+                    onOpen={() => {
+                      setLightboxIndex(absoluteIndex);
+                      setLightboxOpen(true);
+                    }}
+                  />
+                );
+              })}
         </div>
 
         {!preview && totalPages > 1 && (
@@ -181,6 +195,14 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
           </div>
         )}
       </div>
+
+      <Lightbox
+        items={all.map((it) => ({ src: it.src, alt: it.label }))}
+        index={lightboxIndex}
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        onIndexChange={setLightboxIndex}
+      />
     </section>
   );
 };
