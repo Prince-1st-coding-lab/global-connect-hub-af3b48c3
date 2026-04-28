@@ -228,6 +228,14 @@ const ServiceDetail = () => {
           </Link>
         </div>
       </section>
+
+      <Lightbox
+        items={lightboxItems}
+        index={lightboxIndex}
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        onIndexChange={setLightboxIndex}
+      />
     </>
   );
 };
