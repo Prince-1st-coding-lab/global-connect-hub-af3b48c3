@@ -50,7 +50,7 @@ const GalleryImage = ({ src, alt, featured, onOpen }: GalleryImageProps) => {
       <div className="absolute bottom-4 left-4 translate-y-2 font-display text-lg capitalize text-gold opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
         {alt}
       </div>
-    </div>
+    </button>
   );
 };
 
