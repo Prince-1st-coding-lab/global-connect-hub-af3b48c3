@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Lightbox } from "@/components/Lightbox";
 
 const PAGE_SIZE = 24;
 
@@ -11,9 +12,10 @@ type GalleryImageProps = {
   src: string;
   alt: string;
   featured?: boolean;
+  onOpen: () => void;
 };
 
-const GalleryImage = ({ src, alt, featured }: GalleryImageProps) => {
+const GalleryImage = ({ src, alt, featured, onOpen }: GalleryImageProps) => {
   const [loaded, setLoaded] = useState(false);
 
   // Reset loaded state when src changes (e.g. on page change with reused DOM nodes)
@@ -22,8 +24,11 @@ const GalleryImage = ({ src, alt, featured }: GalleryImageProps) => {
   }, [src]);
 
   return (
-    <div
-      className={`group relative overflow-hidden rounded-3xl border border-gold/20 ${
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={`Open ${alt}`}
+      className={`group relative block w-full overflow-hidden rounded-3xl border border-gold/20 text-left focus:outline-none focus:ring-2 focus:ring-gold/60 ${
         featured ? "col-span-2 row-span-2 aspect-square md:aspect-auto" : "aspect-square"
       }`}
     >
