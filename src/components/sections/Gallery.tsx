@@ -195,6 +195,14 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
           </div>
         )}
       </div>
+
+      <Lightbox
+        items={all.map((it) => ({ src: it.src, alt: it.label }))}
+        index={lightboxIndex}
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        onIndexChange={setLightboxIndex}
+      />
     </section>
   );
 };
