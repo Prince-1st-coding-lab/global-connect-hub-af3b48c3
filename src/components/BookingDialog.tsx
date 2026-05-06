@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CalendarCheck, Mail, MessageCircle } from "lucide-react";
+import { CalendarCheck, Loader2, Mail, MessageCircle, Smartphone } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
@@ -30,6 +31,33 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+  const [amount, setAmount] = useState("");
+  const [paying, setPaying] = useState(false);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+
+  // Poll status while pending
+  useEffect(() => {
+    if (!paymentId || paymentStatus === "completed" || paymentStatus === "failed") return;
+    const id = setInterval(async () => {
+      try {
+        const res = await supabase.functions.invoke("xentripay-status", {
+          body: { payment_id: paymentId },
+        });
+        const s = (res.data as any)?.status;
+        if (s) {
+          setPaymentStatus(s);
+          if (s === "completed") {
+            toast({ title: t("booking.pay_success", { defaultValue: "Payment received" }) });
+          } else if (s === "failed") {
+            toast({ title: t("booking.pay_failed", { defaultValue: "Payment failed" }), variant: "destructive" });
+          }
+        }
+      } catch { /* keep polling */ }
+    }, 4000);
+    return () => clearInterval(id);
+  }, [paymentId, paymentStatus, t]);
 
   const buildMessage = () => {
     const typeLabel =
@@ -157,6 +185,94 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
           >
             <Mail className="h-4 w-4" /> {t("booking.submit_email")}
           </button>
+        </div>
+
+        {/* Mobile money payment */}
+        <div className="space-y-3 rounded-lg border border-gold/30 bg-secondary/30 p-4">
+          <div className="flex items-center gap-2 text-gold">
+            <Smartphone className="h-4 w-4" />
+            <span className="text-xs uppercase tracking-[0.2em]">Pay with MTN / Airtel</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="b-amount">Amount (RWF)</Label>
+              <Input
+                id="b-amount"
+                type="number"
+                inputMode="numeric"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="50000"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="b-referral">Referral code (optional)</Label>
+              <Input
+                id="b-referral"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                placeholder="JEAN10"
+                maxLength={32}
+              />
+            </div>
+          </div>
+          <button
+            disabled={paying || paymentStatus === "pending"}
+            onClick={async () => {
+              if (!validate()) return;
+              const amt = Number(amount);
+              if (!Number.isFinite(amt) || amt <= 0) {
+                toast({ title: "Enter a valid amount", variant: "destructive" });
+                return;
+              }
+              setPaying(true);
+              setPaymentStatus(null);
+              setPaymentId(null);
+              try {
+                const { data, error } = await supabase.functions.invoke("xentripay-initiate", {
+                  body: {
+                    customer_name: name,
+                    customer_phone: phone,
+                    amount: amt,
+                    referral_code: referralCode || undefined,
+                    service_title: serviceTitle,
+                  },
+                });
+                if (error) throw error;
+                const payment = (data as any)?.payment;
+                if (!payment?.id) throw new Error((data as any)?.error || "Payment could not start");
+                setPaymentId(payment.id);
+                setPaymentStatus(payment.payment_status || "pending");
+                toast({
+                  title: "Payment requested",
+                  description: "Approve the prompt on your phone.",
+                });
+              } catch (e) {
+                toast({ title: "Payment failed", description: (e as Error).message, variant: "destructive" });
+              } finally {
+                setPaying(false);
+              }
+            }}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90 disabled:opacity-60"
+          >
+            {paying || paymentStatus === "pending" ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Smartphone className="h-4 w-4" />
+            )}
+            {paymentStatus === "pending"
+              ? "Waiting for confirmation…"
+              : paymentStatus === "completed"
+              ? "Paid ✓"
+              : paymentStatus === "failed"
+              ? "Try again"
+              : "Pay now"}
+          </button>
+          {paymentStatus && (
+            <p className="text-xs text-muted-foreground">
+              Status: <span className="text-foreground">{paymentStatus}</span>
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>
