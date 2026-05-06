@@ -186,6 +186,95 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
             <Mail className="h-4 w-4" /> {t("booking.submit_email")}
           </button>
         </div>
+
+        {/* Mobile money payment */}
+        <div className="space-y-3 rounded-lg border border-gold/30 bg-secondary/30 p-4">
+          <div className="flex items-center gap-2 text-gold">
+            <Smartphone className="h-4 w-4" />
+            <span className="text-xs uppercase tracking-[0.2em]">Pay with MTN / Airtel</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="b-amount">Amount (RWF)</Label>
+              <Input
+                id="b-amount"
+                type="number"
+                inputMode="numeric"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="50000"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="b-referral">Referral code (optional)</Label>
+              <Input
+                id="b-referral"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                placeholder="JEAN10"
+                maxLength={32}
+              />
+            </div>
+          </div>
+          <button
+            disabled={paying || paymentStatus === "pending"}
+            onClick={async () => {
+              if (!validate()) return;
+              const amt = Number(amount);
+              if (!Number.isFinite(amt) || amt <= 0) {
+                toast({ title: "Enter a valid amount", variant: "destructive" });
+                return;
+              }
+              setPaying(true);
+              setPaymentStatus(null);
+              setPaymentId(null);
+              try {
+                const { data, error } = await supabase.functions.invoke("xentripay-initiate", {
+                  body: {
+                    customer_name: name,
+                    customer_phone: phone,
+                    amount: amt,
+                    referral_code: referralCode || undefined,
+                    service_title: serviceTitle,
+                  },
+                });
+                if (error) throw error;
+                const payment = (data as any)?.payment;
+                if (!payment?.id) throw new Error((data as any)?.error || "Payment could not start");
+                setPaymentId(payment.id);
+                setPaymentStatus(payment.payment_status || "pending");
+                toast({
+                  title: "Payment requested",
+                  description: "Approve the prompt on your phone.",
+                });
+              } catch (e) {
+                toast({ title: "Payment failed", description: (e as Error).message, variant: "destructive" });
+              } finally {
+                setPaying(false);
+              }
+            }}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90 disabled:opacity-60"
+          >
+            {paying || paymentStatus === "pending" ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Smartphone className="h-4 w-4" />
+            )}
+            {paymentStatus === "pending"
+              ? "Waiting for confirmation…"
+              : paymentStatus === "completed"
+              ? "Paid ✓"
+              : paymentStatus === "failed"
+              ? "Try again"
+              : "Pay now"}
+          </button>
+          {paymentStatus && (
+            <p className="text-xs text-muted-foreground">
+              Status: <span className="text-foreground">{paymentStatus}</span>
+              {EXTERNAL_SUPABASE_URL ? "" : ""}
+            </p>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
