@@ -31,6 +31,33 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+  const [amount, setAmount] = useState("");
+  const [paying, setPaying] = useState(false);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+
+  // Poll status while pending
+  useEffect(() => {
+    if (!paymentId || paymentStatus === "completed" || paymentStatus === "failed") return;
+    const id = setInterval(async () => {
+      try {
+        const res = await supabase.functions.invoke("xentripay-status", {
+          body: { payment_id: paymentId },
+        });
+        const s = (res.data as any)?.status;
+        if (s) {
+          setPaymentStatus(s);
+          if (s === "completed") {
+            toast({ title: t("booking.pay_success", { defaultValue: "Payment received" }) });
+          } else if (s === "failed") {
+            toast({ title: t("booking.pay_failed", { defaultValue: "Payment failed" }), variant: "destructive" });
+          }
+        }
+      } catch { /* keep polling */ }
+    }, 4000);
+    return () => clearInterval(id);
+  }, [paymentId, paymentStatus, t]);
 
   const buildMessage = () => {
     const typeLabel =
