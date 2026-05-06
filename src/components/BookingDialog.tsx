@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CalendarCheck, Mail, MessageCircle } from "lucide-react";
+import { CalendarCheck, Loader2, Mail, MessageCircle, Smartphone } from "lucide-react";
+import { EXTERNAL_SUPABASE_URL } from "@/integrations/external-supabase";
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
