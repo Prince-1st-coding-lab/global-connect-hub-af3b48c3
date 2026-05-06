@@ -271,7 +271,6 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
           {paymentStatus && (
             <p className="text-xs text-muted-foreground">
               Status: <span className="text-foreground">{paymentStatus}</span>
-              {EXTERNAL_SUPABASE_URL ? "" : ""}
             </p>
           )}
         </div>
