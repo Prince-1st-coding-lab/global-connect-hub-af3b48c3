@@ -1,5 +1,5 @@
-// Polls XentriPay for the status of a transaction and updates the payment row
-// in the external Supabase database.
+// Polls XentriPay for the status of a collection (by refid) and updates the
+// payment row in the external Supabase database.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -9,7 +9,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const XENTRIPAY_BASE = "https://api.xentripay.com/v1";
+const XENTRIPAY_BASE = "https://xentripay.com/api";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -30,44 +30,37 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(extUrl, extKey);
 
-    let txId = transaction_id as string | null;
-    let payment: any = null;
-    if (payment_id) {
+    let refid = transaction_id as string | null;
+    if (payment_id && !refid) {
       const { data } = await supabase
         .from("payments")
-        .select("*")
+        .select("transaction_id")
         .eq("id", payment_id)
         .maybeSingle();
-      payment = data;
-      txId = txId || data?.transaction_id || null;
+      refid = data?.transaction_id || null;
     }
-    if (!txId) {
-      return json({ error: "No transaction_id available" }, 400);
-    }
+    if (!refid) return json({ error: "No refid available" }, 400);
 
-    const xpRes = await fetch(`${XENTRIPAY_BASE}/payments/${txId}`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
+    const xpRes = await fetch(`${XENTRIPAY_BASE}/collections/status/${encodeURIComponent(refid)}`, {
+      headers: { "X-XENTRIPAY-KEY": apiKey },
     });
     const xpText = await xpRes.text();
     let xpJson: any = null;
     try { xpJson = JSON.parse(xpText); } catch { /* */ }
 
-    const rawStatus = String(
-      xpJson?.status || xpJson?.data?.status || (xpRes.ok ? "pending" : "failed"),
-    ).toLowerCase();
+    const raw = String(xpJson?.status || "").toUpperCase();
     const status =
-      ["success", "successful", "completed", "paid"].includes(rawStatus) ? "completed"
-      : ["failed", "declined", "cancelled", "canceled", "error"].includes(rawStatus) ? "failed"
+      ["SUCCESS", "SUCCESSFUL", "COMPLETED", "PAID"].includes(raw) ? "completed"
+      : ["FAILED", "DECLINED", "CANCELLED", "CANCELED", "ERROR", "EXPIRED"].includes(raw) ? "failed"
       : "pending";
 
     if (payment_id) {
-      await supabase
-        .from("payments")
-        .update({ payment_status: status, transaction_id: txId })
+      await supabase.from("payments")
+        .update({ payment_status: status, transaction_id: refid })
         .eq("id", payment_id);
     }
 
-    return json({ status, transaction_id: txId, provider: xpJson ?? xpText });
+    return json({ status, transaction_id: refid, provider: xpJson ?? xpText });
   } catch (e) {
     return json({ error: (e as Error).message }, 500);
   }

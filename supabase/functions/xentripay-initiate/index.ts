@@ -9,7 +9,21 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const XENTRIPAY_BASE = "https://api.xentripay.com/v1";
+const XENTRIPAY_BASE = "https://xentripay.com/api";
+const BUSINESS_EMAIL = "info@noblespaces.rw";
+const BUSINESS_NAME = "Noble Spaces";
+
+// Normalize Rwandan phone to local 10-digit (cnumber) and MSISDN (2507XXXXXXXX).
+function normalizePhone(input: string) {
+  const digits = String(input).replace(/\D/g, "");
+  let local = digits;
+  if (digits.startsWith("250") && digits.length === 12) local = "0" + digits.slice(3);
+  else if (digits.length === 9 && digits.startsWith("7")) local = "0" + digits;
+  // ensure leading 0
+  if (local.length === 10 && local.startsWith("7")) local = "0" + local.slice(0, 9);
+  const msisdn = local.startsWith("0") ? "250" + local.slice(1) : "250" + local;
+  return { cnumber: local, msisdn };
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -23,25 +37,19 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json().catch(() => ({}));
-    const {
-      customer_name,
-      customer_phone,
-      amount,
-      referral_code,
-      service_title,
-    } = body ?? {};
+    const { customer_name, customer_phone, amount, referral_code, service_title } = body ?? {};
 
     if (!customer_name || !customer_phone || !amount) {
       return json({ error: "customer_name, customer_phone and amount are required" }, 400);
     }
-    const numericAmount = Number(amount);
+    const numericAmount = Math.floor(Number(amount));
     if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
-      return json({ error: "amount must be a positive number" }, 400);
+      return json({ error: "amount must be a positive whole number" }, 400);
     }
 
     const supabase = createClient(extUrl, extKey);
 
-    // Resolve referral code -> promoter (server-side validation)
+    // Server-side referral validation
     let promoterId: string | null = null;
     let validatedCode: string | null = null;
     if (referral_code && String(referral_code).trim()) {
@@ -56,34 +64,34 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Call XentriPay collection endpoint
-    const xpRes = await fetch(`${XENTRIPAY_BASE}/payments/collect`, {
+    const { cnumber, msisdn } = normalizePhone(customer_phone);
+
+    // Per XentriPay docs §3.5
+    const xpRes = await fetch(`${XENTRIPAY_BASE}/collections/initiate`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        "X-XENTRIPAY-KEY": apiKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        email: BUSINESS_EMAIL,
+        cname: customer_name || BUSINESS_NAME,
         amount: numericAmount,
+        cnumber,
+        msisdn,
         currency: "RWF",
-        phone: customer_phone,
-        customer_name,
-        description: service_title || "Noble Spaces booking",
+        pmethod: "momo",
+        chargesIncluded: "true",
       }),
     });
 
     const xpText = await xpRes.text();
     let xpJson: any = null;
-    try { xpJson = JSON.parse(xpText); } catch { /* keep raw */ }
+    try { xpJson = JSON.parse(xpText); } catch { /* */ }
 
-    const txId =
-      xpJson?.transaction_id ||
-      xpJson?.id ||
-      xpJson?.reference ||
-      xpJson?.data?.transaction_id ||
-      null;
+    const refid = xpJson?.refid || xpJson?.tid || null;
+    const providerOk = xpRes.ok && (xpJson?.success === 1 || xpJson?.retcode === 0);
 
-    // Persist payment row regardless of provider success so admins see attempts
     const { data: inserted, error: insertErr } = await supabase
       .from("payments")
       .insert({
@@ -92,21 +100,16 @@ Deno.serve(async (req) => {
         amount: numericAmount,
         referral_code: validatedCode,
         promoter_id: promoterId,
-        payment_status: xpRes.ok ? "pending" : "failed",
-        transaction_id: txId,
+        payment_status: providerOk ? "pending" : "failed",
+        transaction_id: refid,
       })
       .select()
       .single();
 
-    if (insertErr) {
-      return json({ error: "DB insert failed", details: insertErr.message }, 500);
-    }
+    if (insertErr) return json({ error: "DB insert failed", details: insertErr.message }, 500);
 
-    return json({
-      ok: xpRes.ok,
-      payment: inserted,
-      provider: xpJson ?? xpText,
-    }, xpRes.ok ? 200 : 502);
+    return json({ ok: providerOk, payment: inserted, provider: xpJson ?? xpText },
+      providerOk ? 200 : 502);
   } catch (e) {
     return json({ error: (e as Error).message }, 500);
   }
