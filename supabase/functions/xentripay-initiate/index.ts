@@ -41,6 +41,10 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const { customer_name, customer_phone, amount, referral_code, service_title } = body ?? {};
 
+    if (body?.diagnostic === "connectivity") {
+      const probe = await fetch(`${XENTRIPAY_BASE}/collections/initiate`, { method: "OPTIONS" });
+      return json({ ok: true, version: FUNCTION_VERSION, endpoint: `${XENTRIPAY_BASE}/collections/initiate`, reachable: true, provider_status: probe.status });
+    }
     if (body?.diagnostic === true) {
       return json({ ok: true, version: FUNCTION_VERSION, endpoint: `${XENTRIPAY_BASE}/collections/initiate` });
     }
