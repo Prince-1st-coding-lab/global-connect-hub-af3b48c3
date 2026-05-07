@@ -10,6 +10,7 @@ const corsHeaders = {
 };
 
 const XENTRIPAY_BASE = "https://xentripay.com/api";
+const FUNCTION_VERSION = "xentripay-status-v2-2026-05-07";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -24,6 +25,9 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { payment_id, transaction_id } = body ?? {};
+    if (body?.diagnostic === true) {
+      return json({ ok: true, version: FUNCTION_VERSION, endpoint: `${XENTRIPAY_BASE}/collections/status/{refid}` });
+    }
     if (!payment_id && !transaction_id) {
       return json({ error: "payment_id or transaction_id required" }, 400);
     }
@@ -48,7 +52,7 @@ Deno.serve(async (req) => {
     let xpJson: any = null;
     try { xpJson = JSON.parse(xpText); } catch { /* */ }
 
-    const raw = String(xpJson?.status || "").toUpperCase();
+    const raw = String(xpJson?.status || xpJson?.data?.status || "").toUpperCase();
     const status =
       ["SUCCESS", "SUCCESSFUL", "COMPLETED", "PAID"].includes(raw) ? "completed"
       : ["FAILED", "DECLINED", "CANCELLED", "CANCELED", "ERROR", "EXPIRED"].includes(raw) ? "failed"
