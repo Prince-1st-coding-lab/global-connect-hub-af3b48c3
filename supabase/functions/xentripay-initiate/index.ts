@@ -12,6 +12,7 @@ const corsHeaders = {
 const XENTRIPAY_BASE = "https://xentripay.com/api";
 const BUSINESS_EMAIL = "info@noblespaces.rw";
 const BUSINESS_NAME = "Noble Spaces";
+const FUNCTION_VERSION = "xentripay-collections-v2-2026-05-07";
 
 // Normalize Rwandan phone to local 10-digit (cnumber) and MSISDN (2507XXXXXXXX).
 function normalizePhone(input: string) {
@@ -19,8 +20,9 @@ function normalizePhone(input: string) {
   let local = digits;
   if (digits.startsWith("250") && digits.length === 12) local = "0" + digits.slice(3);
   else if (digits.length === 9 && digits.startsWith("7")) local = "0" + digits;
-  // ensure leading 0
-  if (local.length === 10 && local.startsWith("7")) local = "0" + local.slice(0, 9);
+  if (!/^0\d{9}$/.test(local)) {
+    throw new Error("Customer number must be exactly 10 digits, e.g. 0787218242");
+  }
   const msisdn = local.startsWith("0") ? "250" + local.slice(1) : "250" + local;
   return { cnumber: local, msisdn };
 }
@@ -38,6 +40,14 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { customer_name, customer_phone, amount, referral_code, service_title } = body ?? {};
+
+    if (body?.diagnostic === "connectivity") {
+      const probe = await fetch(`${XENTRIPAY_BASE}/collections/initiate`, { method: "OPTIONS" });
+      return json({ ok: true, version: FUNCTION_VERSION, endpoint: `${XENTRIPAY_BASE}/collections/initiate`, reachable: true, provider_status: probe.status });
+    }
+    if (body?.diagnostic === true) {
+      return json({ ok: true, version: FUNCTION_VERSION, endpoint: `${XENTRIPAY_BASE}/collections/initiate` });
+    }
 
     if (!customer_name || !customer_phone || !amount) {
       return json({ error: "customer_name, customer_phone and amount are required" }, 400);
@@ -64,7 +74,13 @@ Deno.serve(async (req) => {
       }
     }
 
-    const { cnumber, msisdn } = normalizePhone(customer_phone);
+    let phone;
+    try {
+      phone = normalizePhone(customer_phone);
+    } catch (e) {
+      return json({ error: (e as Error).message }, 400);
+    }
+    const { cnumber, msisdn } = phone;
 
     // Per XentriPay docs §3.5
     const xpRes = await fetch(`${XENTRIPAY_BASE}/collections/initiate`, {
@@ -90,7 +106,7 @@ Deno.serve(async (req) => {
     try { xpJson = JSON.parse(xpText); } catch { /* */ }
 
     const refid = xpJson?.refid || xpJson?.tid || null;
-    const providerOk = xpRes.ok && (xpJson?.success === 1 || xpJson?.retcode === 0);
+    const providerOk = xpRes.ok && (xpJson?.success === 1 || xpJson?.retcode === 0 || xpJson?.retcode === "0");
 
     const { data: inserted, error: insertErr } = await supabase
       .from("payments")
