@@ -5,6 +5,7 @@ import { Logo } from "./Logo";
 import { useServices, type UiService } from "@/hooks/useServices";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type ServiceItem = { title: string; desc: string };
 
