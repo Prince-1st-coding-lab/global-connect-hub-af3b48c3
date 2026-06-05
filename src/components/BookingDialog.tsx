@@ -288,9 +288,23 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90 disabled:opacity-60"
           >
             {paying || paymentStatus === "pending" ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("tooltip.pay_now")}</p>
+                </TooltipContent>
+              </Tooltip>
             ) : (
-              <Smartphone className="h-4 w-4" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Smartphone className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("tooltip.pay_now")}</p>
+                </TooltipContent>
+              </Tooltip>
             )}
             {paymentStatus === "pending"
               ? "Waiting for confirmation…"
