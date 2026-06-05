@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const WHATSAPP_NUMBER = "250788906410";
 const DEFAULT_MESSAGE = "Hello Noble Spaces, I'd like more information about your services.";
@@ -35,13 +36,20 @@ export const WhatsAppFab = () => {
     >
       {tooltipOpen && (
         <div className="relative mb-1 hidden max-w-[240px] rounded-2xl border border-gold/30 bg-card px-4 py-3 text-sm text-foreground shadow-deep sm:block">
-          <button
-            onClick={() => setTooltipOpen(false)}
-            aria-label="Close"
-            className="absolute -right-2 -top-2 rounded-full border border-gold/30 bg-background p-1 text-muted-foreground hover:text-gold"
-          >
-            <X className="h-3 w-3" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setTooltipOpen(false)}
+                aria-label={t("tooltip.close")}
+                className="absolute -right-2 -top-2 rounded-full border border-gold/30 bg-background p-1 text-muted-foreground hover:text-gold"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.close")}</p>
+            </TooltipContent>
+          </Tooltip>
           <div className="font-display text-base text-gold">{t("whatsapp.title")}</div>
           <div className="mt-1 text-xs leading-relaxed text-muted-foreground">
             {t("whatsapp.subtitle")}
@@ -50,17 +58,24 @@ export const WhatsAppFab = () => {
         </div>
       )}
 
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={t("whatsapp.aria")}
-        onMouseEnter={() => setTooltipOpen(true)}
-        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[hsl(142_70%_45%)] text-white shadow-deep transition-transform hover:scale-110"
-      >
-        <span className="absolute inset-0 animate-ping rounded-full bg-[hsl(142_70%_45%)] opacity-30" />
-        <MessageCircle className="relative h-6 w-6" fill="currentColor" strokeWidth={0} />
-      </a>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t("whatsapp.aria")}
+            onMouseEnter={() => setTooltipOpen(true)}
+            className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[hsl(142_70%_45%)] text-white shadow-deep transition-transform hover:scale-110"
+          >
+            <span className="absolute inset-0 animate-ping rounded-full bg-[hsl(142_70%_45%)] opacity-30" />
+            <MessageCircle className="relative h-6 w-6" fill="currentColor" strokeWidth={0} />
+          </a>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t("whatsapp.aria")}</p>
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 };
