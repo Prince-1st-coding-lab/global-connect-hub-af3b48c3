@@ -300,20 +300,34 @@ export const Lightbox = ({ items, index, open, onClose, onIndexChange }: Lightbo
 
         {items.length > 1 && (
           <>
-            <button
-              onClick={goPrev}
-              aria-label="Previous image"
-              className="absolute left-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:left-6"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={goNext}
-              aria-label="Next image"
-              className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:right-6"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={goPrev}
+                  aria-label="Previous image"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:left-6"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.previous")}</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={goNext}
+                  aria-label="Next image"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:right-6"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.next")}</p>
+              </TooltipContent>
+            </Tooltip>
           </>
         )}
       </div>
