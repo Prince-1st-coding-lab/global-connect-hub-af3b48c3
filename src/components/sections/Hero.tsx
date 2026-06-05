@@ -44,7 +44,14 @@ export const Hero = () => {
               className="group inline-flex items-center gap-3 rounded-full bg-gold px-7 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-primary-foreground shadow-gold transition-transform hover:scale-[1.02]"
             >
               {t("hero.cta_primary")}
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("common.view_all_services")}</p>
+                </TooltipContent>
+              </Tooltip>
             </Link>
             <Link
               to="/contact"

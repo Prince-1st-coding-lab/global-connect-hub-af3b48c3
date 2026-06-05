@@ -30,7 +30,15 @@ export const Services = ({ preview = false }: { preview?: boolean }) => {
               to="/services"
               className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-xs uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold/10"
             >
-              {t("common.view_all")} <ArrowRight className="h-4 w-4" />
+              {t("common.view_all")}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ArrowRight className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("common.view_all_services")}</p>
+                </TooltipContent>
+              </Tooltip>
             </Link>
           )}
         </div>
@@ -70,7 +78,15 @@ export const Services = ({ preview = false }: { preview?: boolean }) => {
               to="/services"
               className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
             >
-              {t("common.view_all_services")} <ArrowRight className="h-4 w-4" />
+              {t("common.view_all_services")}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ArrowRight className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("common.view_all_services")}</p>
+                </TooltipContent>
+              </Tooltip>
             </Link>
           </div>
         )}
