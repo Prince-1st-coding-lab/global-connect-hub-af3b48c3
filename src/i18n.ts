@@ -119,6 +119,8 @@ const resources = {
         open_viewer: "Open image viewer",
         pagination_page: "Page",
       },
+    },
+  },
   fr: {
     translation: {
       nav: { home: "Accueil", services: "Services", about: "À propos", gallery: "Galerie", contact: "Contact" },
