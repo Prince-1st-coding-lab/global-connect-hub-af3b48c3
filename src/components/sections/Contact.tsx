@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Instagram, Facebook, ArrowRight } from "lucide-react";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 import { SOCIAL_LINKS } from "@/data/socials";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 export const Contact = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
