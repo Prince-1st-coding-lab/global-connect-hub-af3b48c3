@@ -105,7 +105,15 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90">
-          <CalendarCheck className="h-4 w-4" /> {t("booking.book_now")}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <CalendarCheck className="h-4 w-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.book_now")}</p>
+            </TooltipContent>
+          </Tooltip>
+          {t("booking.book_now")}
         </button>
       </DialogTrigger>
       <DialogContent className="max-w-lg border-gold/30 bg-card">
@@ -178,13 +186,29 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
             onClick={sendWhatsApp}
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
           >
-            <MessageCircle className="h-4 w-4" /> {t("booking.submit")}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <MessageCircle className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.send_whatsapp")}</p>
+              </TooltipContent>
+            </Tooltip>
+            {t("booking.submit")}
           </button>
           <button
             onClick={sendEmail}
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/10"
           >
-            <Mail className="h-4 w-4" /> {t("booking.submit_email")}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Mail className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.send_email")}</p>
+              </TooltipContent>
+            </Tooltip>
+            {t("booking.submit_email")}
           </button>
         </div>
 
