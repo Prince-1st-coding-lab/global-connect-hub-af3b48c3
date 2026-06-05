@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Download, X, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 export type LightboxItem = { src: string; alt?: string };
 
@@ -17,6 +19,7 @@ const MAX_SCALE = 5;
 const STEP = 0.5;
 
 export const Lightbox = ({ items, index, open, onClose, onIndexChange }: LightboxProps) => {
+  const { t } = useTranslation();
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ startX: number; startY: number; baseX: number; baseY: number } | null>(null);
@@ -172,64 +175,99 @@ export const Lightbox = ({ items, index, open, onClose, onIndexChange }: Lightbo
           {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={zoomOut}
-            disabled={scale <= MIN_SCALE}
-            aria-label="Zoom out"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            <ZoomOut className="h-4 w-4" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={zoomOut}
+                disabled={scale <= MIN_SCALE}
+                aria-label="Zoom out"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.zoom_out")}</p>
+            </TooltipContent>
+          </Tooltip>
           <span className="min-w-[3rem] text-center text-xs text-gold/80">
             {Math.round(scale * 100)}%
           </span>
-          <button
-            onClick={zoomIn}
-            disabled={scale >= MAX_SCALE}
-            aria-label="Zoom in"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            <ZoomIn className="h-4 w-4" />
-          </button>
-          <button
-            onClick={reset}
-            aria-label="Reset zoom"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </button>
-          <button
-            onClick={async () => {
-              try {
-                const res = await fetch(current.src, { mode: "cors" });
-                const blob = await res.blob();
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                const urlPath = new URL(current.src, window.location.href).pathname;
-                const base = urlPath.split("/").pop() || "image";
-                const safeAlt = (current.alt || "image").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
-                a.download = safeAlt ? `${safeAlt}-${base}` : base;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(url);
-              } catch {
-                window.open(current.src, "_blank", "noopener,noreferrer");
-              }
-            }}
-            aria-label="Download image"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
-          >
-            <Download className="h-4 w-4" />
-          </button>
-          <button
-            onClick={onClose}
-            aria-label="Close viewer"
-            className="ml-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={zoomIn}
+                disabled={scale >= MAX_SCALE}
+                aria-label="Zoom in"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <ZoomIn className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.zoom_in")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={reset}
+                aria-label="Reset zoom"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.reset_zoom")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={async () => {
+                  try {
+                    const res = await fetch(current.src, { mode: "cors" });
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    const urlPath = new URL(current.src, window.location.href).pathname;
+                    const base = urlPath.split("/").pop() || "image";
+                    const safeAlt = (current.alt || "image").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
+                    a.download = safeAlt ? `${safeAlt}-${base}` : base;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                  } catch {
+                    window.open(current.src, "_blank", "noopener,noreferrer");
+                  }
+                }}
+                aria-label="Download image"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
+              >
+                <Download className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.download")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={onClose}
+                aria-label="Close viewer"
+                className="ml-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.close")}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -262,20 +300,34 @@ export const Lightbox = ({ items, index, open, onClose, onIndexChange }: Lightbo
 
         {items.length > 1 && (
           <>
-            <button
-              onClick={goPrev}
-              aria-label="Previous image"
-              className="absolute left-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:left-6"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={goNext}
-              aria-label="Next image"
-              className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:right-6"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={goPrev}
+                  aria-label="Previous image"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:left-6"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.previous")}</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={goNext}
+                  aria-label="Next image"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-background/60 text-gold backdrop-blur transition-all hover:bg-gold/10 sm:right-6"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.next")}</p>
+              </TooltipContent>
+            </Tooltip>
           </>
         )}
       </div>

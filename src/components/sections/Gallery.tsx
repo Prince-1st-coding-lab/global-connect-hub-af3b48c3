@@ -5,6 +5,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Lightbox } from "@/components/Lightbox";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const PAGE_SIZE = 24;
 
@@ -120,7 +121,15 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
               to="/gallery"
               className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-xs uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold/10"
             >
-              {t("common.view_all")} <ArrowRight className="h-4 w-4" />
+              {t("common.view_all")}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ArrowRight className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("tooltip.view_gallery")}</p>
+                </TooltipContent>
+              </Tooltip>
             </Link>
           )}
         </div>
@@ -156,14 +165,21 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
 
         {!preview && totalPages > 1 && (
           <div className="mt-14 flex items-center justify-center gap-2">
-            <button
-              onClick={() => goToPage(Math.max(1, page - 1))}
-              disabled={page === 1}
-              aria-label="Previous page"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => goToPage(Math.max(1, page - 1))}
+                  disabled={page === 1}
+                  aria-label="Previous page"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.previous")}</p>
+              </TooltipContent>
+            </Tooltip>
 
             {Array.from({ length: totalPages }).map((_, i) => {
               const p = i + 1;
@@ -184,14 +200,21 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
               );
             })}
 
-            <button
-              onClick={() => goToPage(Math.min(totalPages, page + 1))}
-              disabled={page === totalPages}
-              aria-label="Next page"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => goToPage(Math.min(totalPages, page + 1))}
+                  disabled={page === totalPages}
+                  aria-label="Next page"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.next")}</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         )}
       </div>

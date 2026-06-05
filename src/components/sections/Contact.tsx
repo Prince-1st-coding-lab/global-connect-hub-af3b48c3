@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Instagram, Facebook, ArrowRight } from "lucide-react";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 import { SOCIAL_LINKS } from "@/data/socials";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 export const Contact = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
@@ -44,7 +45,15 @@ export const Contact = ({ preview = false }: { preview?: boolean }) => {
               to="/contact"
               className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-3 text-xs uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold/10"
             >
-              {t("common.view_all")} <ArrowRight className="h-4 w-4" />
+              {t("common.view_all")}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ArrowRight className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("tooltip.view_all")}</p>
+                </TooltipContent>
+              </Tooltip>
             </Link>
           )}
         </div>
@@ -69,33 +78,54 @@ export const Contact = ({ preview = false }: { preview?: boolean }) => {
 
         <div className="mt-10 flex items-center gap-4">
           <span className="text-xs uppercase tracking-[0.25em] text-muted-foreground">{t("footer.follow")}</span>
-          <a
-            href={SOCIAL_LINKS.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
-          >
-            <Instagram className="h-4 w-4" />
-          </a>
-          <a
-            href={SOCIAL_LINKS.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
-          >
-            <Facebook className="h-4 w-4" />
-          </a>
-          <a
-            href={SOCIAL_LINKS.tiktok}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="TikTok"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
-          >
-            <TikTokIcon className="h-4 w-4" />
-          </a>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={SOCIAL_LINKS.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.instagram")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={SOCIAL_LINKS.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.facebook")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={SOCIAL_LINKS.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+              >
+                <TikTokIcon className="h-4 w-4" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.tiktok")}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         <div id="map" className="mt-16">

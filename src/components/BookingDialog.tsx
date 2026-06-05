@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import type { Availability } from "@/data/services";
 
 const WHATSAPP_NUMBER = "250788906410"; // no + or spaces
@@ -104,7 +105,15 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90">
-          <CalendarCheck className="h-4 w-4" /> {t("booking.book_now")}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <CalendarCheck className="h-4 w-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.book_now")}</p>
+            </TooltipContent>
+          </Tooltip>
+          {t("booking.book_now")}
         </button>
       </DialogTrigger>
       <DialogContent className="max-w-lg border-gold/30 bg-card">
@@ -177,20 +186,43 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
             onClick={sendWhatsApp}
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
           >
-            <MessageCircle className="h-4 w-4" /> {t("booking.submit")}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <MessageCircle className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.send_whatsapp")}</p>
+              </TooltipContent>
+            </Tooltip>
+            {t("booking.submit")}
           </button>
           <button
             onClick={sendEmail}
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/10"
           >
-            <Mail className="h-4 w-4" /> {t("booking.submit_email")}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Mail className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.send_email")}</p>
+              </TooltipContent>
+            </Tooltip>
+            {t("booking.submit_email")}
           </button>
         </div>
 
         {/* Mobile money payment */}
         <div className="space-y-3 rounded-lg border border-gold/30 bg-secondary/30 p-4">
           <div className="flex items-center gap-2 text-gold">
-            <Smartphone className="h-4 w-4" />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Smartphone className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.pay_now")}</p>
+              </TooltipContent>
+            </Tooltip>
             <span className="text-xs uppercase tracking-[0.2em]">Pay with MTN / Airtel</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -256,9 +288,23 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90 disabled:opacity-60"
           >
             {paying || paymentStatus === "pending" ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("tooltip.pay_now")}</p>
+                </TooltipContent>
+              </Tooltip>
             ) : (
-              <Smartphone className="h-4 w-4" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Smartphone className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("tooltip.pay_now")}</p>
+                </TooltipContent>
+              </Tooltip>
             )}
             {paymentStatus === "pending"
               ? "Waiting for confirmation…"
