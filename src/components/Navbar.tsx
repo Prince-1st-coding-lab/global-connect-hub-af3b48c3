@@ -132,41 +132,69 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <a
-            href={SOCIAL_LINKS.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
-          >
-            <Instagram className="h-3.5 w-3.5" />
-          </a>
-          <a
-            href={SOCIAL_LINKS.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
-          >
-            <Facebook className="h-3.5 w-3.5" />
-          </a>
-          <a
-            href={SOCIAL_LINKS.tiktok}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="TikTok"
-            className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
-          >
-            <TikTokIcon className="h-3.5 w-3.5" />
-          </a>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={SOCIAL_LINKS.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
+              >
+                <Instagram className="h-3.5 w-3.5" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.instagram")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={SOCIAL_LINKS.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
+              >
+                <Facebook className="h-3.5 w-3.5" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.facebook")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={SOCIAL_LINKS.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                className="hidden h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:flex"
+              >
+                <TikTokIcon className="h-3.5 w-3.5" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("tooltip.tiktok")}</p>
+            </TooltipContent>
+          </Tooltip>
           <LanguageSwitcher />
-          <button
-            onClick={() => setOpen(!open)}
-            className="lg:hidden rounded-full border border-gold/40 p-2 text-gold"
-            aria-label="Menu"
-          >
-            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setOpen(!open)}
+                className="lg:hidden rounded-full border border-gold/40 p-2 text-gold"
+                aria-label="Menu"
+              >
+                {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{open ? t("tooltip.close_menu") : t("tooltip.menu")}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </nav>
 
