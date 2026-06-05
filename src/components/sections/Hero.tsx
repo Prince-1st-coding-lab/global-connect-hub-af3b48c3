@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import heroImg from "@/assets/hero-living.jpg";
 
 export const Hero = () => {
