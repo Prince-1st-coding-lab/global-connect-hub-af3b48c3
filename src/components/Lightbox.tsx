@@ -19,6 +19,7 @@ const MAX_SCALE = 5;
 const STEP = 0.5;
 
 export const Lightbox = ({ items, index, open, onClose, onIndexChange }: LightboxProps) => {
+  const { t } = useTranslation();
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ startX: number; startY: number; baseX: number; baseY: number } | null>(null);
