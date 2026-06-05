@@ -215,7 +215,14 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
         {/* Mobile money payment */}
         <div className="space-y-3 rounded-lg border border-gold/30 bg-secondary/30 p-4">
           <div className="flex items-center gap-2 text-gold">
-            <Smartphone className="h-4 w-4" />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Smartphone className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("tooltip.pay_now")}</p>
+              </TooltipContent>
+            </Tooltip>
             <span className="text-xs uppercase tracking-[0.2em]">Pay with MTN / Airtel</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
