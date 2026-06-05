@@ -7,6 +7,7 @@ import { Menu, X, Instagram, Facebook, ChevronDown } from "lucide-react";
 import { SERVICES } from "@/data/services";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type ServiceItem = { title: string; desc: string };
 
