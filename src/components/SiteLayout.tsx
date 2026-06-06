@@ -10,29 +10,29 @@ type Meta = { title: string; desc: string; keywords?: string };
 
 const titles: Record<string, Meta> = {
   "/": {
-    title: "Noble Spaces | Interior Design, Furniture, Kitchens & Renovation in Kigali, Rwanda",
-    desc: "Welcome to Noble Spaces — a multi-service company in Kigali, Rwanda transforming homes, offices and commercial spaces. Bespoke furniture, modern kitchens, wardrobes, ceilings, painting, soundproofing, carpets, curtains, sofas and more — crafted with passion and precision.",
-    keywords: "Noble Spaces, Noble Spaces Rwanda, Noble Spaces Kigali, interior design Kigali, interior design Rwanda, bespoke furniture Kigali, wardrobes Kigali, modern kitchen Rwanda, sofa manufacturing Rwanda, ceiling installation Kigali, carpet supply Rwanda, carpet cleaning Kigali, painting works Kigali, soundproofing Rwanda, curtains Kigali, TV wall installation Rwanda, office furniture Kigali, dining tables Rwanda, baby beds Kigali, pet houses Rwanda, console installation Kigali, wall partitioning Rwanda, fabric replacement Kigali, sofa cleaning Kigali, renovation Kigali, Gikondo interior design",
+    title: "Interior Design, Furniture & Modern Kitchens in Kigali, Rwanda | Noble Spaces",
+    desc: "Interior design, bespoke furniture, modern kitchens, wardrobes, ceilings, painting, soundproofing, carpets, curtains and renovation in Kigali, Rwanda. Trusted craftsmen for homes, offices and commercial spaces.",
+    keywords: "interior design Kigali, interior design Rwanda, bespoke furniture Kigali, custom furniture Rwanda, modern kitchen installation Kigali, fitted wardrobes Rwanda, ceiling installation Kigali, painting works Kigali, soundproofing Rwanda, carpet supply Rwanda, curtains Kigali, sofa manufacturing Rwanda, office furniture Kigali, home renovation Rwanda, commercial interior design Kigali, residential interior design Rwanda, Gikondo interior design, Kicukiro interior design",
   },
   "/services": {
     title: "Interior Design & Furniture Services in Kigali, Rwanda | Noble Spaces",
-    desc: "Explore 17+ services by Noble Spaces in Kigali, Rwanda — wardrobes, modern kitchens, bespoke sofas, ceilings, carpets, curtains, painting, soundproofing, TV walls, office furniture and more. Book your free consultation today.",
-    keywords: "interior services Kigali, furniture manufacturing Rwanda, kitchen installation Kigali, wardrobes Rwanda, sofa manufacturing Kigali, ceiling installation Rwanda, carpet supply Kigali, painting works Rwanda, soundproofing Kigali, curtains installation Rwanda, TV wall Kigali, office equipment Rwanda, dining tables Kigali, baby beds Rwanda, pet houses Kigali, console installation Rwanda, wall partitioning Kigali, fabric replacement Rwanda, sofa cleaning Kigali, carpet cleaning Rwanda",
+    desc: "Explore 20+ interior services in Kigali, Rwanda — wardrobes, modern kitchens, bespoke sofas, ceilings, carpets, curtains, painting, soundproofing, TV walls, office furniture and full renovation. Book your free consultation today.",
+    keywords: "interior services Kigali, furniture manufacturing Rwanda, kitchen installation Kigali, wardrobes Rwanda, sofa manufacturing Kigali, ceiling installation Rwanda, carpet supply Kigali, painting works Rwanda, soundproofing Kigali, curtains installation Rwanda, TV wall Kigali, office equipment Rwanda, dining tables Kigali, baby beds Rwanda, pet houses Kigali, console installation Rwanda, wall partitioning Kigali, fabric replacement Rwanda, sofa cleaning Kigali, carpet cleaning Rwanda, renovation Kigali",
   },
   "/about": {
-    title: "About Noble Spaces — Interior Design Studio in Kigali, Rwanda",
-    desc: "Learn about Noble Spaces — a Kigali-based interior design studio crafting noble interiors across Rwanda with skilled artisans since 2015.",
-    keywords: "about Noble Spaces, interior designers Rwanda, Kigali design studio",
+    title: "About — Interior Design Studio in Kigali, Rwanda | Noble Spaces",
+    desc: "Kigali-based interior design and furniture studio crafting noble interiors across Rwanda — homes, offices and commercial spaces, built with skilled local artisans.",
+    keywords: "interior designers Rwanda, Kigali design studio, furniture makers Rwanda, interior design company Kigali, bespoke craftsmanship Rwanda",
   },
   "/gallery": {
-    title: "Gallery — Interior Design Projects in Kigali | Noble Spaces",
-    desc: "Browse selected interior design and furniture projects by Noble Spaces in Kigali, Rwanda — bedrooms, kitchens, lounges, offices and more.",
-    keywords: "interior design gallery Rwanda, Noble Spaces projects, Kigali interiors",
+    title: "Gallery — Interior Design & Furniture Projects in Kigali, Rwanda | Noble Spaces",
+    desc: "Browse selected interior design, kitchen, wardrobe, ceiling and renovation projects in Kigali, Rwanda — bedrooms, kitchens, lounges, offices and more.",
+    keywords: "interior design gallery Rwanda, kitchen projects Kigali, wardrobe projects Rwanda, renovation portfolio Kigali, furniture portfolio Rwanda",
   },
   "/contact": {
-    title: "Contact Noble Spaces — Kigali, Kicukiro, Gikondo | Rwanda",
-    desc: "Get in touch with Noble Spaces in Kigali, Kicukiro, Gikondo. Call +250 793 521 437 or email info@noblespaces.rw to book your interior design consultation, custom furniture, modern kitchen, ceiling, painting or renovation project.",
-    keywords: "contact Noble Spaces, interior designer Kigali contact, Gikondo design studio",
+    title: "Contact — Interior Design & Furniture in Kigali, Rwanda | Noble Spaces",
+    desc: "Get in touch with our interior design and furniture studio in Kigali, Kicukiro, Gikondo. Call +250 793 521 437 or email info@noblespaces.rw to book your interior design consultation, custom furniture, modern kitchen, ceiling, painting or renovation project.",
+    keywords: "contact interior designer Kigali, interior design consultation Rwanda, Gikondo design studio, Kicukiro furniture studio, book interior designer Kigali",
   },
 };
 
