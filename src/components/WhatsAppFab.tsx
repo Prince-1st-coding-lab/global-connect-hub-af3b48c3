@@ -3,7 +3,7 @@ import { MessageCircle, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
-const WHATSAPP_NUMBER = "250788906410";
+const WHATSAPP_NUMBER = "250793521437";
 const DEFAULT_MESSAGE = "Hello Noble Spaces, I'd like more information about your services.";
 
 export const WhatsAppFab = () => {
