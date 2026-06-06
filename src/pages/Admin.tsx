@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, LogOut, Plus, Trash2 } from "lucide-react";
+import { ExternalLink, Loader2, LogOut, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { externalSupabase, type Payment, type Promoter } from "@/integrations/external-supabase";
+import { externalSupabase, type Payment, type PaymentLink, type Promoter } from "@/integrations/external-supabase";
 
 const Admin = () => {
   const [ready, setReady] = useState(false);
@@ -121,14 +122,98 @@ const Dashboard = () => {
       return data as Payment[];
     },
   });
+  const paymentLinks = useQuery({
+    queryKey: ["ext-payment-links"],
+    queryFn: async () => {
+      const { data, error } = await externalSupabase
+        .from("payment_links")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as PaymentLink[];
+    },
+  });
 
   return (
     <section className="mx-auto max-w-6xl px-6 pb-24 pt-32">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="font-display text-4xl">Promoter dashboard</h1>
+        <h1 className="font-display text-4xl">Admin dashboard</h1>
         <Button variant="outline" onClick={() => externalSupabase.auth.signOut()}>
           <LogOut className="mr-2 h-4 w-4" /> Sign out
         </Button>
+      </div>
+
+      {/* Payment Links section */}
+      <div className="mt-10">
+        <div className="mb-3 flex items-center justify-between">
+          <div>
+            <h2 className="font-display text-2xl">Payment Links</h2>
+            <p className="text-xs text-muted-foreground">
+              Set an amount and a payment URL. Customers will see these in the booking dialog and open them in a new tab.
+            </p>
+          </div>
+          <PaymentLinkDialog
+            onSaved={() => qc.invalidateQueries({ queryKey: ["ext-payment-links"] })}
+          />
+        </div>
+        {paymentLinks.isLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        ) : (
+          <div className="grid gap-2">
+            {(paymentLinks.data ?? []).map((l) => (
+              <div
+                key={l.id}
+                className="flex flex-wrap items-center gap-3 rounded-lg border border-gold/20 bg-card p-3"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-medium">{l.label}</span>
+                    {!l.active && (
+                      <span className="rounded bg-muted px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                        inactive
+                      </span>
+                    )}
+                  </div>
+                  <a
+                    href={l.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-0.5 inline-flex items-center gap-1 truncate text-xs text-muted-foreground hover:text-gold"
+                  >
+                    {l.url} <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+                <span className="rounded bg-gold/15 px-2 py-1 text-sm text-gold">
+                  RWF {Number(l.amount).toLocaleString()}
+                </span>
+                <PaymentLinkDialog
+                  existing={l}
+                  onSaved={() => qc.invalidateQueries({ queryKey: ["ext-payment-links"] })}
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={async () => {
+                    if (!confirm(`Delete payment link "${l.label}"?`)) return;
+                    const { error } = await externalSupabase
+                      .from("payment_links")
+                      .delete()
+                      .eq("id", l.id);
+                    if (error) toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+                    else qc.invalidateQueries({ queryKey: ["ext-payment-links"] });
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            ))}
+            {(!paymentLinks.data || !paymentLinks.data.length) && (
+              <p className="text-sm text-muted-foreground">
+                No payment links yet. Add one — it will appear instantly inside every booking dialog.
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
@@ -208,6 +293,109 @@ const StatusBadge = ({ status }: { status: string }) => {
     : status === "failed" ? "bg-destructive/15 text-destructive"
     : "bg-gold/15 text-gold";
   return <span className={`rounded px-2 py-0.5 text-xs uppercase tracking-wide ${cls}`}>{status}</span>;
+};
+
+const PaymentLinkDialog = ({
+  existing,
+  onSaved,
+}: {
+  existing?: PaymentLink;
+  onSaved: () => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  const [label, setLabel] = useState(existing?.label ?? "");
+  const [amount, setAmount] = useState(existing?.amount?.toString() ?? "");
+  const [url, setUrl] = useState(existing?.url ?? "");
+  const [active, setActive] = useState(existing?.active ?? true);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setLabel(existing?.label ?? "");
+    setAmount(existing?.amount?.toString() ?? "");
+    setUrl(existing?.url ?? "");
+    setActive(existing?.active ?? true);
+  }, [open, existing]);
+
+  const submit = async () => {
+    const amt = Number(amount);
+    if (!label.trim() || !url.trim() || !Number.isFinite(amt) || amt <= 0) {
+      toast({ title: "Label, amount and URL are required", variant: "destructive" });
+      return;
+    }
+    try {
+      new URL(url);
+    } catch {
+      toast({ title: "Invalid payment URL", variant: "destructive" });
+      return;
+    }
+    setBusy(true);
+    const payload = { label: label.trim(), amount: amt, url: url.trim(), active };
+    const { error } = existing
+      ? await externalSupabase.from("payment_links").update(payload).eq("id", existing.id)
+      : await externalSupabase.from("payment_links").insert(payload);
+    setBusy(false);
+    if (error) {
+      toast({ title: "Save failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: existing ? "Payment link updated" : "Payment link created" });
+    setOpen(false);
+    onSaved();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {existing ? (
+          <Button size="icon" variant="ghost" aria-label="Edit">
+            <Pencil className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button size="sm"><Plus className="mr-2 h-4 w-4" /> New payment link</Button>
+        )}
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{existing ? "Edit payment link" : "New payment link"}</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-3">
+          <div className="space-y-1.5">
+            <Label>Label *</Label>
+            <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Consultation deposit" />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Amount (RWF) *</Label>
+            <Input
+              type="number"
+              inputMode="numeric"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="50000"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Payment URL *</Label>
+            <Input
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://pay.xentripay.com/..."
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch checked={active} onCheckedChange={setActive} id="active" />
+            <Label htmlFor="active">Show on booking dialog</Label>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={submit} disabled={busy}>
+            {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 const NewPromoterDialog = ({ onCreated }: { onCreated: () => void }) => {

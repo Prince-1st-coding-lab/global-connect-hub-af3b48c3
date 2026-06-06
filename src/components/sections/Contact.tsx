@@ -12,8 +12,8 @@ export const Contact = ({ preview = false }: { preview?: boolean }) => {
     {
       icon: Phone,
       label: t("contact.phone"),
-      values: ["+250 788 906 410", "+250 793 412 870"],
-      href: "tel:+250788906410",
+      values: ["+250 793 521 437"],
+      href: "tel:+250793521437",
     },
     {
       icon: Mail,
