@@ -307,6 +307,142 @@ bunx vitest run   # run unit tests
 
 ---
 
-## 9. License
+## 9. Paypack Checkout integration (Rwanda)
+
+The site accepts online payments through **Paypack** (MTN MoMo, Airtel
+Money, cards). The amount each customer pays is **set by the admin** in
+`/admin → Payment Links` — there are no hard-coded prices in code.
+
+### 9.1 Architecture
+
+```
+Browser ──▶ Edge fn  initiate-paypack-checkout
+                       │  1. inserts row into `orders` (status=pending)
+                       │  2. POST  https://payments.paypack.rw/api/checkout/initiate
+                       ▼
+                     Paypack hosted checkout
+                       │  customer pays with MoMo / Airtel / card
+                       ▼
+            Edge fn  paypack-webhook   ◀── HMAC-SHA256 signed POST
+                       │  verifies x-paypack-signature
+                       │  updates `orders.status` → completed | failed | cancelled
+                       ▼
+              Browser is redirected to
+                /payment-success   or   /payment-cancelled
+```
+
+### 9.2 Files
+
+| Path                                                    | Purpose                                        |
+| ------------------------------------------------------- | ---------------------------------------------- |
+| `supabase/functions/initiate-paypack-checkout/index.ts` | Create order + request hosted checkout        |
+| `supabase/functions/paypack-webhook/index.ts`           | HEAD probe + HMAC verification + status update |
+| `docs/sql/orders.sql`                                   | `orders` table schema (already applied)        |
+| `src/components/PayNowButton.tsx`                       | Reusable Pay Now button                        |
+| `src/components/BookingDialog.tsx`                      | Booking dialog pay buttons (admin amounts)     |
+| `src/pages/PaymentSuccess.tsx`                          | Success landing page                           |
+| `src/pages/PaymentCancelled.tsx`                        | Cancelled landing page                         |
+
+### 9.3 Required edge function secrets
+
+Add these in **Lovable → Project Settings → Functions → Secrets**:
+
+| Secret name                | Where it comes from                                  |
+| -------------------------- | ---------------------------------------------------- |
+| `PAYPACK_APP_ID`           | Paypack dashboard → Applications → `application_id`  |
+| `PAYPACK_WEBHOOK_SIGN_KEY` | A signing key you choose; paste the same value into Paypack's webhook configuration |
+
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are auto-injected — do
+not add them manually.
+
+### 9.4 Configure the webhook in Paypack
+
+In the Paypack dashboard, set the webhook URL to:
+
+```
+https://<your-cloud-project-ref>.functions.supabase.co/paypack-webhook
+```
+
+Paypack pings the URL with a HEAD request first; our function responds
+200 to that. Real events come as `POST` with header
+`x-paypack-signature: <hex or base64 HMAC-SHA256 of the raw body>`.
+
+### 9.5 `orders` table
+
+```sql
+-- See docs/sql/orders.sql for the full, idempotent script.
+create table public.orders (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid,
+  email       text,
+  item_name   text,
+  amount      integer not null,
+  status      text not null default 'pending'
+              check (status in ('pending','completed','failed','cancelled')),
+  paypack_ref text,
+  session_id  text,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+```
+
+RLS: authenticated users can read their own orders (`user_id =
+auth.uid()`). Writes happen only from the edge functions via the
+service role.
+
+### 9.6 Admin-driven pricing
+
+In `/admin → Payment Links` create entries like:
+
+| Label                        | Amount (RWF) |
+| ---------------------------- | ------------ |
+| Site visit & consultation    | 30 000       |
+| Kitchen design deposit       | 250 000      |
+| Custom wardrobe deposit      | 150 000      |
+
+Each active link shows up in the booking dialog. Clicking it invokes
+`initiate-paypack-checkout` with that exact amount and opens the
+Paypack-hosted payment page in a new tab.
+
+### 9.7 Using `PayNowButton` elsewhere
+
+```tsx
+import { PayNowButton } from "@/components/PayNowButton";
+
+<PayNowButton amount={30000} itemName="Consultation" email={user?.email} />
+```
+
+### 9.8 Local testing
+
+```bash
+# Test the webhook responds to Paypack's HEAD probe
+curl -I https://<ref>.functions.supabase.co/paypack-webhook
+# → HTTP/2 200
+```
+
+You can also invoke the initiate function from the browser console:
+
+```js
+const { data, error } = await window.supabase.functions.invoke(
+  "initiate-paypack-checkout",
+  { body: { amount: 1000, item_name: "Test", email: "you@example.com" } },
+);
+console.log(data, error);
+```
+
+---
+
+## 10. Scripts
+
+```bash
+bun run dev       # start dev server
+bun run build     # production build (handled by the platform)
+bunx vitest run   # run unit tests
+```
+
+---
+
+## 11. License
 
 © Noble Spaces. All rights reserved.
+
