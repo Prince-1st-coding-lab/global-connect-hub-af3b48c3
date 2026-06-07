@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { externalSupabase, type PaymentLink } from "@/integrations/external-supabase";
+import { supabase } from "@/integrations/supabase/client";
 import type { Availability } from "@/data/services";
 
 const WHATSAPP_NUMBER = "250793521437"; // no + or spaces
@@ -35,6 +36,7 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
   const [notes, setNotes] = useState("");
   const [links, setLinks] = useState<PaymentLink[]>([]);
   const [linksLoading, setLinksLoading] = useState(false);
+  const [payingId, setPayingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -89,6 +91,32 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
     const url = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildMessage())}`;
     window.location.href = url;
     setOpen(false);
+  };
+
+  const payWithPaypack = async (link: PaymentLink) => {
+    setPayingId(link.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("initiate-paypack-checkout", {
+        body: {
+          amount: Number(link.amount),
+          item_name: `${serviceTitle} — ${link.label}`,
+          email: email || undefined,
+          success_url: `${window.location.origin}/payment-success`,
+          cancel_url: `${window.location.origin}/payment-cancelled`,
+        },
+      });
+      if (error) throw error;
+      if (!data?.payment_link) throw new Error(data?.error ?? "No payment link returned");
+      window.open(data.payment_link, "_blank", "noopener,noreferrer");
+    } catch (e: any) {
+      toast({
+        title: "Payment could not be started",
+        description: e?.message ?? "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setPayingId(null);
+    }
   };
 
   return (
