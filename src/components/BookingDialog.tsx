@@ -274,10 +274,10 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Pay RWF {Number(l.amount).toLocaleString()} securely via Paypack (opens in a new tab)</p>
-
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
                 </div>
               )}
             </div>
