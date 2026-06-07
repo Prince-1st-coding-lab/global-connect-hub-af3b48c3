@@ -5,3 +5,10 @@ verify_jwt = false
 
 [functions.xentripay-status]
 verify_jwt = false
+
+[functions.initiate-paypack-checkout]
+verify_jwt = false
+
+[functions.paypack-webhook]
+verify_jwt = false
+
