@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { externalSupabase, type PaymentLink } from "@/integrations/external-supabase";
+import { supabase } from "@/integrations/supabase/client";
 import type { Availability } from "@/data/services";
 
 const WHATSAPP_NUMBER = "250793521437"; // no + or spaces
@@ -35,6 +36,7 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
   const [notes, setNotes] = useState("");
   const [links, setLinks] = useState<PaymentLink[]>([]);
   const [linksLoading, setLinksLoading] = useState(false);
+  const [payingId, setPayingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -89,6 +91,32 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
     const url = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildMessage())}`;
     window.location.href = url;
     setOpen(false);
+  };
+
+  const payWithPaypack = async (link: PaymentLink) => {
+    setPayingId(link.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("initiate-paypack-checkout", {
+        body: {
+          amount: Number(link.amount),
+          item_name: `${serviceTitle} — ${link.label}`,
+          email: email || undefined,
+          success_url: `${window.location.origin}/payment-success`,
+          cancel_url: `${window.location.origin}/payment-cancelled`,
+        },
+      });
+      if (error) throw error;
+      if (!data?.payment_link) throw new Error(data?.error ?? "No payment link returned");
+      window.open(data.payment_link, "_blank", "noopener,noreferrer");
+    } catch (e: any) {
+      toast({
+        title: "Payment could not be started",
+        description: e?.message ?? "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setPayingId(null);
+    }
   };
 
   return (
@@ -220,29 +248,36 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
                 </p>
               ) : (
                 <div className="grid gap-2">
-                  {links.map((l) => (
-                    <Tooltip key={l.id}>
-                      <TooltipTrigger asChild>
-                        <a
-                          href={l.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center justify-between gap-3 rounded-lg border border-gold/40 bg-card px-4 py-3 transition-all hover:border-gold hover:bg-gold/10"
-                        >
-                          <span className="text-sm font-medium text-foreground">{l.label}</span>
-                          <span className="flex items-center gap-2">
-                            <span className="text-sm text-gold">
-                              RWF {Number(l.amount).toLocaleString()}
+                  {links.map((l) => {
+                    const isPaying = payingId === l.id;
+                    return (
+                      <Tooltip key={l.id}>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            disabled={isPaying}
+                            onClick={() => payWithPaypack(l)}
+                            className="group flex w-full items-center justify-between gap-3 rounded-lg border border-gold/40 bg-card px-4 py-3 text-left transition-all hover:border-gold hover:bg-gold/10 disabled:opacity-60"
+                          >
+                            <span className="text-sm font-medium text-foreground">{l.label}</span>
+                            <span className="flex items-center gap-2">
+                              <span className="text-sm text-gold">
+                                RWF {Number(l.amount).toLocaleString()}
+                              </span>
+                              {isPaying ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin text-gold" />
+                              ) : (
+                                <ExternalLink className="h-3.5 w-3.5 text-gold transition-transform group-hover:translate-x-0.5" />
+                              )}
                             </span>
-                            <ExternalLink className="h-3.5 w-3.5 text-gold transition-transform group-hover:translate-x-0.5" />
-                          </span>
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Open secure payment link in a new tab</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Pay RWF {Number(l.amount).toLocaleString()} securely via Paypack (opens in a new tab)</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
                 </div>
               )}
             </div>
