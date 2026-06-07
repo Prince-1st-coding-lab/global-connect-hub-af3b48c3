@@ -248,26 +248,33 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
                 </p>
               ) : (
                 <div className="grid gap-2">
-                  {links.map((l) => (
-                    <Tooltip key={l.id}>
-                      <TooltipTrigger asChild>
-                        <a
-                          href={l.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center justify-between gap-3 rounded-lg border border-gold/40 bg-card px-4 py-3 transition-all hover:border-gold hover:bg-gold/10"
-                        >
-                          <span className="text-sm font-medium text-foreground">{l.label}</span>
-                          <span className="flex items-center gap-2">
-                            <span className="text-sm text-gold">
-                              RWF {Number(l.amount).toLocaleString()}
+                  {links.map((l) => {
+                    const isPaying = payingId === l.id;
+                    return (
+                      <Tooltip key={l.id}>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            disabled={isPaying}
+                            onClick={() => payWithPaypack(l)}
+                            className="group flex w-full items-center justify-between gap-3 rounded-lg border border-gold/40 bg-card px-4 py-3 text-left transition-all hover:border-gold hover:bg-gold/10 disabled:opacity-60"
+                          >
+                            <span className="text-sm font-medium text-foreground">{l.label}</span>
+                            <span className="flex items-center gap-2">
+                              <span className="text-sm text-gold">
+                                RWF {Number(l.amount).toLocaleString()}
+                              </span>
+                              {isPaying ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin text-gold" />
+                              ) : (
+                                <ExternalLink className="h-3.5 w-3.5 text-gold transition-transform group-hover:translate-x-0.5" />
+                              )}
                             </span>
-                            <ExternalLink className="h-3.5 w-3.5 text-gold transition-transform group-hover:translate-x-0.5" />
-                          </span>
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Open secure payment link in a new tab</p>
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Pay RWF {Number(l.amount).toLocaleString()} securely via Paypack (opens in a new tab)</p>
+
                       </TooltipContent>
                     </Tooltip>
                   ))}
