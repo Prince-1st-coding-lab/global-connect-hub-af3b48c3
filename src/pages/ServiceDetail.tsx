@@ -129,7 +129,7 @@ const ServiceDetail = () => {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <BookingDialog serviceTitle={title} availability={svc.availability} />
+                <BookingDialog serviceTitle={title} serviceSlug={svc.slug} availability={svc.availability} />
                 <a
                   href="tel:+250793521437"
                   className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/10"

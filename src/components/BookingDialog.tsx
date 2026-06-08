@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CalendarCheck, ExternalLink, Loader2, Mail, MessageCircle, Smartphone } from "lucide-react";
+import { CalendarCheck, Loader2, Mail, MessageCircle, Smartphone } from "lucide-react";
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
@@ -11,19 +11,21 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { externalSupabase, type PaymentLink } from "@/integrations/external-supabase";
 import { supabase } from "@/integrations/supabase/client";
 import type { Availability } from "@/data/services";
 
-const WHATSAPP_NUMBER = "250793521437"; // no + or spaces
+const WHATSAPP_NUMBER = "250793521437";
 const EMAIL = "info@noblespaces.rw";
 
 type Props = {
   serviceTitle: string;
+  serviceSlug: string;
   availability: Availability;
 };
 
-export const BookingDialog = ({ serviceTitle, availability }: Props) => {
+type ServicePrice = { slug: string; label: string; amount: number; active: boolean };
+
+export const BookingDialog = ({ serviceTitle, serviceSlug, availability }: Props) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<string>(
@@ -34,23 +36,24 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
-  const [links, setLinks] = useState<PaymentLink[]>([]);
-  const [linksLoading, setLinksLoading] = useState(false);
-  const [payingId, setPayingId] = useState<string | null>(null);
+  const [price, setPrice] = useState<ServicePrice | null>(null);
+  const [priceLoading, setPriceLoading] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     if (!open) return;
-    setLinksLoading(true);
-    externalSupabase
-      .from("payment_links")
-      .select("*")
+    setPriceLoading(true);
+    supabase
+      .from("service_prices")
+      .select("slug,label,amount,active")
+      .eq("slug", serviceSlug)
       .eq("active", true)
-      .order("amount", { ascending: true })
+      .maybeSingle()
       .then(({ data }) => {
-        setLinks((data as PaymentLink[]) ?? []);
-        setLinksLoading(false);
+        setPrice((data as ServicePrice | null) ?? null);
+        setPriceLoading(false);
       });
-  }, [open]);
+  }, [open, serviceSlug]);
 
   const buildMessage = () => {
     const typeLabel =
@@ -93,21 +96,30 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
     setOpen(false);
   };
 
-  const payWithPaypack = async (link: PaymentLink) => {
-    setPayingId(link.id);
+  const payNow = async () => {
+    if (!validate()) return;
+    if (!price) {
+      toast({ title: "Online payment is not configured for this service yet.", variant: "destructive" });
+      return;
+    }
+    setPaying(true);
     try {
       const { data, error } = await supabase.functions.invoke("initiate-paypack-checkout", {
         body: {
-          amount: Number(link.amount),
-          item_name: `${serviceTitle} — ${link.label}`,
+          amount: Number(price.amount),
+          item_name: `${serviceTitle} — ${price.label}`,
           email: email || undefined,
+          customer_name: name,
+          phone,
+          notes,
+          service_slug: serviceSlug,
           success_url: `${window.location.origin}/payment-success`,
           cancel_url: `${window.location.origin}/payment-cancelled`,
         },
       });
       if (error) throw error;
       if (!data?.payment_link) throw new Error(data?.error ?? "No payment link returned");
-      window.open(data.payment_link, "_blank", "noopener,noreferrer");
+      window.location.href = data.payment_link;
     } catch (e: any) {
       toast({
         title: "Payment could not be started",
@@ -115,7 +127,7 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
         variant: "destructive",
       });
     } finally {
-      setPayingId(null);
+      setPaying(false);
     }
   };
 
@@ -123,14 +135,7 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <CalendarCheck className="h-4 w-4" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{t("tooltip.book_now")}</p>
-            </TooltipContent>
-          </Tooltip>
+          <CalendarCheck className="h-4 w-4" />
           {t("booking.book_now")}
         </button>
       </DialogTrigger>
@@ -201,6 +206,39 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
               />
             </div>
 
+            {/* Pay online (admin-managed price for this service) */}
+            <div className="space-y-3 rounded-lg border border-gold/30 bg-secondary/30 p-4">
+              <div className="flex items-center gap-2 text-gold">
+                <Smartphone className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.2em]">Pay online (Paypack)</span>
+              </div>
+              {priceLoading ? (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Loading price…
+                </div>
+              ) : price ? (
+                <>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{price.label}</span>
+                    <span className="text-gold font-medium">RWF {Number(price.amount).toLocaleString()}</span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={paying}
+                    onClick={payNow}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90 disabled:opacity-60"
+                  >
+                    {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Smartphone className="h-4 w-4" />}
+                    Pay RWF {Number(price.amount).toLocaleString()} with Paypack
+                  </button>
+                </>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Online payment is not enabled for this service yet. Please book via WhatsApp or email below.
+                </p>
+              )}
+            </div>
+
             <div className="flex flex-col gap-2 sm:flex-row">
               <button
                 onClick={sendWhatsApp}
@@ -210,9 +248,7 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
                   <TooltipTrigger asChild>
                     <MessageCircle className="h-4 w-4" />
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("tooltip.send_whatsapp")}</p>
-                  </TooltipContent>
+                  <TooltipContent><p>{t("tooltip.send_whatsapp")}</p></TooltipContent>
                 </Tooltip>
                 {t("booking.submit")}
               </button>
@@ -224,62 +260,10 @@ export const BookingDialog = ({ serviceTitle, availability }: Props) => {
                   <TooltipTrigger asChild>
                     <Mail className="h-4 w-4" />
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("tooltip.send_email")}</p>
-                  </TooltipContent>
+                  <TooltipContent><p>{t("tooltip.send_email")}</p></TooltipContent>
                 </Tooltip>
                 {t("booking.submit_email")}
               </button>
-            </div>
-
-            {/* Payment links (managed in admin panel) */}
-            <div className="space-y-3 rounded-lg border border-gold/30 bg-secondary/30 p-4">
-              <div className="flex items-center gap-2 text-gold">
-                <Smartphone className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-[0.2em]">Pay online</span>
-              </div>
-              {linksLoading ? (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Loader2 className="h-3 w-3 animate-spin" /> Loading payment options…
-                </div>
-              ) : links.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
-                  No online payment options are available right now. Please contact us via WhatsApp or email to receive a payment link.
-                </p>
-              ) : (
-                <div className="grid gap-2">
-                  {links.map((l) => {
-                    const isPaying = payingId === l.id;
-                    return (
-                      <Tooltip key={l.id}>
-                        <TooltipTrigger asChild>
-                          <button
-                            type="button"
-                            disabled={isPaying}
-                            onClick={() => payWithPaypack(l)}
-                            className="group flex w-full items-center justify-between gap-3 rounded-lg border border-gold/40 bg-card px-4 py-3 text-left transition-all hover:border-gold hover:bg-gold/10 disabled:opacity-60"
-                          >
-                            <span className="text-sm font-medium text-foreground">{l.label}</span>
-                            <span className="flex items-center gap-2">
-                              <span className="text-sm text-gold">
-                                RWF {Number(l.amount).toLocaleString()}
-                              </span>
-                              {isPaying ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin text-gold" />
-                              ) : (
-                                <ExternalLink className="h-3.5 w-3.5 text-gold transition-transform group-hover:translate-x-0.5" />
-                              )}
-                            </span>
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Pay RWF {Number(l.amount).toLocaleString()} securely via Paypack (opens in a new tab)</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    );
-                  })}
-                </div>
-              )}
             </div>
           </div>
         </ScrollArea>
