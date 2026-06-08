@@ -1,448 +1,244 @@
-# Noble Spaces — Interior Design, Furniture & Renovation in Kigali, Rwanda
+# Noble Spaces — Setup & Operations Guide
 
-Marketing + booking site for **Noble Spaces**, a multi-service interior design,
-custom furniture, kitchen, ceiling, painting and renovation company based in
-Kigali, Rwanda. Built with React 18, Vite 5, TypeScript 5, Tailwind v3 and
-shadcn/ui. Backend data (admin, promoters, payments, payment links) lives in
-an external Supabase project; the site also ships with Lovable Cloud (managed
-Supabase) for edge functions.
+A React + Vite + Tailwind site for Noble Spaces (Rwanda) with an admin dashboard
+that lets you set a price per service and accept online payments through
+**Paypack Checkout**. The backend runs on **Lovable Cloud** (Supabase under the
+hood) with two Edge Functions for the payment flow.
 
-- Live site: https://noblespaces.rw
-- Stack: React + Vite + Tailwind + shadcn/ui + i18next (EN / FR / RW)
-- Contact: **+250 793 521 437** · info@noblespaces.rw
+> All chat between you and the agent that built this is preserved in your Lovable
+> project history. This README is the operational manual you asked for: every
+> manual step is listed below.
 
 ---
 
-## 1. Local setup
+## 1. What the app does
+
+- Public marketing site with services, gallery, contact, etc.
+- **Booking dialog** on every service page: customer fills in name, phone, email,
+  date and notes. They can then send it via WhatsApp, Email, or **Pay online
+  with Paypack** for an amount you (the admin) set per service.
+- **Admin dashboard** at `/admin` where you:
+  - Set/edit the **price per service** (RWF).
+  - View **every booking/payment** with its live status
+    (`pending` / `completed` / `failed` / `cancelled`).
+- Paypack notifies the webhook when payment finishes; the order status updates
+  automatically.
+
+---
+
+## 2. Tech stack
+
+| Layer       | Tech                                                                 |
+|-------------|----------------------------------------------------------------------|
+| Frontend    | React 18, Vite 5, TypeScript, Tailwind, shadcn/ui, react-router      |
+| Backend     | Lovable Cloud (managed Supabase) — Postgres + Auth + Edge Functions  |
+| Payments    | Paypack Checkout (Rwanda)                                            |
+| Hosting     | Lovable preview / your custom domain                                 |
+| Source      | GitHub (this repo, two-way synced with Lovable)                      |
+
+---
+
+## 3. Database schema (already migrated)
+
+Created in Lovable Cloud automatically — no action needed unless you self-host.
+
+- `public.user_roles` — links an auth user to a role (`admin` / `user`).
+- `public.service_prices` — admin-managed price per service slug.
+  Columns: `slug` (pk), `label`, `amount` (integer RWF), `active`, timestamps.
+- `public.orders` — every Paypack checkout attempt.
+  Columns: `id`, `user_id?`, `customer_name`, `email`, `phone`, `service_slug`,
+  `item_name`, `amount`, `status`, `paypack_ref`, `session_id`, `notes`,
+  timestamps.
+- `public.has_role(uuid, app_role)` — security-definer helper used by RLS.
+
+RLS in short:
+- `service_prices`: anyone can read; only admins can insert/update/delete.
+- `orders`: a user can read their own rows; admins can read all. Inserts and
+  updates happen through the edge function (service role only).
+- `user_roles`: a user can read their own roles only.
+
+---
+
+## 4. Edge Functions
+
+Located in `supabase/functions/`. Both deploy with `verify_jwt = false`
+(Paypack is a public service and the webhook is unauthenticated).
+
+### `initiate-paypack-checkout`
+Called from the booking dialog. It:
+1. Validates the request.
+2. Inserts a `pending` row into `orders`.
+3. Calls `POST https://payments.paypack.rw/api/checkout/initiate` with your
+   `PAYPACK_APP_ID`, the amount the admin set, and the customer details.
+4. Returns `{ payment_link }` — the frontend redirects the browser to it.
+
+### `paypack-webhook`
+Receives Paypack notifications. It:
+1. Responds **200** to `HEAD`/`GET` probes (Paypack reachability check).
+2. On `POST`, verifies the **HMAC-SHA256** signature using
+   `PAYPACK_WEBHOOK_SIGN_KEY` against the raw request body.
+3. Maps the Paypack status to `completed` / `failed` / `cancelled` and updates
+   the matching `orders` row by `session_id` (our reference) or `paypack_ref`.
+
+---
+
+## 5. Required secrets (you set these once)
+
+Set them in **Lovable → Project Settings → Functions → Secrets** (or in your
+self-hosted Supabase project as Edge Function secrets). They are read with
+`Deno.env.get(...)` — **never hard-coded**.
+
+| Secret name                 | Where to get it                                         |
+|----------------------------|----------------------------------------------------------|
+| `PAYPACK_APP_ID`           | Paypack dashboard → your application → *Application ID* |
+| `PAYPACK_WEBHOOK_SIGN_KEY` | A strong random string **you choose**. Paste the same value into the Paypack webhook configuration so signatures match. |
+
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are auto-injected by Lovable
+Cloud — you don't set them yourself.
+
+If you self-host or use a separate Supabase project, also add to your `.env`:
+
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_PUBLISHABLE_KEY=...
+VITE_SUPABASE_PROJECT_ID=...
+```
+
+These are auto-populated in Lovable.
+
+---
+
+## 6. Paypack dashboard configuration
+
+In your Paypack dashboard (https://dashboard.paypack.rw):
+
+1. **Application** → copy the `Application ID` into the `PAYPACK_APP_ID` secret.
+2. **Webhooks** → add a new webhook with the URL:
+
+   ```
+   https://<your-supabase-ref>.functions.supabase.co/paypack-webhook
+   ```
+
+   Your project ref is shown in Lovable Cloud (or in `.env` as
+   `VITE_SUPABASE_PROJECT_ID`). For this project the URL is:
+
+   ```
+   https://qzfnzphbllhyyiyygaiy.functions.supabase.co/paypack-webhook
+   ```
+
+3. Paste **the same** signing key you saved as `PAYPACK_WEBHOOK_SIGN_KEY`.
+4. Paypack will send a `HEAD` probe to the URL — the function responds **200**.
+
+---
+
+## 7. Create your admin account (manual, one-time)
+
+The admin panel uses Lovable Cloud Auth and a `user_roles` table.
+
+1. Open the app, go to `/admin`, and click **Sign in**. If you don't have an
+   account, create one in **Lovable → Cloud → Auth → Users → Add user**
+   (email + password). Email confirmation is on by default; disable it if you
+   want or click the confirmation link from your inbox.
+2. Copy that user's UUID (Cloud → Auth → Users).
+3. In **Cloud → Database → SQL editor**, run:
+
+   ```sql
+   insert into public.user_roles (user_id, role)
+   values ('<paste-user-uuid>', 'admin');
+   ```
+
+4. Reload `/admin`. You should now see the dashboard.
+
+> Security note: roles are stored in a dedicated `user_roles` table (NOT on the
+> profile/users table) and checked via the `has_role()` security-definer
+> function. This is the recommended pattern and prevents privilege escalation.
+
+---
+
+## 8. Day-to-day usage
+
+### As admin
+- `/admin` → **Service prices**: for each service slug, click **Set price** or
+  **Edit** to choose a label (e.g. "Booking deposit"), the amount in RWF, and
+  whether it's active. Inactive services hide the Pay button on the booking
+  dialog (customers can still book via WhatsApp/email).
+- `/admin` → **Bookings & payments**: full live list of every checkout attempt,
+  most recent first, with status, customer info, service slug and Paypack
+  reference.
+
+### As customer
+- Visit any service page → click **Book Now** → fill the form.
+- If the admin set a price for that service, a green **Pay RWF X with Paypack**
+  button appears. Clicking it creates a pending order and redirects to the
+  Paypack hosted page.
+- After payment Paypack redirects to `/payment-success` or
+  `/payment-cancelled`, and the webhook updates the order status in the
+  background.
+
+---
+
+## 9. Local development
 
 ```bash
-bun install         # or: npm install / pnpm install
-cp .env.example .env
-# fill in the values (see section 2)
-bun run dev         # starts Vite on http://localhost:5173
+# install
+bun install   # or: npm install
+
+# run
+bun dev       # or: npm run dev
 ```
+
+For payments to work locally you'll also need to deploy the edge functions and
+set the secrets in your Lovable / Supabase project. The site itself runs fine
+without them — the Pay button just shows an error.
 
 ---
 
-## 2. Environment variables
+## 10. Things you must do manually (checklist)
 
-All env vars are prefixed `VITE_` so they are bundled into the client.
-Copy `.env.example` → `.env` and fill in:
-
-| Variable                          | Where to get it                                       | Purpose                              |
-| --------------------------------- | ----------------------------------------------------- | ------------------------------------ |
-| `VITE_SUPABASE_URL`               | Lovable Cloud (managed automatically)                 | Edge functions runtime               |
-| `VITE_SUPABASE_PUBLISHABLE_KEY`   | Lovable Cloud (managed automatically)                 | Edge functions runtime               |
-| `VITE_SUPABASE_PROJECT_ID`        | Lovable Cloud (managed automatically)                 | Edge functions runtime               |
-| `VITE_EXTERNAL_SUPABASE_URL`      | External Supabase → Project Settings → API → URL      | Admin panel, promoters, payments     |
-| `VITE_EXTERNAL_SUPABASE_ANON_KEY` | External Supabase → Project Settings → API → anon key | Admin panel, promoters, payments     |
-
-> ⚠️ The "publishable / anon" keys above are **public** by design (they only
-> grant access constrained by Row Level Security). Never commit a `service_role`
-> key.
-
-After editing `.env`, restart `bun run dev`.
+- [ ] In Paypack dashboard, copy your **Application ID**.
+- [ ] Choose a strong **webhook signing key** and remember it.
+- [ ] In Lovable → Functions → Secrets, add:
+      `PAYPACK_APP_ID`, `PAYPACK_WEBHOOK_SIGN_KEY`.
+- [ ] In Paypack dashboard → Webhooks, register:
+      `https://qzfnzphbllhyyiyygaiy.functions.supabase.co/paypack-webhook`
+      and paste the **same** signing key.
+- [ ] Create your admin user in Lovable Cloud → Auth and insert a row into
+      `public.user_roles` with role `admin` (SQL above).
+- [ ] Go to `/admin` → **Service prices** and set amounts for the services you
+      want to monetize.
+- [ ] Test by booking yourself with a small amount and confirm the row in
+      **Bookings & payments** flips to `completed`.
+- [ ] (Optional) Connect a custom domain in Lovable.
 
 ---
 
-## 3. External Supabase — full database setup
-
-The admin panel (`/admin`) and the booking dialog talk to an **external**
-Supabase project (separate from Lovable Cloud). When you spin up a new
-Supabase project, run the SQL below in **SQL Editor → New query**. It is
-idempotent (`if not exists` / `create or replace`).
-
-### 3.1 Enums + helper function
-
-```sql
--- Roles enum
-do $$ begin
-  create type public.app_role as enum ('admin', 'moderator', 'user');
-exception when duplicate_object then null; end $$;
-
--- Generic updated_at trigger function
-create or replace function public.update_updated_at_column()
-returns trigger language plpgsql
-set search_path = public as $$
-begin
-  new.updated_at = now();
-  return new;
-end $$;
-```
-
-### 3.2 `user_roles` (admin authentication)
-
-Roles must live in a **separate table** (never on profiles) to prevent
-privilege escalation.
-
-```sql
-create table if not exists public.user_roles (
-  id          uuid primary key default gen_random_uuid(),
-  user_id     uuid not null references auth.users(id) on delete cascade,
-  role        public.app_role not null,
-  created_at  timestamptz not null default now(),
-  unique (user_id, role)
-);
-
-grant select on public.user_roles to authenticated;
-grant all    on public.user_roles to service_role;
-
-alter table public.user_roles enable row level security;
-
--- Security-definer helper: avoids recursive RLS
-create or replace function public.has_role(_user_id uuid, _role public.app_role)
-returns boolean
-language sql stable security definer
-set search_path = public as $$
-  select exists (
-    select 1 from public.user_roles
-    where user_id = _user_id and role = _role
-  )
-$$;
-
-create policy "Users can read their own roles"
-  on public.user_roles for select
-  to authenticated
-  using (user_id = auth.uid());
-```
-
-To grant admin access, create an Auth user (Authentication → Users) then:
-
-```sql
-insert into public.user_roles (user_id, role)
-values ('<paste-user-uuid-here>', 'admin');
-```
-
-### 3.3 `promoters`
-
-```sql
-create table if not exists public.promoters (
-  id             uuid primary key default gen_random_uuid(),
-  name           text,
-  phone          text,
-  referral_code  text not null unique,
-  created_at     timestamptz not null default now(),
-  updated_at     timestamptz not null default now()
-);
-
-grant select, insert, update, delete on public.promoters to authenticated;
-grant all on public.promoters to service_role;
-
-alter table public.promoters enable row level security;
-
-create policy "Admins manage promoters"
-  on public.promoters for all
-  to authenticated
-  using (public.has_role(auth.uid(), 'admin'))
-  with check (public.has_role(auth.uid(), 'admin'));
-
-create trigger trg_promoters_updated_at
-  before update on public.promoters
-  for each row execute function public.update_updated_at_column();
-```
-
-### 3.4 `payments`
-
-```sql
-create table if not exists public.payments (
-  id              uuid primary key default gen_random_uuid(),
-  customer_name   text,
-  customer_phone  text,
-  amount          numeric not null check (amount >= 0),
-  referral_code   text,
-  promoter_id     uuid references public.promoters(id) on delete set null,
-  payment_status  text not null default 'pending'
-                  check (payment_status in ('pending','completed','failed','cancelled')),
-  transaction_id  text,
-  created_at      timestamptz not null default now(),
-  updated_at      timestamptz not null default now()
-);
-
-grant select on public.payments to authenticated;
-grant all    on public.payments to service_role;
-
-alter table public.payments enable row level security;
-
-create policy "Admins read payments"
-  on public.payments for select
-  to authenticated
-  using (public.has_role(auth.uid(), 'admin'));
-
-create trigger trg_payments_updated_at
-  before update on public.payments
-  for each row execute function public.update_updated_at_column();
-```
-
-### 3.5 `payment_links` (NEW — used by admin + booking dialog)
-
-The admin panel manages a list of payment links (label + amount + URL).
-The booking dialog reads the **active** ones publicly and renders them as
-buttons that open in a new tab.
-
-```sql
-create table if not exists public.payment_links (
-  id          uuid primary key default gen_random_uuid(),
-  label       text not null,
-  amount      numeric not null check (amount > 0),
-  url         text not null,
-  active      boolean not null default true,
-  created_at  timestamptz not null default now(),
-  updated_at  timestamptz not null default now()
-);
-
-grant select on public.payment_links to anon, authenticated;
-grant insert, update, delete on public.payment_links to authenticated;
-grant all on public.payment_links to service_role;
-
-alter table public.payment_links enable row level security;
-
--- Public can read only the active ones (shown in the booking dialog)
-create policy "Public reads active payment links"
-  on public.payment_links for select
-  to anon, authenticated
-  using (active = true);
-
--- Admins can do everything
-create policy "Admins manage payment links"
-  on public.payment_links for all
-  to authenticated
-  using (public.has_role(auth.uid(), 'admin'))
-  with check (public.has_role(auth.uid(), 'admin'));
-
-create trigger trg_payment_links_updated_at
-  before update on public.payment_links
-  for each row execute function public.update_updated_at_column();
-```
-
-### 3.6 Auth settings
-
-In the external project: **Authentication → Providers → Email** → disable
-"Confirm email" if you want admins to sign in immediately, or leave it on
-and confirm via the email link. The site uses **email + password** for the
-`/admin` route (see `src/pages/Admin.tsx`).
-
----
-
-## 4. Switching to a new Supabase account
-
-When you provision a fresh external Supabase project:
-
-1. Run **all** the SQL in section 3 in the new project's SQL editor.
-2. Create an admin user (Authentication → Users → Add user) and add a row
-   in `user_roles` with `role = 'admin'` (see section 3.2).
-3. Copy the new project's **URL** and **anon key** from
-   *Project Settings → API*.
-4. Paste them into your local `.env`:
-
-   ```env
-   VITE_EXTERNAL_SUPABASE_URL=https://<new-ref>.supabase.co
-   VITE_EXTERNAL_SUPABASE_ANON_KEY=eyJhbGciOi...
-   ```
-5. Restart `bun run dev`. The admin panel, booking payment links and
-   promoters dashboard will now point at the new project.
-
-> `src/integrations/external-supabase.ts` reads these env vars and falls
-> back to hard-coded defaults only when they are missing — so the moment
-> `.env` is filled in, the new project takes over.
-
----
-
-## 5. Admin panel (`/admin`)
-
-After logging in with an admin email, you can:
-
-- **Payment Links** — create / edit / delete labelled amounts with their
-  payment URL. Active links appear instantly in the booking dialog and
-  open in a new tab when a customer clicks them.
-- **Promoters** — manage referral codes used in promotional campaigns.
-- **Payments** — read-only history of recorded payments.
-
----
-
-## 6. Project structure
+## 11. File map (where each piece lives)
 
 ```
 src/
-  components/
-    BookingDialog.tsx       ← booking + payment links UI
-    SiteLayout.tsx          ← per-route SEO meta
-    sections/               ← home page sections (Hero, Services, …)
-  integrations/
-    external-supabase.ts    ← external project client (configurable via env)
-    supabase/client.ts      ← Lovable Cloud client (auto-generated, do not edit)
-  pages/
-    Home.tsx · ServicesPage.tsx · ServiceDetail.tsx
-    AboutPage.tsx · GalleryPage.tsx · ContactPage.tsx
-    Admin.tsx               ← /admin dashboard
-  data/services.ts          ← canonical service catalog
-  i18n.ts                   ← EN / FR / RW translations
-public/
-  robots.txt · sitemap.xml · favicon.png
+  components/BookingDialog.tsx     ← the Book Now form + Pay button
+  pages/Admin.tsx                  ← admin dashboard
+  pages/PaymentSuccess.tsx         ← Paypack success redirect
+  pages/PaymentCancelled.tsx       ← Paypack cancel redirect
+  integrations/supabase/client.ts  ← Lovable Cloud client (auto-generated)
+
 supabase/
-  functions/                ← Lovable Cloud edge functions (xentripay-*)
+  config.toml
+  functions/
+    initiate-paypack-checkout/index.ts
+    paypack-webhook/index.ts
+  migrations/                      ← database schema history
 ```
 
 ---
 
-## 7. SEO
+## 12. Troubleshooting
 
-Per-route `<title>`, `<meta description>`, keywords, canonical, OG tags
-and JSON-LD are set in `src/components/SiteLayout.tsx` and `index.html`.
-The site exposes `LocalBusiness` + `WebSite` structured data and ships
-with `sitemap.xml` and `robots.txt`.
-
-Keyword strategy targets **services + location** (e.g. *modern kitchen
-installation Kigali*, *bespoke wardrobes Rwanda*, *interior design
-Gikondo*), not the brand name alone.
-
----
-
-## 8. Scripts
-
-```bash
-bun run dev       # start dev server
-bun run build     # production build (handled by the platform)
-bunx vitest run   # run unit tests
-```
-
----
-
-## 9. Paypack Checkout integration (Rwanda)
-
-The site accepts online payments through **Paypack** (MTN MoMo, Airtel
-Money, cards). The amount each customer pays is **set by the admin** in
-`/admin → Payment Links` — there are no hard-coded prices in code.
-
-### 9.1 Architecture
-
-```
-Browser ──▶ Edge fn  initiate-paypack-checkout
-                       │  1. inserts row into `orders` (status=pending)
-                       │  2. POST  https://payments.paypack.rw/api/checkout/initiate
-                       ▼
-                     Paypack hosted checkout
-                       │  customer pays with MoMo / Airtel / card
-                       ▼
-            Edge fn  paypack-webhook   ◀── HMAC-SHA256 signed POST
-                       │  verifies x-paypack-signature
-                       │  updates `orders.status` → completed | failed | cancelled
-                       ▼
-              Browser is redirected to
-                /payment-success   or   /payment-cancelled
-```
-
-### 9.2 Files
-
-| Path                                                    | Purpose                                        |
-| ------------------------------------------------------- | ---------------------------------------------- |
-| `supabase/functions/initiate-paypack-checkout/index.ts` | Create order + request hosted checkout        |
-| `supabase/functions/paypack-webhook/index.ts`           | HEAD probe + HMAC verification + status update |
-| `docs/sql/orders.sql`                                   | `orders` table schema (already applied)        |
-| `src/components/PayNowButton.tsx`                       | Reusable Pay Now button                        |
-| `src/components/BookingDialog.tsx`                      | Booking dialog pay buttons (admin amounts)     |
-| `src/pages/PaymentSuccess.tsx`                          | Success landing page                           |
-| `src/pages/PaymentCancelled.tsx`                        | Cancelled landing page                         |
-
-### 9.3 Required edge function secrets
-
-Add these in **Lovable → Project Settings → Functions → Secrets**:
-
-| Secret name                | Where it comes from                                  |
-| -------------------------- | ---------------------------------------------------- |
-| `PAYPACK_APP_ID`           | Paypack dashboard → Applications → `application_id`  |
-| `PAYPACK_WEBHOOK_SIGN_KEY` | A signing key you choose; paste the same value into Paypack's webhook configuration |
-
-`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are auto-injected — do
-not add them manually.
-
-### 9.4 Configure the webhook in Paypack
-
-In the Paypack dashboard, set the webhook URL to:
-
-```
-https://<your-cloud-project-ref>.functions.supabase.co/paypack-webhook
-```
-
-Paypack pings the URL with a HEAD request first; our function responds
-200 to that. Real events come as `POST` with header
-`x-paypack-signature: <hex or base64 HMAC-SHA256 of the raw body>`.
-
-### 9.5 `orders` table
-
-```sql
--- See docs/sql/orders.sql for the full, idempotent script.
-create table public.orders (
-  id          uuid primary key default gen_random_uuid(),
-  user_id     uuid,
-  email       text,
-  item_name   text,
-  amount      integer not null,
-  status      text not null default 'pending'
-              check (status in ('pending','completed','failed','cancelled')),
-  paypack_ref text,
-  session_id  text,
-  created_at  timestamptz not null default now(),
-  updated_at  timestamptz not null default now()
-);
-```
-
-RLS: authenticated users can read their own orders (`user_id =
-auth.uid()`). Writes happen only from the edge functions via the
-service role.
-
-### 9.6 Admin-driven pricing
-
-In `/admin → Payment Links` create entries like:
-
-| Label                        | Amount (RWF) |
-| ---------------------------- | ------------ |
-| Site visit & consultation    | 30 000       |
-| Kitchen design deposit       | 250 000      |
-| Custom wardrobe deposit      | 150 000      |
-
-Each active link shows up in the booking dialog. Clicking it invokes
-`initiate-paypack-checkout` with that exact amount and opens the
-Paypack-hosted payment page in a new tab.
-
-### 9.7 Using `PayNowButton` elsewhere
-
-```tsx
-import { PayNowButton } from "@/components/PayNowButton";
-
-<PayNowButton amount={30000} itemName="Consultation" email={user?.email} />
-```
-
-### 9.8 Local testing
-
-```bash
-# Test the webhook responds to Paypack's HEAD probe
-curl -I https://<ref>.functions.supabase.co/paypack-webhook
-# → HTTP/2 200
-```
-
-You can also invoke the initiate function from the browser console:
-
-```js
-const { data, error } = await window.supabase.functions.invoke(
-  "initiate-paypack-checkout",
-  { body: { amount: 1000, item_name: "Test", email: "you@example.com" } },
-);
-console.log(data, error);
-```
-
----
-
-## 10. Scripts
-
-```bash
-bun run dev       # start dev server
-bun run build     # production build (handled by the platform)
-bunx vitest run   # run unit tests
-```
-
----
-
-## 11. License
-
-© Noble Spaces. All rights reserved.
-
+- **"PAYPACK_APP_ID not configured"** — add the secret in Lovable → Functions.
+- **"invalid signature"** in webhook logs — the signing key in Lovable doesn't
+  match the one in Paypack. Re-paste both to the same value.
+- **Admin page says "Access denied"** — the signed-in user has no `admin` row
+  in `user_roles`. Run the SQL in section 7.
+- **Pay button missing** — admin hasn't set/activated a price for that service.
+- **Order stays `pending`** — Paypack hasn't fired the webhook yet; check the
+  webhook URL in the Paypack dashboard and the function logs in Lovable.
