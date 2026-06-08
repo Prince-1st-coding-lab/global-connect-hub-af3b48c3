@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ExternalLink, Loader2, LogOut, Pencil, Plus, Trash2 } from "lucide-react";
+import { Loader2, LogOut, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +9,28 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { externalSupabase, type Payment, type PaymentLink, type Promoter } from "@/integrations/external-supabase";
+import { supabase } from "@/integrations/supabase/client";
+import { SERVICES } from "@/data/services";
+
+type ServicePrice = {
+  slug: string;
+  label: string;
+  amount: number;
+  active: boolean;
+};
+
+type Order = {
+  id: string;
+  customer_name: string | null;
+  email: string | null;
+  phone: string | null;
+  service_slug: string | null;
+  item_name: string | null;
+  amount: number;
+  status: string;
+  paypack_ref: string | null;
+  created_at: string;
+};
 
 const Admin = () => {
   const [ready, setReady] = useState(false);
@@ -18,16 +39,17 @@ const Admin = () => {
 
   useEffect(() => {
     document.title = "Admin — Noble Spaces";
-    externalSupabase.auth.onAuthStateChange((_event, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       setAuthed(!!session);
       if (session?.user?.id) checkAdmin(session.user.id).then(setIsAdmin);
       else setIsAdmin(false);
     });
-    externalSupabase.auth.getSession().then(async ({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       setAuthed(!!data.session);
       if (data.session?.user?.id) setIsAdmin(await checkAdmin(data.session.user.id));
       setReady(true);
     });
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   if (!ready) {
@@ -43,9 +65,10 @@ const Admin = () => {
       <section className="mx-auto max-w-md px-6 py-40 text-center">
         <h1 className="font-display text-2xl">Access denied</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your account is not an admin.
+          Your account is not an admin. Ask the project owner to grant the <code>admin</code> role
+          in the <code>user_roles</code> table.
         </p>
-        <Button className="mt-6" variant="outline" onClick={() => externalSupabase.auth.signOut()}>
+        <Button className="mt-6" variant="outline" onClick={() => supabase.auth.signOut()}>
           <LogOut className="mr-2 h-4 w-4" /> Sign out
         </Button>
       </section>
@@ -55,7 +78,7 @@ const Admin = () => {
 };
 
 async function checkAdmin(userId: string) {
-  const { data } = await externalSupabase
+  const { data } = await supabase
     .from("user_roles")
     .select("role")
     .eq("user_id", userId)
@@ -72,7 +95,7 @@ const SignIn = () => {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await externalSupabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) toast({ title: "Sign-in failed", description: error.message, variant: "destructive" });
   };
@@ -80,6 +103,9 @@ const SignIn = () => {
   return (
     <section className="mx-auto max-w-md px-6 py-40">
       <h1 className="font-display text-3xl">Admin sign in</h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Use the admin account configured in Lovable Cloud → Auth.
+      </p>
       <form className="mt-6 space-y-4" onSubmit={submit}>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
@@ -99,189 +125,116 @@ const SignIn = () => {
 
 const Dashboard = () => {
   const qc = useQueryClient();
-  const promoters = useQuery({
-    queryKey: ["ext-promoters"],
+
+  const prices = useQuery({
+    queryKey: ["service-prices"],
     queryFn: async () => {
-      const { data, error } = await externalSupabase
-        .from("promoters")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("service_prices")
+        .select("*");
       if (error) throw error;
-      return data as Promoter[];
+      return (data ?? []) as ServicePrice[];
     },
   });
-  const payments = useQuery({
-    queryKey: ["ext-payments"],
+
+  const orders = useQuery({
+    queryKey: ["admin-orders"],
     queryFn: async () => {
-      const { data, error } = await externalSupabase
-        .from("payments")
+      const { data, error } = await supabase
+        .from("orders")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(200);
+        .limit(500);
       if (error) throw error;
-      return data as Payment[];
+      return (data ?? []) as Order[];
     },
   });
-  const paymentLinks = useQuery({
-    queryKey: ["ext-payment-links"],
-    queryFn: async () => {
-      const { data, error } = await externalSupabase
-        .from("payment_links")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as PaymentLink[];
-    },
-  });
+
+  const priceFor = (slug: string) => prices.data?.find((p) => p.slug === slug);
 
   return (
     <section className="mx-auto max-w-6xl px-6 pb-24 pt-32">
       <div className="flex items-center justify-between gap-4">
         <h1 className="font-display text-4xl">Admin dashboard</h1>
-        <Button variant="outline" onClick={() => externalSupabase.auth.signOut()}>
+        <Button variant="outline" onClick={() => supabase.auth.signOut()}>
           <LogOut className="mr-2 h-4 w-4" /> Sign out
         </Button>
       </div>
 
-      {/* Payment Links section */}
+      {/* Service prices */}
       <div className="mt-10">
-        <div className="mb-3 flex items-center justify-between">
-          <div>
-            <h2 className="font-display text-2xl">Payment Links</h2>
-            <p className="text-xs text-muted-foreground">
-              Set an amount and a payment URL. Customers will see these in the booking dialog and open them in a new tab.
-            </p>
-          </div>
-          <PaymentLinkDialog
-            onSaved={() => qc.invalidateQueries({ queryKey: ["ext-payment-links"] })}
-          />
+        <div className="mb-3">
+          <h2 className="font-display text-2xl">Service prices</h2>
+          <p className="text-xs text-muted-foreground">
+            Set the amount (RWF) customers will pay when they click <em>Pay with Paypack</em> on each
+            service's booking dialog. Inactive services hide the online payment button.
+          </p>
         </div>
-        {paymentLinks.isLoading ? (
+        {prices.isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
         ) : (
           <div className="grid gap-2">
-            {(paymentLinks.data ?? []).map((l) => (
-              <div
-                key={l.id}
-                className="flex flex-wrap items-center gap-3 rounded-lg border border-gold/20 bg-card p-3"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate font-medium">{l.label}</span>
-                    {!l.active && (
-                      <span className="rounded bg-muted px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
-                        inactive
-                      </span>
-                    )}
-                  </div>
-                  <a
-                    href={l.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-0.5 inline-flex items-center gap-1 truncate text-xs text-muted-foreground hover:text-gold"
-                  >
-                    {l.url} <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-                <span className="rounded bg-gold/15 px-2 py-1 text-sm text-gold">
-                  RWF {Number(l.amount).toLocaleString()}
-                </span>
-                <PaymentLinkDialog
-                  existing={l}
-                  onSaved={() => qc.invalidateQueries({ queryKey: ["ext-payment-links"] })}
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={async () => {
-                    if (!confirm(`Delete payment link "${l.label}"?`)) return;
-                    const { error } = await externalSupabase
-                      .from("payment_links")
-                      .delete()
-                      .eq("id", l.id);
-                    if (error) toast({ title: "Delete failed", description: error.message, variant: "destructive" });
-                    else qc.invalidateQueries({ queryKey: ["ext-payment-links"] });
-                  }}
+            {SERVICES.map((s) => {
+              const p = priceFor(s.slug);
+              return (
+                <div
+                  key={s.slug}
+                  className="flex flex-wrap items-center gap-3 rounded-lg border border-gold/20 bg-card p-3"
                 >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </div>
-            ))}
-            {(!paymentLinks.data || !paymentLinks.data.length) && (
-              <p className="text-sm text-muted-foreground">
-                No payment links yet. Add one — it will appear instantly inside every booking dialog.
-              </p>
-            )}
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium">{s.slug}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {p ? p.label : "no price set"} {p && !p.active && "(inactive)"}
+                    </div>
+                  </div>
+                  <span className="rounded bg-gold/15 px-2 py-1 text-sm text-gold">
+                    {p ? `RWF ${Number(p.amount).toLocaleString()}` : "—"}
+                  </span>
+                  <PriceDialog
+                    slug={s.slug}
+                    existing={p}
+                    onSaved={() => qc.invalidateQueries({ queryKey: ["service-prices"] })}
+                  />
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-2">
-        {/* Promoters */}
-        <div>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-display text-2xl">Promoters</h2>
-            <NewPromoterDialog onCreated={() => qc.invalidateQueries({ queryKey: ["ext-promoters"] })} />
+      {/* Bookings */}
+      <div className="mt-10">
+        <h2 className="font-display text-2xl">Bookings & payments</h2>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Every Pay-with-Paypack click creates an order. Status updates automatically via the
+          Paypack webhook.
+        </p>
+        {orders.isLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        ) : (
+          <div className="grid gap-2">
+            {(orders.data ?? []).map((o) => (
+              <div key={o.id} className="rounded-lg border border-gold/20 bg-card p-3 text-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-medium">{o.customer_name || o.email || "—"}</span>
+                  <StatusBadge status={o.status} />
+                </div>
+                <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                  {o.phone && <span>{o.phone}</span>}
+                  {o.email && <span>{o.email}</span>}
+                  {o.service_slug && <span>service: {o.service_slug}</span>}
+                  <span>{o.item_name}</span>
+                  <span>RWF {Number(o.amount).toLocaleString()}</span>
+                  {o.paypack_ref && <span>ref: {o.paypack_ref}</span>}
+                  <span>{new Date(o.created_at).toLocaleString()}</span>
+                </div>
+              </div>
+            ))}
+            {(!orders.data || !orders.data.length) && (
+              <p className="text-sm text-muted-foreground">No bookings yet.</p>
+            )}
           </div>
-          {promoters.isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-          ) : (
-            <div className="grid gap-2">
-              {(promoters.data ?? []).map((p) => (
-                <div key={p.id} className="flex items-center gap-3 rounded-lg border border-gold/20 bg-card p-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate font-medium">{p.name || "—"}</div>
-                    <div className="truncate text-xs text-muted-foreground">{p.phone || "no phone"}</div>
-                  </div>
-                  <code className="rounded bg-muted px-2 py-1 text-xs text-gold">{p.referral_code}</code>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={async () => {
-                      if (!confirm(`Delete promoter "${p.name || p.referral_code}"?`)) return;
-                      const { error } = await externalSupabase.from("promoters").delete().eq("id", p.id);
-                      if (error) toast({ title: "Delete failed", description: error.message, variant: "destructive" });
-                      else qc.invalidateQueries({ queryKey: ["ext-promoters"] });
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-              ))}
-              {(!promoters.data || !promoters.data.length) && (
-                <p className="text-sm text-muted-foreground">No promoters yet.</p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Payments */}
-        <div>
-          <h2 className="mb-3 font-display text-2xl">Payments</h2>
-          {payments.isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-          ) : (
-            <div className="grid gap-2">
-              {(payments.data ?? []).map((p) => (
-                <div key={p.id} className="rounded-lg border border-gold/20 bg-card p-3 text-sm">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-medium">{p.customer_name || "—"}</span>
-                    <StatusBadge status={p.payment_status} />
-                  </div>
-                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                    <span>{p.customer_phone}</span>
-                    <span>RWF {Number(p.amount).toLocaleString()}</span>
-                    {p.referral_code && <span>ref: {p.referral_code}</span>}
-                    <span>{new Date(p.created_at).toLocaleString()}</span>
-                  </div>
-                </div>
-              ))}
-              {(!payments.data || !payments.data.length) && (
-                <p className="text-sm text-muted-foreground">No payments yet.</p>
-              )}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </section>
   );
@@ -291,55 +244,49 @@ const StatusBadge = ({ status }: { status: string }) => {
   const cls =
     status === "completed" ? "bg-emerald-500/15 text-emerald-400"
     : status === "failed" ? "bg-destructive/15 text-destructive"
+    : status === "cancelled" ? "bg-muted text-muted-foreground"
     : "bg-gold/15 text-gold";
   return <span className={`rounded px-2 py-0.5 text-xs uppercase tracking-wide ${cls}`}>{status}</span>;
 };
 
-const PaymentLinkDialog = ({
+const PriceDialog = ({
+  slug,
   existing,
   onSaved,
 }: {
-  existing?: PaymentLink;
+  slug: string;
+  existing?: ServicePrice;
   onSaved: () => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [label, setLabel] = useState(existing?.label ?? "");
+  const [label, setLabel] = useState(existing?.label ?? "Service booking");
   const [amount, setAmount] = useState(existing?.amount?.toString() ?? "");
-  const [url, setUrl] = useState(existing?.url ?? "");
   const [active, setActive] = useState(existing?.active ?? true);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!open) return;
-    setLabel(existing?.label ?? "");
+    setLabel(existing?.label ?? "Service booking");
     setAmount(existing?.amount?.toString() ?? "");
-    setUrl(existing?.url ?? "");
     setActive(existing?.active ?? true);
   }, [open, existing]);
 
   const submit = async () => {
     const amt = Number(amount);
-    if (!label.trim() || !url.trim() || !Number.isFinite(amt) || amt <= 0) {
-      toast({ title: "Label, amount and URL are required", variant: "destructive" });
-      return;
-    }
-    try {
-      new URL(url);
-    } catch {
-      toast({ title: "Invalid payment URL", variant: "destructive" });
+    if (!label.trim() || !Number.isFinite(amt) || amt <= 0) {
+      toast({ title: "Label and a positive amount are required", variant: "destructive" });
       return;
     }
     setBusy(true);
-    const payload = { label: label.trim(), amount: amt, url: url.trim(), active };
-    const { error } = existing
-      ? await externalSupabase.from("payment_links").update(payload).eq("id", existing.id)
-      : await externalSupabase.from("payment_links").insert(payload);
+    const { error } = await supabase
+      .from("service_prices")
+      .upsert({ slug, label: label.trim(), amount: amt, active }, { onConflict: "slug" });
     setBusy(false);
     if (error) {
       toast({ title: "Save failed", description: error.message, variant: "destructive" });
       return;
     }
-    toast({ title: existing ? "Payment link updated" : "Payment link created" });
+    toast({ title: "Saved" });
     setOpen(false);
     onSaved();
   };
@@ -347,17 +294,13 @@ const PaymentLinkDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {existing ? (
-          <Button size="icon" variant="ghost" aria-label="Edit">
-            <Pencil className="h-4 w-4" />
-          </Button>
-        ) : (
-          <Button size="sm"><Plus className="mr-2 h-4 w-4" /> New payment link</Button>
-        )}
+        <Button size="sm" variant="outline">
+          <Pencil className="mr-2 h-3 w-3" /> {existing ? "Edit" : "Set price"}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{existing ? "Edit payment link" : "New payment link"}</DialogTitle>
+          <DialogTitle>Price for {slug}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-3">
           <div className="space-y-1.5">
@@ -374,78 +317,9 @@ const PaymentLinkDialog = ({
               placeholder="50000"
             />
           </div>
-          <div className="space-y-1.5">
-            <Label>Payment URL *</Label>
-            <Input
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://pay.xentripay.com/..."
-            />
-          </div>
           <div className="flex items-center gap-3">
             <Switch checked={active} onCheckedChange={setActive} id="active" />
             <Label htmlFor="active">Show on booking dialog</Label>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={submit} disabled={busy}>
-            {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Save
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const NewPromoterDialog = ({ onCreated }: { onCreated: () => void }) => {
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  const submit = async () => {
-    if (!code.trim()) {
-      toast({ title: "Referral code required", variant: "destructive" });
-      return;
-    }
-    setBusy(true);
-    const { error } = await externalSupabase.from("promoters").insert({
-      name: name || null,
-      phone: phone || null,
-      referral_code: code.trim().toUpperCase(),
-    });
-    setBusy(false);
-    if (error) {
-      toast({ title: "Create failed", description: error.message, variant: "destructive" });
-      return;
-    }
-    toast({ title: "Promoter added" });
-    setOpen(false);
-    setName(""); setPhone(""); setCode("");
-    onCreated();
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm"><Plus className="mr-2 h-4 w-4" /> New promoter</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader><DialogTitle>New promoter</DialogTitle></DialogHeader>
-        <div className="grid gap-3">
-          <div className="space-y-1.5">
-            <Label>Name</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label>Phone</Label>
-            <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label>Referral code *</Label>
-            <Input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="e.g. JEAN10" />
           </div>
         </div>
         <DialogFooter>

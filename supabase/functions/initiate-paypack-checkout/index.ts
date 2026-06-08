@@ -8,7 +8,7 @@
 //   SUPABASE_URL              — auto-injected
 //   SUPABASE_SERVICE_ROLE_KEY — auto-injected
 //
-// Auth: deployed with verify_jwt = false (public checkout). All inputs are validated.
+// Auth: deployed with verify_jwt = false (public checkout). All inputs validated.
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
@@ -19,6 +19,10 @@ type Body = {
   amount?: number;
   item_name?: string;
   email?: string;
+  customer_name?: string;
+  phone?: string;
+  notes?: string;
+  service_slug?: string;
   user_id?: string | null;
   success_url?: string;
   cancel_url?: string;
@@ -38,26 +42,32 @@ Deno.serve(async (req) => {
 
     const body = (await req.json().catch(() => ({}))) as Body;
 
-    // --- validate ---
     const amount = Number(body.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount > 10_000_000) {
       return json({ error: "Invalid amount" }, 400);
     }
     const item_name = (body.item_name ?? "").toString().slice(0, 200) || "Service";
     const email = (body.email ?? "").toString().slice(0, 200) || null;
+    const customer_name = (body.customer_name ?? "").toString().slice(0, 120) || null;
+    const phone = (body.phone ?? "").toString().slice(0, 40) || null;
+    const notes = (body.notes ?? "").toString().slice(0, 2000) || null;
+    const service_slug = (body.service_slug ?? "").toString().slice(0, 120) || null;
     const origin = req.headers.get("origin") ?? "";
     const success_url = (body.success_url || `${origin}/payment-success`).slice(0, 500);
     const cancel_url = (body.cancel_url || `${origin}/payment-cancelled`).slice(0, 500);
 
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-    // --- create pending order ---
     const session_id = crypto.randomUUID();
     const { data: order, error: insertErr } = await supabase
       .from("orders")
       .insert({
         user_id: body.user_id ?? null,
         email,
+        customer_name,
+        phone,
+        notes,
+        service_slug,
         item_name,
         amount: Math.round(amount),
         status: "pending",
@@ -70,7 +80,6 @@ Deno.serve(async (req) => {
       return json({ error: "Could not create order", detail: insertErr.message }, 500);
     }
 
-    // --- request a hosted checkout from Paypack ---
     const ppRes = await fetch(`${PAYPACK_BASE}/checkout/initiate`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -83,7 +92,7 @@ Deno.serve(async (req) => {
         callback_url: `${SUPABASE_URL}/functions/v1/paypack-webhook`,
         success_url,
         cancel_url,
-        customer: email ? { email } : undefined,
+        customer: { email: email ?? undefined, name: customer_name ?? undefined, phone: phone ?? undefined },
       }),
     });
 
