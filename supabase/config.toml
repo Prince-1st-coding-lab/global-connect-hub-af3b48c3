@@ -12,3 +12,8 @@ verify_jwt = false
 [functions.paypack-webhook]
 verify_jwt = false
 
+[functions.paypack-webhook-v2]
+verify_jwt = false
+
+
+
