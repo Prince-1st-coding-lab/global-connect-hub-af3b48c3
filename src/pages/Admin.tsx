@@ -237,7 +237,6 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-      </div>
 
       <AdminBookings />
     </section>
