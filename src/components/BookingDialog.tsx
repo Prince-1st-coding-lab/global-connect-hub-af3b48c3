@@ -107,29 +107,35 @@ export const BookingDialog = ({ serviceTitle, serviceSlug, availability }: Props
       const { data, error } = await supabase.functions.invoke("initiate-paypack-checkout", {
         body: {
           amount: Number(price.amount),
+          phone,
           item_name: `${serviceTitle} — ${price.label}`,
           email: email || undefined,
           customer_name: name,
-          phone,
           notes,
           service_slug: serviceSlug,
-          success_url: `${window.location.origin}/payment-success`,
-          cancel_url: `${window.location.origin}/payment-cancelled`,
         },
       });
-      if (error) throw error;
-      if (!data?.payment_link) throw new Error(data?.error ?? "No payment link returned");
-      window.location.href = data.payment_link;
+      if (error) throw new Error(error.message ?? "Payment request failed");
+      if (!data?.ok) throw new Error(data?.error ?? "Payment was rejected");
+
+      toast({
+        title: "Check your phone 📱",
+        description:
+          data?.message ??
+          "Please check your phone for the Mobile Money PIN prompt to complete your payment.",
+      });
     } catch (e: any) {
       toast({
         title: "Payment could not be started",
         description: e?.message ?? "Please try again.",
         variant: "destructive",
       });
+      // Keep the dialog open so the user can fix details and retry
     } finally {
       setPaying(false);
     }
   };
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
