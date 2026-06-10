@@ -11,6 +11,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SERVICES } from "@/data/services";
+import { AdminBookings } from "@/components/admin/AdminBookings";
 
 type ServicePrice = {
   slug: string;
