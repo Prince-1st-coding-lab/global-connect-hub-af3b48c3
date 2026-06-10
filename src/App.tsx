@@ -13,6 +13,8 @@ import ServiceDetail from "./pages/ServiceDetail.tsx";
 import Admin from "./pages/Admin.tsx";
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import PaymentCancelled from "./pages/PaymentCancelled.tsx";
+import BookNow from "./pages/BookNow.tsx";
+import MyBookings from "./pages/MyBookings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { WhatsAppFab } from "./components/WhatsAppFab";
 
