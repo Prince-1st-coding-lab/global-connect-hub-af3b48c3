@@ -28,17 +28,20 @@ const humanize = (slug: string) =>
 
 const BookNow = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialService = searchParams.get("service") ?? SERVICES[0]?.slug ?? "";
   const [userId, setUserId] = useState<string | null>(null);
   const [authEmail, setAuthEmail] = useState("");
   const [authPass, setAuthPass] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
 
-  const [serviceSlug, setServiceSlug] = useState<string>(SERVICES[0]?.slug ?? "");
+  const [serviceSlug, setServiceSlug] = useState<string>(initialService);
   const [date, setDate] = useState<Date | undefined>();
   const [slot, setSlot] = useState<string>("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState<ServicePrice | null>(null);
   const [priceLoading, setPriceLoading] = useState(false);
   const [step, setStep] = useState<"form" | "summary">("form");
