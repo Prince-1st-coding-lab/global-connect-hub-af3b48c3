@@ -2,8 +2,7 @@ import "@/i18n";
 import { useEffect, useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock } from "lucide-react";
-import { BookingDialog } from "@/components/BookingDialog";
+import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock, CalendarCheck } from "lucide-react";
 import { useService } from "@/hooks/useServices";
 import { Lightbox } from "@/components/Lightbox";
 
@@ -129,7 +128,12 @@ const ServiceDetail = () => {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <BookingDialog serviceTitle={title} serviceSlug={svc.slug} availability={svc.availability} />
+                <Link
+                  to={`/book?service=${svc.slug}`}
+                  className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
+                >
+                  <CalendarCheck className="h-4 w-4" /> {t("booking.book_now")}
+                </Link>
                 <a
                   href="tel:+250793521437"
                   className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/10"

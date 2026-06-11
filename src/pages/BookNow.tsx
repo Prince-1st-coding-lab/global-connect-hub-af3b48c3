@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { CalendarIcon, Loader2, Smartphone, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,17 +28,20 @@ const humanize = (slug: string) =>
 
 const BookNow = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialService = searchParams.get("service") ?? SERVICES[0]?.slug ?? "";
   const [userId, setUserId] = useState<string | null>(null);
   const [authEmail, setAuthEmail] = useState("");
   const [authPass, setAuthPass] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
 
-  const [serviceSlug, setServiceSlug] = useState<string>(SERVICES[0]?.slug ?? "");
+  const [serviceSlug, setServiceSlug] = useState<string>(initialService);
   const [date, setDate] = useState<Date | undefined>();
   const [slot, setSlot] = useState<string>("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState<ServicePrice | null>(null);
   const [priceLoading, setPriceLoading] = useState(false);
   const [step, setStep] = useState<"form" | "summary">("form");
@@ -124,7 +128,7 @@ const BookNow = () => {
           item_name: `${serviceTitle} — ${format(date!, "PPP")} ${slot}`,
           email: email || undefined,
           customer_name: name,
-          notes: `Booking ${format(date!, "yyyy-MM-dd")} ${slot}`,
+          notes: `Booking ${format(date!, "yyyy-MM-dd")} ${slot}${description ? `\nMeasurements/Description: ${description}` : ""}`,
           service_slug: serviceSlug,
         },
       });
@@ -264,6 +268,17 @@ const BookNow = () => {
               <Label htmlFor="be">Email</Label>
               <Input id="be" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label htmlFor="bd">Measurements / Description</Label>
+              <Textarea
+                id="bd"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                maxLength={1000}
+                placeholder="e.g. Door: 2100mm x 900mm, oak veneer. Or describe what you need…"
+              />
+            </div>
           </div>
 
           <div className="flex items-center justify-between rounded-lg border border-gold/20 bg-secondary/30 p-3 text-sm">
@@ -291,6 +306,7 @@ const BookNow = () => {
             <Row k="Name" v={name} />
             <Row k="Phone" v={phone} />
             {email && <Row k="Email" v={email} />}
+            {description && <Row k="Details" v={description} />}
             <Row
               k="Amount"
               v={price ? `RWF ${Number(price.amount).toLocaleString()}` : "—"}
