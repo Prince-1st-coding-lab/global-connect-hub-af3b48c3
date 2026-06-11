@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, LogOut, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -66,12 +67,9 @@ const Admin = () => {
       <section className="mx-auto max-w-md px-6 py-40 text-center">
         <h1 className="font-display text-2xl">Access denied</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your account is not an admin. Ask the project owner to grant the <code>admin</code> role
-          in the <code>user_roles</code> table.
+          This area is restricted to administrators. Redirecting you home…
         </p>
-        <Button className="mt-6" variant="outline" onClick={() => supabase.auth.signOut()}>
-          <LogOut className="mr-2 h-4 w-4" /> Sign out
-        </Button>
+        <Navigate to="/" replace />
       </section>
     );
   }
