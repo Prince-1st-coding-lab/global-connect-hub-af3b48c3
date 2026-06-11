@@ -128,7 +128,7 @@ const BookNow = () => {
           item_name: `${serviceTitle} — ${format(date!, "PPP")} ${slot}`,
           email: email || undefined,
           customer_name: name,
-          notes: `Booking ${format(date!, "yyyy-MM-dd")} ${slot}`,
+          notes: `Booking ${format(date!, "yyyy-MM-dd")} ${slot}${description ? `\nMeasurements/Description: ${description}` : ""}`,
           service_slug: serviceSlug,
         },
       });
@@ -268,6 +268,17 @@ const BookNow = () => {
               <Label htmlFor="be">Email</Label>
               <Input id="be" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label htmlFor="bd">Measurements / Description</Label>
+              <Textarea
+                id="bd"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                maxLength={1000}
+                placeholder="e.g. Door: 2100mm x 900mm, oak veneer. Or describe what you need…"
+              />
+            </div>
           </div>
 
           <div className="flex items-center justify-between rounded-lg border border-gold/20 bg-secondary/30 p-3 text-sm">
@@ -295,6 +306,7 @@ const BookNow = () => {
             <Row k="Name" v={name} />
             <Row k="Phone" v={phone} />
             {email && <Row k="Email" v={email} />}
+            {description && <Row k="Details" v={description} />}
             <Row
               k="Amount"
               v={price ? `RWF ${Number(price.amount).toLocaleString()}` : "—"}
