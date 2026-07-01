@@ -170,8 +170,14 @@ export const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className="border-t border-gold/10 px-6 py-5 text-center text-xs uppercase tracking-[0.25em] text-muted-foreground">
-        © {new Date().getFullYear()} Noble Spaces — {t("footer.rights")}
+      <div className="flex flex-col items-center justify-center gap-2 border-t border-gold/10 px-6 py-5 text-center text-xs uppercase tracking-[0.25em] text-muted-foreground sm:flex-row sm:justify-between">
+        <span>© {new Date().getFullYear()} Noble Spaces — {t("footer.rights")}</span>
+        <Link
+          to="/admin"
+          className="text-[10px] tracking-[0.3em] text-muted-foreground/70 transition-colors hover:text-gold"
+        >
+          Admin
+        </Link>
       </div>
     </footer>
   );

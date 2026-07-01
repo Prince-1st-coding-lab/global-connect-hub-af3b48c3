@@ -18,35 +18,50 @@ export type Database = {
         Row: {
           booking_date: string
           created_at: string
+          customer_name: string | null
+          description: string | null
+          email: string | null
           id: string
           order_id: string | null
+          payment_method: string | null
+          phone: string | null
           service_name: string
           status: string
           time_slot: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           booking_date: string
           created_at?: string
+          customer_name?: string | null
+          description?: string | null
+          email?: string | null
           id?: string
           order_id?: string | null
+          payment_method?: string | null
+          phone?: string | null
           service_name: string
           status?: string
           time_slot: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           booking_date?: string
           created_at?: string
+          customer_name?: string | null
+          description?: string | null
+          email?: string | null
           id?: string
           order_id?: string | null
+          payment_method?: string | null
+          phone?: string | null
           service_name?: string
           status?: string
           time_slot?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -98,6 +113,36 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      service_photos: {
+        Row: {
+          created_at: string
+          id: string
+          public_url: string
+          service_slug: string
+          sort_order: number
+          storage_path: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          public_url: string
+          service_slug: string
+          sort_order?: number
+          storage_path: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          public_url?: string
+          service_slug?: string
+          sort_order?: number
+          storage_path?: string
+          updated_at?: string
         }
         Relationships: []
       }

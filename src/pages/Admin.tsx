@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SERVICES } from "@/data/services";
 import { AdminBookings } from "@/components/admin/AdminBookings";
+import { ServicePhotoManager } from "@/components/admin/ServicePhotoManager";
 
 type ServicePrice = {
   slug: string;
@@ -237,6 +238,7 @@ const Dashboard = () => {
       </div>
 
       <AdminBookings />
+      <ServicePhotoManager />
     </section>
   );
 };
