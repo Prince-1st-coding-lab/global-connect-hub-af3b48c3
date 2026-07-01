@@ -207,10 +207,10 @@ const ServiceDetail = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {svc.gallery.map((src, i) => (
+            {[...svc.gallery, ...adminPhotos].map((src, i) => (
               <button
                 type="button"
-                key={i}
+                key={`${src}-${i}`}
                 onClick={() => openLightbox(src)}
                 aria-label={`Open ${title} image ${i + 1}`}
                 className={`group relative block w-full overflow-hidden rounded-2xl border border-gold/15 text-left focus:outline-none focus:ring-2 focus:ring-gold/60 ${
