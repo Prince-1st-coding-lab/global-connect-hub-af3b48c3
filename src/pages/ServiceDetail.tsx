@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock, CalendarCheck } from "lucide-react";
 import { useService } from "@/hooks/useServices";
 import { Lightbox } from "@/components/Lightbox";
+import { supabase } from "@/integrations/supabase/client";
 
 type ServiceItem = { title: string; desc: string };
 
@@ -18,6 +19,29 @@ const ServiceDetail = () => {
   const description = svc?.description ?? fallback?.desc;
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [adminPhotos, setAdminPhotos] = useState<string[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!slug) return;
+      const { data } = await supabase
+        .from("service_photos")
+        .select("storage_path")
+        .eq("service_slug", slug)
+        .order("created_at", { ascending: false });
+      const paths = (data ?? []).map((r: any) => r.storage_path as string);
+      if (!paths.length) {
+        if (!cancelled) setAdminPhotos([]);
+        return;
+      }
+      const { data: signed } = await supabase.storage
+        .from("service-photos")
+        .createSignedUrls(paths, 60 * 60 * 24 * 7);
+      if (!cancelled) setAdminPhotos((signed ?? []).map((s) => s.signedUrl).filter(Boolean) as string[]);
+    })();
+    return () => { cancelled = true; };
+  }, [slug]);
 
   const lightboxItems = useMemo(() => {
     if (!svc) return [];
@@ -32,8 +56,13 @@ const ServiceDetail = () => {
       seen.add(src);
       list.push({ src, alt: `${title ?? ""} ${i + 1}` });
     });
+    adminPhotos.forEach((src, i) => {
+      if (seen.has(src)) return;
+      seen.add(src);
+      list.push({ src, alt: `${title ?? ""} extra ${i + 1}` });
+    });
     return list;
-  }, [svc, title]);
+  }, [svc, title, adminPhotos]);
 
   const openLightbox = (src: string) => {
     const i = lightboxItems.findIndex((it) => it.src === src);
