@@ -101,6 +101,36 @@ export type Database = {
         }
         Relationships: []
       }
+      service_photos: {
+        Row: {
+          created_at: string
+          id: string
+          public_url: string
+          service_slug: string
+          sort_order: number
+          storage_path: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          public_url: string
+          service_slug: string
+          sort_order?: number
+          storage_path: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          public_url?: string
+          service_slug?: string
+          sort_order?: number
+          storage_path?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       service_prices: {
         Row: {
           active: boolean
