@@ -2,7 +2,7 @@ import {
   Shirt, ChefHat, Tv, Briefcase, Scissors, Sparkles,
   Blinds, Volume2, LayoutPanelTop, Baby, Sofa, PanelTop,
   Brush, Dog, Utensils, Archive, Layers, PaintBucket,
-  DoorOpen, DoorClosed, type LucideIcon,
+  DoorOpen, DoorClosed, Palette, type LucideIcon,
 } from "lucide-react";
 
 // Auto-import every image inside each service folder.
@@ -42,6 +42,7 @@ export type Service = {
 };
 
 const baseServices: Service[] = [
+  { slug: "interior-design",               icon: Palette,         availability: "service", leadTimeDays: [3, 14]  },
   { slug: "wardrobes-manufacturing",       icon: Shirt,           availability: "custom",  leadTimeDays: [10, 21] },
   { slug: "modern-kitchen-installations",  icon: ChefHat,         availability: "custom",  leadTimeDays: [14, 30] },
   { slug: "media-tv-wall-installation",    icon: Tv,              availability: "custom",  leadTimeDays: [7, 14]  },
