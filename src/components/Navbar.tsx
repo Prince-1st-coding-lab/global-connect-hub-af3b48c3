@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { NavLink, useLocation, Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { Menu, X, Instagram, Facebook, ChevronDown } from "lucide-react";
+import { Menu, X, Instagram, Facebook, ChevronDown, Lock } from "lucide-react";
 import { SERVICES } from "@/data/services";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
@@ -181,6 +181,21 @@ export const Navbar = () => {
             </TooltipContent>
           </Tooltip>
           <LanguageSwitcher />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                to="/admin"
+                aria-label="Admin"
+                className="hidden items-center gap-1.5 rounded-full border border-gold/40 px-3 py-1.5 text-[10px] uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold hover:text-primary-foreground sm:inline-flex"
+              >
+                <Lock className="h-3 w-3" />
+                Admin
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Admin login</p>
+            </TooltipContent>
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <button
