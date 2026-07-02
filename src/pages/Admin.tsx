@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, LogOut, Pencil } from "lucide-react";
+import { Loader2, LogOut, Pencil, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,20 +37,27 @@ type Order = {
 const Admin = () => {
   const [ready, setReady] = useState(false);
   const [authed, setAuthed] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
     document.title = "Admin — Noble Spaces";
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+
+    const resolve = async (session: any) => {
       setAuthed(!!session);
-      if (session?.user?.id) checkAdmin(session.user.id).then(setIsAdmin);
-      else setIsAdmin(false);
-    });
-    supabase.auth.getSession().then(async ({ data }) => {
-      setAuthed(!!data.session);
-      if (data.session?.user?.id) setIsAdmin(await checkAdmin(data.session.user.id));
+      if (session?.user?.id) {
+        const admin = await checkAdmin(session.user.id);
+        setIsAdmin(admin);
+      } else {
+        setIsAdmin(null);
+      }
       setReady(true);
+    };
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      // defer to avoid deadlocks inside the auth callback
+      setTimeout(() => resolve(session), 0);
     });
+    supabase.auth.getSession().then(({ data }) => resolve(data.session));
     return () => sub.subscription.unsubscribe();
   }, []);
 
@@ -63,19 +69,35 @@ const Admin = () => {
     );
   }
   if (!authed) return <SignIn />;
-  if (!isAdmin) {
+  if (isAdmin === null) {
     return (
-      <section className="mx-auto max-w-md px-6 py-40 text-center">
-        <h1 className="font-display text-2xl">Access denied</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          This area is restricted to administrators. Redirecting you home…
-        </p>
-        <Navigate to="/" replace />
+      <section className="mx-auto max-w-md px-6 py-40 text-center text-muted-foreground">
+        <Loader2 className="mx-auto h-5 w-5 animate-spin" />
       </section>
     );
   }
+  if (!isAdmin) return <AccessDenied />;
   return <Dashboard />;
 };
+
+const AccessDenied = () => (
+  <section className="mx-auto max-w-md px-6 py-40 text-center">
+    <ShieldAlert className="mx-auto h-10 w-10 text-gold" />
+    <h1 className="mt-4 font-display text-2xl">Access denied</h1>
+    <p className="mt-2 text-sm text-muted-foreground">
+      Your account is signed in but does not have admin privileges. If this is a mistake, sign out
+      and log in with an authorized admin account.
+    </p>
+    <div className="mt-6 flex justify-center gap-2">
+      <Button variant="outline" onClick={() => supabase.auth.signOut()}>
+        <LogOut className="mr-2 h-4 w-4" /> Sign out
+      </Button>
+      <Button asChild>
+        <a href="/">Back to site</a>
+      </Button>
+    </div>
+  </section>
+);
 
 async function checkAdmin(userId: string) {
   const { data } = await supabase
