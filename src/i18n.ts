@@ -18,8 +18,9 @@ const resources = {
       },
       services: {
         title: "Core Offerings",
-        subtitle: "Twenty disciplines, one signature of craftsmanship.",
+        subtitle: "Twenty-one disciplines, one signature of craftsmanship.",
         items: [
+          { title: "Interior Design Services", desc: "Transform your space with professional interior design solutions. We create stylish, functional, and personalized interiors that reflect your vision and enhance comfort, productivity, and aesthetics." },
           { title: "Wardrobes Manufacturing & Supply", desc: "Custom-designed wardrobes crafted to maximize space, style, and functionality, tailored to your exact needs." },
           { title: "Modern Kitchen Installations", desc: "We design and install sleek, modern kitchens that combine beauty, efficiency, and smart storage solutions." },
           { title: "Modern Media TV Wall Installation", desc: "Transform your living space with elegant TV wall units designed for style, organization, and a premium finish." },
@@ -67,7 +68,7 @@ const resources = {
         lead_time: "Typical lead time",
         days: "days",
         check_availability: "Check Availability",
-        book_now: "Book Now",
+        book_now: "Buy Now",
         title: "Book this service",
         subtitle: "Tell us a bit about your project. We'll confirm availability within 24 hours.",
         type_label: "I am looking for",
@@ -84,7 +85,7 @@ const resources = {
         submit_email: "Send via Email",
         required: "Please fill all required fields.",
       },
-      common: { view_all: "View all", view_all_services: "View all 20 services" },
+      common: { view_all: "View all", view_all_services: "View all 21 services" },
       whatsapp: {
         title: "Message Us",
         subtitle: "We usually reply within a few minutes.",
@@ -136,8 +137,9 @@ const resources = {
       },
       services: {
         title: "Nos prestations",
-        subtitle: "Vingt disciplines, une seule signature d'artisanat.",
+        subtitle: "Vingt-et-une disciplines, une seule signature d'artisanat.",
         items: [
+          { title: "Services de Design d'Intérieur", desc: "Transformez votre espace grâce à des solutions professionnelles de design d'intérieur. Nous créons des intérieurs élégants, fonctionnels et personnalisés qui reflètent votre vision et améliorent le confort, la productivité et l'esthétique." },
           { title: "Fabrication & fourniture d'armoires", desc: "Armoires sur mesure conçues pour maximiser l'espace, le style et la fonctionnalité, adaptées à vos besoins." },
           { title: "Installations de cuisines modernes", desc: "Conception et installation de cuisines modernes alliant beauté, efficacité et rangements intelligents." },
           { title: "Installation murale TV moderne", desc: "Transformez votre salon avec d'élégants meubles TV muraux pensés pour le style, l'organisation et la finition haut de gamme." },
@@ -185,7 +187,7 @@ const resources = {
         lead_time: "Délai habituel",
         days: "jours",
         check_availability: "Vérifier la disponibilité",
-        book_now: "Réserver",
+        book_now: "Acheter",
         title: "Réserver ce service",
         subtitle: "Parlez-nous de votre projet. Nous confirmons la disponibilité sous 24 heures.",
         type_label: "Je recherche",
@@ -202,7 +204,7 @@ const resources = {
         submit_email: "Envoyer par Email",
         required: "Veuillez remplir tous les champs requis.",
       },
-      common: { view_all: "Tout voir", view_all_services: "Voir les 20 services" },
+      common: { view_all: "Tout voir", view_all_services: "Voir les 21 services" },
       whatsapp: {
         title: "Écrivez-nous",
         subtitle: "Nous répondons généralement en quelques minutes.",
@@ -254,8 +256,9 @@ const resources = {
       },
       services: {
         title: "Serivisi z'Ingenzi",
-        subtitle: "Inzobere makumyabiri, ubuhanga bumwe.",
+        subtitle: "Inzobere makumyabiri n'imwe, ubuhanga bumwe.",
         items: [
+          { title: "Serivisi zo Gushushanya Imbere y'Inzu", desc: "Hindura umwanya wawe ukoresheje serivisi z'umwuga zo gushushanya imbere y'inzu. Dukora imbere y'inzu ifite isura nziza, ikora neza kandi ihuye n'icyo ushaka, ikongera ituze, umusaruro n'ubwiza." },
           { title: "Gukora no gutanga ama-wardrobe", desc: "Ama-wardrobe yakorewe ku gahato wifuza, akoreshwa neza umwanya, asa neza kandi ari ingirakamaro." },
           { title: "Kwinjiza ibikoni bya kijyambere", desc: "Dushushanya kandi twinjiza ibikoni bya kijyambere bihuza ubwiza, ubushobozi n'ububiko bw'ubwenge." },
           { title: "Gushyira urukuta rwa TV rwa kijyambere", desc: "Hindura icyumba cyawe ukoresheje urukuta rwa TV rufite isura nziza n'ibyiza birambye." },
@@ -303,7 +306,7 @@ const resources = {
         lead_time: "Igihe bisanzwe bifata",
         days: "iminsi",
         check_availability: "Reba ko bihari",
-        book_now: "Tumiza",
+        book_now: "Gura",
         title: "Tumiza iyi serivisi",
         subtitle: "Tubwire kuri gahunda yawe. Tuzakwemeza mu masaha 24.",
         type_label: "Nshaka",
@@ -320,7 +323,7 @@ const resources = {
         submit_email: "Ohereza kuri Imeyili",
         required: "Uzuza ibisabwa byose.",
       },
-      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 20 zose" },
+      common: { view_all: "Reba byose", view_all_services: "Reba serivisi 21 zose" },
       whatsapp: {
         title: "Twandikire",
         subtitle: "Tubasubiza mu minota mike.",
