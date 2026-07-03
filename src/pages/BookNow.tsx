@@ -133,6 +133,35 @@ const BookNow = () => {
     );
   };
 
+  const bookOnly = async () => {
+    if (!canSubmit || !bookingPayload) {
+      toast({ title: "Please fill service, date, time, name and phone.", variant: "destructive" });
+      return;
+    }
+    setBooking(true);
+    const { error } = await supabase.from("bookings").insert({
+      service_name: bookingPayload.serviceTitle,
+      booking_date: bookingPayload.bookingDate,
+      time_slot: bookingPayload.timeSlot,
+      status: "pending",
+      customer_name: bookingPayload.name,
+      phone: bookingPayload.phone,
+      email: bookingPayload.email ?? null,
+      description: bookingPayload.description ?? null,
+      payment_method: "Booking (pay later)",
+    });
+    setBooking(false);
+    if (error) {
+      toast({ title: "Could not save booking", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({
+      title: "Booking received",
+      description: "Our team will contact you shortly to confirm your appointment.",
+    });
+    setDate(undefined); setSlot(""); setName(""); setPhone(""); setEmail(""); setDescription("");
+  };
+
   return (
     <section className="mx-auto max-w-3xl px-6 pb-24 pt-32">
       <div className="flex items-center justify-between gap-4">
