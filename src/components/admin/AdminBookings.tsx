@@ -133,16 +133,26 @@ export const AdminBookings = () => {
             return (
               <div key={b.id} className="rounded-lg border border-gold/20 bg-card p-3 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-medium">{b.service_name}</span>
+                  <span className="font-medium">
+                    {b.service_name}
+                    {b.customer_name && <span className="ml-2 text-muted-foreground">— {b.customer_name}</span>}
+                  </span>
                   <span className={`rounded-full border px-2.5 py-0.5 text-xs uppercase tracking-wider ${statusStyles[b.status] ?? "bg-muted text-muted-foreground border-border"}`}>
                     {b.status}
                   </span>
                 </div>
                 <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                   <span>{b.booking_date} · {b.time_slot}</span>
+                  {b.phone && <a href={`tel:${b.phone}`} className="hover:text-gold">{b.phone}</a>}
+                  {b.email && <a href={`mailto:${b.email}`} className="hover:text-gold">{b.email}</a>}
+                  {b.payment_method && <span>via {b.payment_method}</span>}
                   {o && <span>RWF {Number(o.amount).toLocaleString()} ({o.status})</span>}
-                  <span>user: {b.user_id.slice(0, 8)}…</span>
                 </div>
+                {b.description && (
+                  <p className="mt-2 whitespace-pre-wrap rounded-md bg-secondary/40 p-2 text-xs text-muted-foreground">
+                    {b.description}
+                  </p>
+                )}
               </div>
             );
           })}
