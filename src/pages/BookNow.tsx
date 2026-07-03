@@ -45,6 +45,7 @@ const BookNow = () => {
   const [priceLoading, setPriceLoading] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
   const [quoting, setQuoting] = useState(false);
+  const [booking, setBooking] = useState(false);
 
   useEffect(() => {
     document.title = "Book an Appointment — Noble Spaces";
