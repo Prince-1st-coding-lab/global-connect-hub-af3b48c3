@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2, Smartphone, MessageCircle, ArrowLeft } from "lucide-react";
+import { CalendarIcon, Loader2, Smartphone, MessageCircle, ArrowLeft, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,6 +45,7 @@ const BookNow = () => {
   const [priceLoading, setPriceLoading] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
   const [quoting, setQuoting] = useState(false);
+  const [booking, setBooking] = useState(false);
 
   useEffect(() => {
     document.title = "Book an Appointment — Noble Spaces";
@@ -130,6 +131,35 @@ const BookNow = () => {
       "_blank",
       "noopener,noreferrer",
     );
+  };
+
+  const bookOnly = async () => {
+    if (!canSubmit || !bookingPayload) {
+      toast({ title: "Please fill service, date, time, name and phone.", variant: "destructive" });
+      return;
+    }
+    setBooking(true);
+    const { error } = await supabase.from("bookings").insert({
+      service_name: bookingPayload.serviceTitle,
+      booking_date: bookingPayload.bookingDate,
+      time_slot: bookingPayload.timeSlot,
+      status: "pending",
+      customer_name: bookingPayload.name,
+      phone: bookingPayload.phone,
+      email: bookingPayload.email ?? null,
+      description: bookingPayload.description ?? null,
+      payment_method: "Booking (pay later)",
+    });
+    setBooking(false);
+    if (error) {
+      toast({ title: "Could not save booking", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({
+      title: "Booking received",
+      description: "Our team will contact you shortly to confirm your appointment.",
+    });
+    setDate(undefined); setSlot(""); setName(""); setPhone(""); setEmail(""); setDescription("");
   };
 
   return (
@@ -235,11 +265,24 @@ const BookNow = () => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="grid gap-2 sm:grid-cols-3">
+          <Button
+            onClick={bookOnly}
+            disabled={!canSubmit || booking}
+            className="bg-gold text-primary-foreground hover:bg-gold/90"
+          >
+            {booking ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <CalendarCheck className="mr-2 h-4 w-4" />
+            )}
+            Book Now
+          </Button>
           <Button
             onClick={openPay}
             disabled={!canSubmit}
-            className="sm:flex-1 bg-gold text-primary-foreground hover:bg-gold/90"
+            variant="outline"
+            className="border-gold/50 text-gold hover:bg-gold/10"
           >
             <Smartphone className="mr-2 h-4 w-4" /> Pay Now
           </Button>
@@ -247,7 +290,7 @@ const BookNow = () => {
             onClick={sendQuotationDirect}
             disabled={!canSubmit || quoting}
             variant="outline"
-            className="sm:flex-1 border-gold/50 text-gold hover:bg-gold/10"
+            className="border-gold/50 text-gold hover:bg-gold/10"
           >
             {quoting ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -258,8 +301,9 @@ const BookNow = () => {
           </Button>
         </div>
         <p className="text-center text-xs text-muted-foreground">
-          Pay Now opens MoMo Pay & bank transfer options. Send Quotation opens WhatsApp so you can
-          negotiate with our team.
+          <strong>Book Now</strong> reserves your slot (our team calls to confirm).{" "}
+          <strong>Pay Now</strong> opens MoMo Pay & bank transfer options.{" "}
+          <strong>Send Quotation</strong> opens WhatsApp so you can negotiate.
         </p>
       </div>
 

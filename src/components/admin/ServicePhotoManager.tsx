@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Loader2, Trash2, Upload, ImagePlus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2, Trash2, Upload, ImagePlus, Replace } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +38,10 @@ export const ServicePhotoManager = () => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [replacing, setReplacing] = useState<string | null>(null);
+  const uploadRef = useRef<HTMLInputElement>(null);
+  const replaceRef = useRef<HTMLInputElement>(null);
+  const replaceTargetRef = useRef<Photo | null>(null);
 
   const load = async (s: string) => {
     setLoading(true);
@@ -60,44 +64,64 @@ export const ServicePhotoManager = () => {
 
   useEffect(() => {
     if (slug) load(slug);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const onUpload = async (files: FileList | null) => {
     if (!files || !files.length) return;
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) {
+      toast({ title: "Not signed in", description: "Please sign in again.", variant: "destructive" });
+      return;
+    }
     setUploading(true);
+    let ok = 0;
     let failed = 0;
+    const firstError: { title: string; msg: string } = { title: "", msg: "" };
+
     for (const file of Array.from(files)) {
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const path = `${slug}/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("service-photos")
         .upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type });
       if (upErr) {
         failed++;
+        if (!firstError.title) { firstError.title = "Storage upload failed"; firstError.msg = upErr.message; }
         continue;
       }
       const { error: dbErr } = await supabase.from("service_photos").insert({
         service_slug: slug,
         storage_path: path,
-        public_url: path, // signed URLs generated on read
+        public_url: path,
       });
       if (dbErr) {
         failed++;
+        if (!firstError.title) { firstError.title = "Database insert failed"; firstError.msg = dbErr.message; }
         await supabase.storage.from("service-photos").remove([path]);
+        continue;
       }
+      ok++;
     }
     setUploading(false);
-    if (failed) toast({ title: `${failed} file(s) failed to upload`, variant: "destructive" });
-    else toast({ title: "Photos uploaded" });
+    if (uploadRef.current) uploadRef.current.value = "";
+
+    if (ok) toast({ title: `${ok} photo${ok > 1 ? "s" : ""} uploaded` });
+    if (failed) {
+      toast({
+        title: `${failed} file(s) failed`,
+        description: firstError.msg || "Check that you are signed in as an admin.",
+        variant: "destructive",
+      });
+    }
     load(slug);
   };
 
   const removePhoto = async (p: Photo) => {
+    if (!confirm("Delete this photo? This cannot be undone.")) return;
     setDeleting(p.id);
-    const [{ error: sErr }, { error: dErr }] = await Promise.all([
-      supabase.storage.from("service-photos").remove([p.storage_path]),
-      supabase.from("service_photos").delete().eq("id", p.id),
-    ]);
+    const { error: sErr } = await supabase.storage.from("service-photos").remove([p.storage_path]);
+    const { error: dErr } = await supabase.from("service_photos").delete().eq("id", p.id);
     setDeleting(null);
     if (sErr || dErr) {
       toast({
@@ -108,6 +132,46 @@ export const ServicePhotoManager = () => {
       return;
     }
     setPhotos((prev) => prev.filter((x) => x.id !== p.id));
+    toast({ title: "Photo deleted" });
+  };
+
+  const triggerReplace = (p: Photo) => {
+    replaceTargetRef.current = p;
+    replaceRef.current?.click();
+  };
+
+  const onReplace = async (files: FileList | null) => {
+    const target = replaceTargetRef.current;
+    replaceTargetRef.current = null;
+    if (!files || !files.length || !target) return;
+    const file = files[0];
+    setReplacing(target.id);
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const newPath = `${slug}/${crypto.randomUUID()}.${ext}`;
+    const { error: upErr } = await supabase.storage
+      .from("service-photos")
+      .upload(newPath, file, { cacheControl: "3600", upsert: false, contentType: file.type });
+    if (upErr) {
+      setReplacing(null);
+      toast({ title: "Upload failed", description: upErr.message, variant: "destructive" });
+      return;
+    }
+    const { error: dbErr } = await supabase
+      .from("service_photos")
+      .update({ storage_path: newPath, public_url: newPath })
+      .eq("id", target.id);
+    if (dbErr) {
+      await supabase.storage.from("service-photos").remove([newPath]);
+      setReplacing(null);
+      toast({ title: "Update failed", description: dbErr.message, variant: "destructive" });
+      return;
+    }
+    // remove old file
+    await supabase.storage.from("service-photos").remove([target.storage_path]);
+    setReplacing(null);
+    if (replaceRef.current) replaceRef.current.value = "";
+    toast({ title: "Photo replaced" });
+    load(slug);
   };
 
   return (
@@ -116,10 +180,10 @@ export const ServicePhotoManager = () => {
         <div>
           <h2 className="font-display text-2xl">Service photos</h2>
           <p className="text-xs text-muted-foreground">
-            Upload extra photos that appear in each service's gallery on the site.
+            Upload, replace or delete photos shown in each service's gallery.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Select value={slug} onValueChange={setSlug}>
             <SelectTrigger className="w-64"><SelectValue /></SelectTrigger>
             <SelectContent className="max-h-72">
@@ -128,20 +192,30 @@ export const ServicePhotoManager = () => {
               ))}
             </SelectContent>
           </Select>
-          <label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={(e) => onUpload(e.target.files)}
-              disabled={uploading}
-            />
-            <span className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gold/40 bg-gold px-3 py-2 text-sm text-primary-foreground hover:bg-gold/90">
-              {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-              Upload photos
-            </span>
-          </label>
+          <input
+            ref={uploadRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => onUpload(e.target.files)}
+          />
+          <input
+            ref={replaceRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => onReplace(e.target.files)}
+          />
+          <Button
+            type="button"
+            onClick={() => uploadRef.current?.click()}
+            disabled={uploading}
+            className="bg-gold text-primary-foreground hover:bg-gold/90"
+          >
+            {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+            Upload photos
+          </Button>
         </div>
       </div>
 
@@ -163,19 +237,36 @@ export const ServicePhotoManager = () => {
                   Preview unavailable
                 </div>
               )}
-              <Button
-                size="icon"
-                variant="destructive"
-                className="absolute right-2 top-2 h-7 w-7 opacity-0 transition-opacity group-hover:opacity-100"
-                disabled={deleting === p.id}
-                onClick={() => removePhoto(p)}
-              >
-                {deleting === p.id ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <Trash2 className="h-3.5 w-3.5" />
-                )}
-              </Button>
+              <div className="absolute right-2 top-2 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="h-7 w-7"
+                  title="Replace"
+                  disabled={replacing === p.id}
+                  onClick={() => triggerReplace(p)}
+                >
+                  {replacing === p.id ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Replace className="h-3.5 w-3.5" />
+                  )}
+                </Button>
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className="h-7 w-7"
+                  title="Delete"
+                  disabled={deleting === p.id}
+                  onClick={() => removePhoto(p)}
+                >
+                  {deleting === p.id ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-3.5 w-3.5" />
+                  )}
+                </Button>
+              </div>
             </div>
           ))}
         </div>
