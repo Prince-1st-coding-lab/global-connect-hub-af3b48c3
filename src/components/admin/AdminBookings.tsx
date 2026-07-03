@@ -7,13 +7,18 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Booking = {
   id: string;
-  user_id: string;
+  user_id: string | null;
   service_name: string;
   booking_date: string;
   time_slot: string;
   status: string;
   order_id: string | null;
   created_at: string;
+  customer_name: string | null;
+  phone: string | null;
+  email: string | null;
+  description: string | null;
+  payment_method: string | null;
 };
 
 type Order = { id: string; amount: number; status: string };
