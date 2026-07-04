@@ -33,6 +33,7 @@ const BookNow = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const initialService = searchParams.get("service") ?? SERVICES[0]?.slug ?? "";
+  const mode = searchParams.get("mode") === "pay" ? "pay" : "book";
 
   const [serviceSlug, setServiceSlug] = useState<string>(initialService);
   const [date, setDate] = useState<Date | undefined>();
@@ -48,8 +49,10 @@ const BookNow = () => {
   const [booking, setBooking] = useState(false);
 
   useEffect(() => {
-    document.title = "Book an Appointment — Noble Spaces";
-  }, []);
+    document.title = mode === "pay"
+      ? "Pay for your service — Noble Spaces"
+      : "Book an Appointment — Noble Spaces";
+  }, [mode]);
 
   useEffect(() => {
     if (!serviceSlug) return;
