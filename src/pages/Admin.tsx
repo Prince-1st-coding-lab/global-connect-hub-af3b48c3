@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, LogOut, Pencil, ShieldAlert } from "lucide-react";
+import { ImageIcon, Loader2, LogOut, Pencil, ShieldAlert } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,9 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { SERVICES } from "@/data/services";
+import { useServices } from "@/hooks/useServices";
 import { AdminBookings } from "@/components/admin/AdminBookings";
-import { ServicePhotoManager } from "@/components/admin/ServicePhotoManager";
+import { ServicesManager } from "@/components/admin/ServicesManager";
 
 type ServicePrice = {
   slug: string;
