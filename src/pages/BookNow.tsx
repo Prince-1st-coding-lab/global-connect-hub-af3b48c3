@@ -272,46 +272,55 @@ const BookNow = () => {
           )}
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-3">
-          <Button
-            onClick={bookOnly}
-            disabled={!canSubmit || booking}
-            className="bg-gold text-primary-foreground hover:bg-gold/90"
-          >
-            {booking ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <CalendarCheck className="mr-2 h-4 w-4" />
-            )}
-            Book Now
-          </Button>
-          <Button
-            onClick={openPay}
-            disabled={!canSubmit}
-            variant="outline"
-            className="border-gold/50 text-gold hover:bg-gold/10"
-          >
-            <Smartphone className="mr-2 h-4 w-4" /> Pay Now
-          </Button>
-          <Button
-            onClick={sendQuotationDirect}
-            disabled={!canSubmit || quoting}
-            variant="outline"
-            className="border-gold/50 text-gold hover:bg-gold/10"
-          >
-            {quoting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <MessageCircle className="mr-2 h-4 w-4" />
-            )}
-            Send Quotation
-          </Button>
-        </div>
-        <p className="text-center text-xs text-muted-foreground">
-          <strong>Book Now</strong> reserves your slot (our team calls to confirm).{" "}
-          <strong>Pay Now</strong> opens MoMo Pay & bank transfer options.{" "}
-          <strong>Send Quotation</strong> opens WhatsApp so you can negotiate.
-        </p>
+        {mode === "book" ? (
+          <>
+            <Button
+              onClick={bookOnly}
+              disabled={!canSubmit || booking}
+              className="w-full bg-gold text-primary-foreground hover:bg-gold/90"
+            >
+              {booking ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <CalendarCheck className="mr-2 h-4 w-4" />
+              )}
+              Book Now
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              We'll reserve your slot and call to confirm. To pay upfront, use{" "}
+              <strong>Pay Now</strong> on the service page.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Button
+                onClick={openPay}
+                disabled={!canSubmit}
+                className="bg-gold text-primary-foreground hover:bg-gold/90"
+              >
+                <Smartphone className="mr-2 h-4 w-4" /> Pay Now
+              </Button>
+              <Button
+                onClick={sendQuotationDirect}
+                disabled={!canSubmit || quoting}
+                variant="outline"
+                className="border-gold/50 text-gold hover:bg-gold/10"
+              >
+                {quoting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                )}
+                Send Quotation
+              </Button>
+            </div>
+            <p className="text-center text-xs text-muted-foreground">
+              <strong>Pay Now</strong> opens MoMo Pay & bank transfer options.{" "}
+              <strong>Send Quotation</strong> opens WhatsApp so you can negotiate.
+            </p>
+          </>
+        )}
       </div>
 
       {bookingPayload && (
