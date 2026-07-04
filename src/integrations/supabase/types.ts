@@ -173,6 +173,48 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          availability: string
+          created_at: string
+          description: string | null
+          hidden: boolean
+          icon: string | null
+          lead_time_max: number
+          lead_time_min: number
+          slug: string
+          sort_order: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          availability?: string
+          created_at?: string
+          description?: string | null
+          hidden?: boolean
+          icon?: string | null
+          lead_time_max?: number
+          lead_time_min?: number
+          slug: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          availability?: string
+          created_at?: string
+          description?: string | null
+          hidden?: boolean
+          icon?: string | null
+          lead_time_max?: number
+          lead_time_min?: number
+          slug?: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
