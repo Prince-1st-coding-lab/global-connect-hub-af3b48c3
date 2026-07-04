@@ -148,6 +148,7 @@ const SignIn = () => {
 
 const Dashboard = () => {
   const qc = useQueryClient();
+  const { data: services } = useServices(true);
 
   const prices = useQuery({
     queryKey: ["service-prices"],
