@@ -1,10 +1,12 @@
 import "@/i18n";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock, CalendarCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock, CalendarCheck, Wallet } from "lucide-react";
 import { useService } from "@/hooks/useServices";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Lightbox } from "@/components/Lightbox";
+import { ServicePhotoAdminPanel } from "@/components/admin/ServicePhotoAdminPanel";
 import { supabase } from "@/integrations/supabase/client";
 
 type ServiceItem = { title: string; desc: string };
@@ -20,28 +22,25 @@ const ServiceDetail = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [adminPhotos, setAdminPhotos] = useState<string[]>([]);
+  const [photoRefreshKey, setPhotoRefreshKey] = useState(0);
+  const { isAdmin } = useIsAdmin();
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      if (!slug) return;
-      const { data } = await supabase
-        .from("service_photos")
-        .select("storage_path")
-        .eq("service_slug", slug)
-        .order("created_at", { ascending: false });
-      const paths = (data ?? []).map((r: any) => r.storage_path as string);
-      if (!paths.length) {
-        if (!cancelled) setAdminPhotos([]);
-        return;
-      }
-      const { data: signed } = await supabase.storage
-        .from("service-photos")
-        .createSignedUrls(paths, 60 * 60 * 24 * 7);
-      if (!cancelled) setAdminPhotos((signed ?? []).map((s) => s.signedUrl).filter(Boolean) as string[]);
-    })();
-    return () => { cancelled = true; };
+  const loadPhotos = useCallback(async () => {
+    if (!slug) return;
+    const { data } = await supabase
+      .from("service_photos")
+      .select("storage_path")
+      .eq("service_slug", slug)
+      .order("created_at", { ascending: false });
+    const paths = (data ?? []).map((r: { storage_path: string }) => r.storage_path);
+    if (!paths.length) { setAdminPhotos([]); return; }
+    const { data: signed } = await supabase.storage
+      .from("service-photos")
+      .createSignedUrls(paths, 60 * 60 * 24 * 7);
+    setAdminPhotos((signed ?? []).map((s) => s.signedUrl).filter(Boolean) as string[]);
   }, [slug]);
+
+  useEffect(() => { loadPhotos(); }, [loadPhotos, photoRefreshKey]);
 
   const lightboxItems = useMemo(() => {
     if (!svc) return [];
@@ -161,7 +160,13 @@ const ServiceDetail = () => {
                   to={`/book?service=${svc.slug}`}
                   className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
                 >
-                  <CalendarCheck className="h-4 w-4" /> {t("booking.book_now")}
+                  <CalendarCheck className="h-4 w-4" /> Book Now
+                </Link>
+                <Link
+                  to={`/book?service=${svc.slug}&mode=pay`}
+                  className="inline-flex items-center gap-2 rounded-full bg-gold/10 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold ring-1 ring-inset ring-gold/50 transition-all hover:bg-gold/20"
+                >
+                  <Wallet className="h-4 w-4" /> Pay Now
                 </Link>
                 <a
                   href="tel:+250793521437"
@@ -229,6 +234,15 @@ const ServiceDetail = () => {
               </button>
             ))}
           </div>
+
+          {isAdmin && (
+            <div className="mt-10">
+              <ServicePhotoAdminPanel
+                slug={svc.slug}
+                onChanged={() => setPhotoRefreshKey((k) => k + 1)}
+              />
+            </div>
+          )}
         </div>
       </section>
 

@@ -14,7 +14,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { SERVICES } from "@/data/services";
+import { useServices } from "@/hooks/useServices";
 import { PayOptionsDialog, type BookingPayload } from "@/components/PayOptionsDialog";
 
 const TIME_SLOTS = [
@@ -32,7 +32,9 @@ const WHATSAPP_NUMBER = "250793521437";
 const BookNow = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const initialService = searchParams.get("service") ?? SERVICES[0]?.slug ?? "";
+  const { data: services } = useServices();
+  const initialService = searchParams.get("service") ?? services[0]?.slug ?? "";
+  const mode = searchParams.get("mode") === "pay" ? "pay" : "book";
 
   const [serviceSlug, setServiceSlug] = useState<string>(initialService);
   const [date, setDate] = useState<Date | undefined>();
@@ -48,8 +50,10 @@ const BookNow = () => {
   const [booking, setBooking] = useState(false);
 
   useEffect(() => {
-    document.title = "Book an Appointment — Noble Spaces";
-  }, []);
+    document.title = mode === "pay"
+      ? "Pay for your service — Noble Spaces"
+      : "Book an Appointment — Noble Spaces";
+  }, [mode]);
 
   useEffect(() => {
     if (!serviceSlug) return;
@@ -166,9 +170,13 @@ const BookNow = () => {
     <section className="mx-auto max-w-3xl px-6 pb-24 pt-32">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl">Book an appointment</h1>
+          <h1 className="font-display text-4xl">
+            {mode === "pay" ? "Pay for your service" : "Book an appointment"}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Pick a service, day and time. Then pay or request a quotation.
+            {mode === "pay"
+              ? "Fill in your details, then pay by Mobile Money or bank transfer — or request a quotation on WhatsApp."
+              : "Pick a service, day and time. Our team will contact you to confirm."}
           </p>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
@@ -182,8 +190,8 @@ const BookNow = () => {
           <Select value={serviceSlug} onValueChange={setServiceSlug}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent className="max-h-72">
-              {SERVICES.map((s) => (
-                <SelectItem key={s.slug} value={s.slug}>{humanize(s.slug)}</SelectItem>
+              {services.map((s) => (
+                <SelectItem key={s.slug} value={s.slug}>{s.title ?? humanize(s.slug)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -265,46 +273,55 @@ const BookNow = () => {
           )}
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-3">
-          <Button
-            onClick={bookOnly}
-            disabled={!canSubmit || booking}
-            className="bg-gold text-primary-foreground hover:bg-gold/90"
-          >
-            {booking ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <CalendarCheck className="mr-2 h-4 w-4" />
-            )}
-            Book Now
-          </Button>
-          <Button
-            onClick={openPay}
-            disabled={!canSubmit}
-            variant="outline"
-            className="border-gold/50 text-gold hover:bg-gold/10"
-          >
-            <Smartphone className="mr-2 h-4 w-4" /> Pay Now
-          </Button>
-          <Button
-            onClick={sendQuotationDirect}
-            disabled={!canSubmit || quoting}
-            variant="outline"
-            className="border-gold/50 text-gold hover:bg-gold/10"
-          >
-            {quoting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <MessageCircle className="mr-2 h-4 w-4" />
-            )}
-            Send Quotation
-          </Button>
-        </div>
-        <p className="text-center text-xs text-muted-foreground">
-          <strong>Book Now</strong> reserves your slot (our team calls to confirm).{" "}
-          <strong>Pay Now</strong> opens MoMo Pay & bank transfer options.{" "}
-          <strong>Send Quotation</strong> opens WhatsApp so you can negotiate.
-        </p>
+        {mode === "book" ? (
+          <>
+            <Button
+              onClick={bookOnly}
+              disabled={!canSubmit || booking}
+              className="w-full bg-gold text-primary-foreground hover:bg-gold/90"
+            >
+              {booking ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <CalendarCheck className="mr-2 h-4 w-4" />
+              )}
+              Book Now
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              We'll reserve your slot and call to confirm. To pay upfront, use{" "}
+              <strong>Pay Now</strong> on the service page.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Button
+                onClick={openPay}
+                disabled={!canSubmit}
+                className="bg-gold text-primary-foreground hover:bg-gold/90"
+              >
+                <Smartphone className="mr-2 h-4 w-4" /> Pay Now
+              </Button>
+              <Button
+                onClick={sendQuotationDirect}
+                disabled={!canSubmit || quoting}
+                variant="outline"
+                className="border-gold/50 text-gold hover:bg-gold/10"
+              >
+                {quoting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                )}
+                Send Quotation
+              </Button>
+            </div>
+            <p className="text-center text-xs text-muted-foreground">
+              <strong>Pay Now</strong> opens MoMo Pay & bank transfer options.{" "}
+              <strong>Send Quotation</strong> opens WhatsApp so you can negotiate.
+            </p>
+          </>
+        )}
       </div>
 
       {bookingPayload && (

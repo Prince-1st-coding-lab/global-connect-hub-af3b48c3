@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, LogOut, Pencil, ShieldAlert } from "lucide-react";
+import { ImageIcon, Loader2, LogOut, Pencil, ShieldAlert } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,9 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { SERVICES } from "@/data/services";
+import { useServices } from "@/hooks/useServices";
 import { AdminBookings } from "@/components/admin/AdminBookings";
-import { ServicePhotoManager } from "@/components/admin/ServicePhotoManager";
+import { ServicesManager } from "@/components/admin/ServicesManager";
 
 type ServicePrice = {
   slug: string;
@@ -147,6 +148,7 @@ const SignIn = () => {
 
 const Dashboard = () => {
   const qc = useQueryClient();
+  const { data: services } = useServices(true);
 
   const prices = useQuery({
     queryKey: ["service-prices"],
@@ -196,7 +198,7 @@ const Dashboard = () => {
           <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
         ) : (
           <div className="grid gap-2">
-            {SERVICES.map((s) => {
+            {services.map((s) => {
               const p = priceFor(s.slug);
               return (
                 <div
@@ -259,8 +261,22 @@ const Dashboard = () => {
         )}
       </div>
 
+      <ServicesManager />
       <AdminBookings />
-      <ServicePhotoManager />
+
+      <div className="mt-10 rounded-lg border border-dashed border-gold/30 bg-card/40 p-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-foreground">
+          <ImageIcon className="h-4 w-4 text-gold" />
+          <span className="font-medium">Service photos have moved</span>
+        </div>
+        <p className="mt-1">
+          Manage each service's photos directly on its public page. Open a service and scroll to the
+          gallery — you'll see upload / replace / delete controls only when you're signed in as admin.
+        </p>
+        <Button asChild size="sm" variant="outline" className="mt-3">
+          <Link to="/services">Go to services</Link>
+        </Button>
+      </div>
     </section>
   );
 };
