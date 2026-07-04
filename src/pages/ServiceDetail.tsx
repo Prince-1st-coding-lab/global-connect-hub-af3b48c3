@@ -22,28 +22,25 @@ const ServiceDetail = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [adminPhotos, setAdminPhotos] = useState<string[]>([]);
+  const [photoRefreshKey, setPhotoRefreshKey] = useState(0);
+  const { isAdmin } = useIsAdmin();
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      if (!slug) return;
-      const { data } = await supabase
-        .from("service_photos")
-        .select("storage_path")
-        .eq("service_slug", slug)
-        .order("created_at", { ascending: false });
-      const paths = (data ?? []).map((r: any) => r.storage_path as string);
-      if (!paths.length) {
-        if (!cancelled) setAdminPhotos([]);
-        return;
-      }
-      const { data: signed } = await supabase.storage
-        .from("service-photos")
-        .createSignedUrls(paths, 60 * 60 * 24 * 7);
-      if (!cancelled) setAdminPhotos((signed ?? []).map((s) => s.signedUrl).filter(Boolean) as string[]);
-    })();
-    return () => { cancelled = true; };
+  const loadPhotos = useCallback(async () => {
+    if (!slug) return;
+    const { data } = await supabase
+      .from("service_photos")
+      .select("storage_path")
+      .eq("service_slug", slug)
+      .order("created_at", { ascending: false });
+    const paths = (data ?? []).map((r: { storage_path: string }) => r.storage_path);
+    if (!paths.length) { setAdminPhotos([]); return; }
+    const { data: signed } = await supabase.storage
+      .from("service-photos")
+      .createSignedUrls(paths, 60 * 60 * 24 * 7);
+    setAdminPhotos((signed ?? []).map((s) => s.signedUrl).filter(Boolean) as string[]);
   }, [slug]);
+
+  useEffect(() => { loadPhotos(); }, [loadPhotos, photoRefreshKey]);
 
   const lightboxItems = useMemo(() => {
     if (!svc) return [];
