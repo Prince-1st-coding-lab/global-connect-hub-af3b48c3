@@ -32,7 +32,8 @@ const WHATSAPP_NUMBER = "250793521437";
 const BookNow = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const initialService = searchParams.get("service") ?? SERVICES[0]?.slug ?? "";
+  const { data: services } = useServices();
+  const initialService = searchParams.get("service") ?? services[0]?.slug ?? "";
   const mode = searchParams.get("mode") === "pay" ? "pay" : "book";
 
   const [serviceSlug, setServiceSlug] = useState<string>(initialService);
