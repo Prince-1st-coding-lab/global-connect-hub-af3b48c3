@@ -1,10 +1,12 @@
 import "@/i18n";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock, CalendarCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock, CalendarCheck, Wallet } from "lucide-react";
 import { useService } from "@/hooks/useServices";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Lightbox } from "@/components/Lightbox";
+import { ServicePhotoAdminPanel } from "@/components/admin/ServicePhotoAdminPanel";
 import { supabase } from "@/integrations/supabase/client";
 
 type ServiceItem = { title: string; desc: string };
