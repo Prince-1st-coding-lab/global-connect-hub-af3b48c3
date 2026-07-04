@@ -198,7 +198,7 @@ const Dashboard = () => {
           <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
         ) : (
           <div className="grid gap-2">
-            {SERVICES.map((s) => {
+            {services.map((s) => {
               const p = priceFor(s.slug);
               return (
                 <div
