@@ -261,8 +261,22 @@ const Dashboard = () => {
         )}
       </div>
 
+      <ServicesManager />
       <AdminBookings />
-      <ServicePhotoManager />
+
+      <div className="mt-10 rounded-lg border border-dashed border-gold/30 bg-card/40 p-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-foreground">
+          <ImageIcon className="h-4 w-4 text-gold" />
+          <span className="font-medium">Service photos have moved</span>
+        </div>
+        <p className="mt-1">
+          Manage each service's photos directly on its public page. Open a service and scroll to the
+          gallery — you'll see upload / replace / delete controls only when you're signed in as admin.
+        </p>
+        <Button asChild size="sm" variant="outline" className="mt-3">
+          <Link to="/services">Go to services</Link>
+        </Button>
+      </div>
     </section>
   );
 };
