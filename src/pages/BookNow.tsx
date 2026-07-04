@@ -14,7 +14,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { SERVICES } from "@/data/services";
+import { useServices } from "@/hooks/useServices";
 import { PayOptionsDialog, type BookingPayload } from "@/components/PayOptionsDialog";
 
 const TIME_SLOTS = [
