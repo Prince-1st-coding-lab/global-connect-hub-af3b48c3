@@ -234,6 +234,15 @@ const ServiceDetail = () => {
               </button>
             ))}
           </div>
+
+          {isAdmin && (
+            <div className="mt-10">
+              <ServicePhotoAdminPanel
+                slug={svc.slug}
+                onChanged={() => setPhotoRefreshKey((k) => k + 1)}
+              />
+            </div>
+          )}
         </div>
       </section>
 
