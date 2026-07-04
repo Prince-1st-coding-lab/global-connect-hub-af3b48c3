@@ -190,8 +190,8 @@ const BookNow = () => {
           <Select value={serviceSlug} onValueChange={setServiceSlug}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent className="max-h-72">
-              {SERVICES.map((s) => (
-                <SelectItem key={s.slug} value={s.slug}>{humanize(s.slug)}</SelectItem>
+              {services.map((s) => (
+                <SelectItem key={s.slug} value={s.slug}>{s.title ?? humanize(s.slug)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
