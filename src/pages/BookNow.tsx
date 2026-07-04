@@ -169,9 +169,13 @@ const BookNow = () => {
     <section className="mx-auto max-w-3xl px-6 pb-24 pt-32">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl">Book an appointment</h1>
+          <h1 className="font-display text-4xl">
+            {mode === "pay" ? "Pay for your service" : "Book an appointment"}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Pick a service, day and time. Then pay or request a quotation.
+            {mode === "pay"
+              ? "Fill in your details, then pay by Mobile Money or bank transfer — or request a quotation on WhatsApp."
+              : "Pick a service, day and time. Our team will contact you to confirm."}
           </p>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
