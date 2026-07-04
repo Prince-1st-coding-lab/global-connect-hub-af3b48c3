@@ -160,7 +160,13 @@ const ServiceDetail = () => {
                   to={`/book?service=${svc.slug}`}
                   className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-gold/90"
                 >
-                  <CalendarCheck className="h-4 w-4" /> {t("booking.book_now")}
+                  <CalendarCheck className="h-4 w-4" /> Book Now
+                </Link>
+                <Link
+                  to={`/book?service=${svc.slug}&mode=pay`}
+                  className="inline-flex items-center gap-2 rounded-full bg-gold/10 px-6 py-3 text-sm uppercase tracking-[0.2em] text-gold ring-1 ring-inset ring-gold/50 transition-all hover:bg-gold/20"
+                >
+                  <Wallet className="h-4 w-4" /> Pay Now
                 </Link>
                 <a
                   href="tel:+250793521437"
