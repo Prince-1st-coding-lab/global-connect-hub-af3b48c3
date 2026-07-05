@@ -214,7 +214,7 @@ export const Navbar = () => {
       </nav>
 
       {open && (
-        <div className="lg:hidden border-t border-gold/10 bg-background/95 backdrop-blur-xl">
+        <div className="lg:hidden max-h-[85dvh] overflow-y-auto border-t border-gold/10 bg-background/95 backdrop-blur-xl">
           <div className="flex flex-col gap-1 px-6 py-4">
             {links.map((l) => (
               <NavLink
