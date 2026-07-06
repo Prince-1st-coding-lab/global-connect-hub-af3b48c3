@@ -42,26 +42,34 @@ const ServiceDetail = () => {
 
   useEffect(() => { loadPhotos(); }, [loadPhotos, photoRefreshKey]);
 
+  const effectiveCover = svc?.cover || adminPhotos[0] || "";
+  const effectiveGallery = useMemo(() => {
+    if (!svc) return [] as string[];
+    const bundled = svc.gallery ?? [];
+    const extras = svc.cover ? adminPhotos : adminPhotos.slice(1);
+    const seen = new Set<string>();
+    return [...bundled, ...extras].filter((s) => {
+      if (!s || seen.has(s)) return false;
+      seen.add(s);
+      return true;
+    });
+  }, [svc, adminPhotos]);
+
   const lightboxItems = useMemo(() => {
     if (!svc) return [];
     const list: { src: string; alt: string }[] = [];
     const seen = new Set<string>();
-    if (svc.cover) {
-      list.push({ src: svc.cover, alt: title ?? "" });
-      seen.add(svc.cover);
+    if (effectiveCover) {
+      list.push({ src: effectiveCover, alt: title ?? "" });
+      seen.add(effectiveCover);
     }
-    svc.gallery.forEach((src, i) => {
+    effectiveGallery.forEach((src, i) => {
       if (seen.has(src)) return;
       seen.add(src);
       list.push({ src, alt: `${title ?? ""} ${i + 1}` });
     });
-    adminPhotos.forEach((src, i) => {
-      if (seen.has(src)) return;
-      seen.add(src);
-      list.push({ src, alt: `${title ?? ""} extra ${i + 1}` });
-    });
     return list;
-  }, [svc, title, adminPhotos]);
+  }, [svc, title, effectiveCover, effectiveGallery]);
 
   const openLightbox = (src: string) => {
     const i = lightboxItems.findIndex((it) => it.src === src);
