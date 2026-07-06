@@ -226,7 +226,7 @@ const ServiceDetail = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[...svc.gallery, ...adminPhotos].map((src, i) => (
+            {effectiveGallery.map((src, i) => (
               <button
                 type="button"
                 key={`${src}-${i}`}
