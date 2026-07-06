@@ -193,17 +193,23 @@ const ServiceDetail = () => {
 
             <button
               type="button"
-              onClick={() => openLightbox(svc.cover)}
+              onClick={() => effectiveCover && openLightbox(effectiveCover)}
               aria-label={`Open ${title}`}
               className="group block overflow-hidden rounded-3xl border border-gold/20 shadow-deep focus:outline-none focus:ring-2 focus:ring-gold/60"
             >
-              <img
-                src={svc.cover}
-                alt={title}
-                width={1280}
-                height={896}
-                className="h-full w-full cursor-zoom-in object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+              {effectiveCover ? (
+                <img
+                  src={effectiveCover}
+                  alt={title}
+                  width={1280}
+                  height={896}
+                  className="h-full w-full cursor-zoom-in object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex aspect-[4/3] w-full items-center justify-center bg-secondary/40 text-sm text-muted-foreground">
+                  No featured image yet
+                </div>
+              )}
             </button>
           </div>
         </div>
