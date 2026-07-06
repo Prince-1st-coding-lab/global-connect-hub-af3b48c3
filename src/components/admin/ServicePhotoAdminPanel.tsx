@@ -39,9 +39,11 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [replacing, setReplacing] = useState<string | null>(null);
+  const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
   const replaceRef = useRef<HTMLInputElement>(null);
   const replaceTargetRef = useRef<Photo | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const load = async () => {
     setLoading(true);
