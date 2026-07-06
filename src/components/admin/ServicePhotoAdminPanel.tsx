@@ -66,11 +66,11 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [slug]);
 
-  // Dismiss active photo on Escape or click outside the photo grid
+  // Dismiss active photo on Escape or click outside the panel
   const onDocClick = useCallback((e: MouseEvent) => {
     const target = e.target as Node;
-    const grid = panelRef.current;
-    if (grid && !grid.contains(target)) {
+    const panel = panelRef.current;
+    if (panel && !panel.contains(target)) {
       setActivePhotoId(null);
     }
   }, []);
@@ -125,6 +125,7 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
     await supabase.storage.from("service-photos").remove([p.storage_path]);
     const { error } = await supabase.from("service_photos").delete().eq("id", p.id);
     setDeleting(null);
+    setActivePhotoId(null);
     if (error) {
       toast({ title: "Delete failed", description: error.message, variant: "destructive" });
       return;
@@ -152,6 +153,7 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
       .upload(newPath, file, { cacheControl: "3600", upsert: false, contentType: file.type });
     if (upErr) {
       setReplacing(null);
+      setActivePhotoId(null);
       toast({ title: "Upload failed", description: upErr.message, variant: "destructive" });
       return;
     }
@@ -162,11 +164,13 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
     if (dbErr) {
       await supabase.storage.from("service-photos").remove([newPath]);
       setReplacing(null);
+      setActivePhotoId(null);
       toast({ title: "Update failed", description: dbErr.message, variant: "destructive" });
       return;
     }
     await supabase.storage.from("service-photos").remove([target.storage_path]);
     setReplacing(null);
+    setActivePhotoId(null);
     if (replaceRef.current) replaceRef.current.value = "";
     toast({ title: "Photo replaced" });
     await load();
@@ -174,13 +178,13 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
   };
 
   return (
-    <div className="rounded-2xl border border-dashed border-gold/40 bg-card/40 p-5">
+    <div ref={panelRef} className="rounded-2xl border border-dashed border-gold/40 bg-card/40 p-5">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-xs uppercase tracking-[0.25em] text-gold/80">Admin</div>
           <h3 className="mt-1 font-display text-xl">Manage photos for this service</h3>
           <p className="text-xs text-muted-foreground">
-            Only signed-in admins see this panel. Uploaded photos appear in the gallery above.
+            Only signed-in admins see this panel. Double-click a photo to edit or remove it.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -213,7 +217,11 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {photos.map((p) => (
-            <div key={p.id} className="group relative overflow-hidden rounded-lg border border-gold/15">
+            <div
+              key={p.id}
+              className="group relative overflow-hidden rounded-lg border border-gold/15 cursor-pointer"
+              onDoubleClick={() => setActivePhotoId(p.id)}
+            >
               {p.signedUrl ? (
                 <img src={p.signedUrl} alt="" className="aspect-square w-full object-cover" />
               ) : (
@@ -221,20 +229,28 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
                   Preview unavailable
                 </div>
               )}
-              <div className="absolute right-2 top-2 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
-                <Button size="icon" variant="secondary" className="h-7 w-7" title="Replace"
-                  disabled={replacing === p.id} onClick={() => triggerReplace(p)}>
-                  {replacing === p.id
-                    ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    : <Replace className="h-3.5 w-3.5" />}
-                </Button>
-                <Button size="icon" variant="destructive" className="h-7 w-7" title="Delete"
-                  disabled={deleting === p.id} onClick={() => removePhoto(p)}>
-                  {deleting === p.id
-                    ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    : <Trash2 className="h-3.5 w-3.5" />}
-                </Button>
-              </div>
+              {activePhotoId === p.id && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <div className="flex gap-2">
+                    <Button size="icon" variant="secondary" className="h-9 w-9" title="Replace"
+                      disabled={replacing === p.id} onClick={(e) => { e.stopPropagation(); triggerReplace(p); }}>
+                      {replacing === p.id
+                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                        : <Replace className="h-4 w-4" />}
+                    </Button>
+                    <Button size="icon" variant="destructive" className="h-9 w-9" title="Delete"
+                      disabled={deleting === p.id} onClick={(e) => { e.stopPropagation(); removePhoto(p); }}>
+                      {deleting === p.id
+                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                        : <Trash2 className="h-4 w-4" />}
+                    </Button>
+                    <Button size="icon" variant="outline" className="h-9 w-9 border-white/30 text-white hover:bg-white/20" title="Close"
+                      onClick={(e) => { e.stopPropagation(); setActivePhotoId(null); }}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
