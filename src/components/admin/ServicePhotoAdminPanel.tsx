@@ -66,6 +66,27 @@ export const ServicePhotoAdminPanel = ({ slug, onChanged }: Props) => {
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [slug]);
 
+  // Dismiss active photo on Escape or click outside the photo grid
+  const onDocClick = useCallback((e: MouseEvent) => {
+    const target = e.target as Node;
+    const grid = panelRef.current;
+    if (grid && !grid.contains(target)) {
+      setActivePhotoId(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActivePhotoId(null);
+    };
+    document.addEventListener("click", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("click", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [onDocClick]);
+
   const onUpload = async (files: FileList | null) => {
     if (!files || !files.length) return;
     setUploading(true);
