@@ -2,7 +2,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import heroImg from "@/assets/hero-living.jpg";
+import heroImgAsset from "@/assets/hero-living.jpg.asset.json";
+const heroImg = heroImgAsset.url;
 
 export const Hero = () => {
   const { t } = useTranslation();

@@ -1,4 +1,6 @@
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
+
+const logo = logoAsset.url;
 
 export const Logo = ({ className = "" }: { className?: string }) => (
   <a href="#home" className={`flex items-center gap-3 ${className}`}>
