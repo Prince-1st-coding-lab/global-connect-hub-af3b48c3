@@ -11,10 +11,19 @@ import {
 //
 // IMPORTANT: each service shows ONLY its own folder images.
 // No cross-service fallback gallery — keeps content authentic per service.
-const serviceImages = import.meta.glob(
-  "@/assets/services/*/*.{jpg,jpeg,png,webp}",
+// Images are stored on the Lovable CDN. The `.asset.json` pointer files
+// live next to where the binary used to be, so the folder-per-slug layout
+// still works.
+const serviceAssets = import.meta.glob(
+  "@/assets/services/*/*.{jpg,jpeg,png,webp}.asset.json",
   { eager: true, import: "default" },
-) as Record<string, string>;
+) as Record<string, { url: string }>;
+const serviceImages: Record<string, string> = Object.fromEntries(
+  Object.entries(serviceAssets).map(([path, asset]) => [
+    path.replace(/\.asset\.json$/, ""),
+    asset.url,
+  ]),
+);
 
 const imagesForSlug = (slug: string): string[] => {
   return Object.entries(serviceImages)
