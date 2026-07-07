@@ -12,8 +12,8 @@ import {
 // IMPORTANT: each service shows ONLY its own folder images.
 // No cross-service fallback gallery — keeps content authentic per service.
 const serviceImages = import.meta.glob(
-  "@/assets/services/*/*.{jpg,jpeg,png,webp}",
-  { eager: true, import: "default" },
+  "../assets/services/*/*.{jpg,jpeg,png,webp}",
+  { eager: true, import: "default", query: "?url" },
 ) as Record<string, string>;
 
 const imagesForSlug = (slug: string): string[] => {
