@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
-import officeAsset from "@/assets/service-office.jpg.asset.json";
-const office = officeAsset.url;
+import office from "@/assets/service-office.jpg";
 
 export const About = () => {
   const { t } = useTranslation();
