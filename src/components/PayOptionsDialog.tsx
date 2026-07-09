@@ -21,7 +21,7 @@ export type BookingPayload = {
 };
 
 const WHATSAPP_NUMBER = "250793521437";
-const MOMO_CODE = "0793521437";
+const MOMO_CODE = "095839";
 const BANK_ACCOUNT = "4002201390383";
 const HOLDER = "NOBLE SPACES Ltd";
 
