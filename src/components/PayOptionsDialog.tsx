@@ -168,6 +168,7 @@ export const PayOptionsDialog = ({ open, onOpenChange, booking, onDone }: Props)
           <TabsContent value="bank" className="space-y-3 pt-4">
             <p className="text-sm text-muted-foreground">
               Transfer the amount to the account below from your bank app or branch.
+              (EQUITY BANK)
             </p>
             <CopyRow label="Bank account number" value={BANK_ACCOUNT} />
             <CopyRow label="Account name" value={HOLDER} />
