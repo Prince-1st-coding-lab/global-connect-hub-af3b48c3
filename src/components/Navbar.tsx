@@ -185,9 +185,7 @@ export const Navbar = () => {
             <TooltipTrigger asChild>
               
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Admin login</p>
-            </TooltipContent>
+            
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -263,12 +261,7 @@ export const Navbar = () => {
               </ul>
             )}
 
-            <Link
-              to="/admin"
-              className="mt-2 inline-flex items-center gap-2 rounded-full border border-gold/40 px-3 py-2 text-xs uppercase tracking-[0.25em] text-gold hover:bg-gold/10"
-            >
-              <Lock className="h-3 w-3" /> Admin
-            </Link>
+            
           </div>
         </div>
       )}
