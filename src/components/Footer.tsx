@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Instagram, Facebook } from "lucide-react";
+import { Instagram, Facebook, Lock } from "lucide-react";
 import { Logo } from "./Logo";
 import { useServices, type UiService } from "@/hooks/useServices";
 import { SOCIAL_LINKS } from "@/data/socials";
@@ -169,15 +169,17 @@ export const Footer = () => {
             ))}
           </ul>
         </div>
+        <Link
+  to="/admin"
+  className="inline-flex items-center gap-2 rounded-full border border-gold/40 px-4 py-2 text-xs uppercase tracking-[0.25em] text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+>
+  <Lock className="h-3 w-3" />
+  Admin
+</Link>
       </div>
       <div className="flex flex-col items-center justify-center gap-2 border-t border-gold/10 px-6 py-5 text-center text-xs uppercase tracking-[0.25em] text-muted-foreground sm:flex-row sm:justify-between">
         <span>© {new Date().getFullYear()} Noble Spaces — {t("footer.rights")}</span>
-        <Link
-          to="/admin"
-          className="text-[10px] tracking-[0.3em] text-muted-foreground/70 transition-colors hover:text-gold"
-        >
-          Admin
-        </Link>
+        
       </div>
     </footer>
   );
