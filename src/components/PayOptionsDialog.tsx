@@ -21,7 +21,7 @@ export type BookingPayload = {
 };
 
 const WHATSAPP_NUMBER = "250793521437";
-const MOMO_CODE = "095839";
+const MOMO_CODE = "0793521437";
 const BANK_ACCOUNT = "4002201390383";
 const HOLDER = "NOBLE SPACES Ltd";
 
@@ -145,8 +145,8 @@ export const PayOptionsDialog = ({ open, onOpenChange, booking, onDone }: Props)
 
           <TabsContent value="momo" className="space-y-3 pt-4">
             <p className="text-sm text-muted-foreground">
-              Dial <span className="text-gold">*182*8*1#</span> on your phone, choose <em>Pay</em>,
-              enter the MoMo Pay code below and the amount, then confirm with your PIN.
+              Dial <span className="text-gold">*182*1*1#</span> on your phone, choose <em>Pay</em>,
+              enter the MoMo Pay number below and the amount, then confirm with your PIN.
             </p>
             <CopyRow label="MoMo Pay code" value={MOMO_CODE} />
             <CopyRow label="Account name" value={HOLDER} />
