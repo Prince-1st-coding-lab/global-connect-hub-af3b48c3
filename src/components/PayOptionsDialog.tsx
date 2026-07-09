@@ -148,7 +148,7 @@ export const PayOptionsDialog = ({ open, onOpenChange, booking, onDone }: Props)
               Dial <span className="text-gold">*182*1*1#</span> on your phone, choose <em>Pay</em>,
               enter the MoMo Pay number below and the amount, then confirm with your PIN.
             </p>
-            <CopyRow label="MoMo Pay code" value={MOMO_CODE} />
+            <CopyRow label="MoMo Pay Number" value={MOMO_CODE} />
             <CopyRow label="Account name" value={HOLDER} />
             {booking.amountLabel && <CopyRow label="Amount to pay" value={booking.amountLabel} />}
             <Button
