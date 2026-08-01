@@ -2,17 +2,13 @@ import { NavLink, useLocation } from "react-router-dom";
 import {
   Bell,
   CalendarCheck,
-  FileText,
   Image,
   LayoutDashboard,
   MessageSquare,
-  Package,
   Quote,
   Receipt,
-  Settings,
   Sparkles,
   Star,
-  Users,
 } from "lucide-react";
 import {
   Sidebar,
