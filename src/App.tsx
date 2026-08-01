@@ -40,10 +40,20 @@ const App = () => (
             <Route path="/about" element={<AboutPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/admin" element={<Admin />} />
             <Route path="/book" element={<BookNow />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
+          </Route>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminOverview />} />
+            <Route path="notifications" element={<AdminNotificationsPage />} />
+            <Route path="bookings" element={<AdminBookingsPage />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="quotes" element={<AdminQuotes />} />
+            <Route path="messages" element={<AdminMessages />} />
+            <Route path="services" element={<AdminServices />} />
+            <Route path="photos" element={<AdminPhotos />} />
+            <Route path="testimonials" element={<AdminTestimonials />} />
           </Route>
         </Routes>
         <WhatsAppFab />
