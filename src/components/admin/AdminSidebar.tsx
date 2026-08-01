@@ -49,18 +49,12 @@ const GROUPS: { label: string; items: Item[] }[] = [
     label: "Catalogue",
     items: [
       { title: "Services", url: "/admin/services", icon: Sparkles },
-      { title: "Products", url: "/admin/products", icon: Package },
       { title: "Service photos", url: "/admin/photos", icon: Image },
     ],
   },
   {
     label: "Content",
-    items: [
-      { title: "Testimonials", url: "/admin/testimonials", icon: Star },
-      { title: "Blog", url: "/admin/blog", icon: FileText },
-      { title: "Team", url: "/admin/team", icon: Users },
-      { title: "Site settings", url: "/admin/settings", icon: Settings },
-    ],
+    items: [{ title: "Testimonials", url: "/admin/testimonials", icon: Star }],
   },
 ];
 
