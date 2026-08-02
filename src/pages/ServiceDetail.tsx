@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Phone, Mail, CheckCircle2, Hammer, CalendarClock, Clock, CalendarCheck, Wallet } from "lucide-react";
 import { useService } from "@/hooks/useServices";
+import { getServiceIndex } from "@/data/services";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Lightbox } from "@/components/Lightbox";
 import { ServicePhotoAdminPanel } from "@/components/admin/ServicePhotoAdminPanel";
@@ -16,7 +17,8 @@ const ServiceDetail = () => {
   const { t } = useTranslation();
   const { service: svc, index: idx, all } = useService(slug);
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
-  const fallback = idx >= 0 ? items[idx] : undefined;
+  const fbIdx = getServiceIndex(slug);
+  const fallback = fbIdx >= 0 ? items[fbIdx] : undefined;
   const title = svc?.title ?? fallback?.title;
   const description = svc?.description ?? fallback?.desc;
   const [lightboxOpen, setLightboxOpen] = useState(false);
