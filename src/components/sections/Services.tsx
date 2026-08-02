@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
+import { getServiceIndex } from "@/data/services";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type ServiceItem = { title: string; desc: string };
