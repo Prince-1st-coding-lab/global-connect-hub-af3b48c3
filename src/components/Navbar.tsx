@@ -4,7 +4,8 @@ import { NavLink, useLocation, Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Menu, X, Instagram, Facebook, ChevronDown, Lock } from "lucide-react";
-import { SERVICES } from "@/data/services";
+import { getServiceIndex } from "@/data/services";
+import { useServices } from "@/hooks/useServices";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ export const Navbar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
+  const { data: services } = useServices();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -102,7 +104,7 @@ export const Navbar = () => {
                 </Link>
                 <div className="my-1 h-px bg-gold/10" />
                 <ul className="max-h-[60vh] overflow-y-auto py-1">
-                  {SERVICES.map((svc, i) => {
+                  {services.map((svc) => {
                     const Icon = svc.icon;
                     return (
                       <li key={svc.slug}>
@@ -113,7 +115,7 @@ export const Navbar = () => {
                           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold/30 text-gold transition-colors group-hover:bg-gold group-hover:text-primary-foreground">
                             <Icon className="h-3.5 w-3.5" />
                           </span>
-                          <span className="truncate">{items[i]?.title}</span>
+                          <span className="truncate">{svc.title ?? items[getServiceIndex(svc.slug)]?.title ?? svc.slug.replace(/-/g, " ")}</span>
                         </Link>
                       </li>
                     );
@@ -244,7 +246,7 @@ export const Navbar = () => {
                     {t("common.view_all")}
                   </Link>
                 </li>
-                {SERVICES.map((svc, i) => {
+                {services.map((svc) => {
                   const Icon = svc.icon;
                   return (
                     <li key={svc.slug}>
@@ -253,7 +255,7 @@ export const Navbar = () => {
                         className="flex items-center gap-3 py-1.5 text-sm text-foreground/80 hover:text-gold"
                       >
                         <Icon className="h-3.5 w-3.5 text-gold" />
-                        <span className="truncate">{items[i]?.title}</span>
+                        <span className="truncate">{svc.title ?? items[getServiceIndex(svc.slug)]?.title ?? svc.slug.replace(/-/g, " ")}</span>
                       </Link>
                     </li>
                   );

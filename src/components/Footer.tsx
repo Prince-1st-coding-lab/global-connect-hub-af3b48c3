@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Instagram, Facebook, Lock } from "lucide-react";
 import { Logo } from "./Logo";
+import { getServiceIndex } from "@/data/services";
 import { useServices, type UiService } from "@/hooks/useServices";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
@@ -44,7 +45,7 @@ export const Footer = () => {
 
   const ServiceLink = ({ svc, idx }: { svc: UiService; idx: number }) => {
     const Icon = svc.icon;
-    const label = SHORT_LABELS[svc.slug] ?? svc.title ?? items[idx]?.title ?? svc.slug;
+    const label = SHORT_LABELS[svc.slug] ?? svc.title ?? items[getServiceIndex(svc.slug)]?.title ?? svc.slug;
     return (
       <li>
         <Link
