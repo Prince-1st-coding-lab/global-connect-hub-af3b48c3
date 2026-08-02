@@ -126,9 +126,13 @@ const ProductDetail = () => {
         )}
       </section>
 
-      {lightbox !== null && (
-        <Lightbox images={images} index={lightbox} onIndexChange={setLightbox} onClose={() => setLightbox(null)} />
-      )}
+      <Lightbox
+        items={images.map((src, i) => ({ src, alt: `${product.name} ${i + 1}` }))}
+        index={lightbox ?? 0}
+        open={lightbox !== null}
+        onClose={() => setLightbox(null)}
+        onIndexChange={(i) => setLightbox(i)}
+      />
     </div>
   );
 };
