@@ -151,7 +151,7 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
                 <Skeleton
                   key={i}
                   className={`rounded-3xl ${
-                    i === 0
+                    preview && i === 0
                       ? "col-span-2 row-span-2 aspect-square md:aspect-auto"
                       : "aspect-square"
                   }`}
@@ -164,7 +164,7 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
                     key={`${it.src}-${i}`}
                     src={it.src}
                     alt={it.label}
-                    featured={i === 0}
+                    featured={preview && i === 0}
                     onOpen={() => {
                       setLightboxIndex(absoluteIndex);
                       setLightboxOpen(true);
