@@ -46,8 +46,10 @@ export const Services = ({ preview = false }: { preview?: boolean }) => {
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-gold/15 bg-gold/15 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((svc, i) => {
             const Icon = svc.icon;
-            const title = svc.title ?? items[i]?.title ?? svc.slug;
-            const desc = svc.description ?? items[i]?.desc ?? "";
+            const fbIdx = getServiceIndex(svc.slug);
+            const fb = fbIdx >= 0 ? items[fbIdx] : undefined;
+            const title = svc.title ?? fb?.title ?? svc.slug.replace(/-/g, " ");
+            const desc = svc.description ?? fb?.desc ?? "";
             return (
               <Link
                 key={svc.slug}
