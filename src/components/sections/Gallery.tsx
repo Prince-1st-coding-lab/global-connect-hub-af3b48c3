@@ -58,30 +58,40 @@ const GalleryImage = ({ src, alt, featured, onOpen }: GalleryImageProps) => {
 export const Gallery = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
   const { data: services, isLoading } = useServices();
+  const { data: photos, isLoading: photosLoading } = useServicePhotos();
   const [page, setPage] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // Build the gallery from real per-service photos.
-  // On the dedicated /gallery page we show EVERY image from EVERY service folder.
-  // On the homepage preview we show just a compact teaser (covers only).
+  // Build the gallery from real per-service photos: uploaded photos (database)
+  // plus any bundled images. Only services that exist in the database are shown.
+  // Homepage preview = one cover per service; /gallery = every image.
   const all = useMemo(() => {
-    const covers = services
-      .filter((s) => s.cover)
-      .map((s) => ({ src: s.cover, label: s.slug.replace(/-/g, " ") }));
+    const bySlug = new Map<string, string[]>();
+    services.forEach((s) => {
+      const uploaded = photos.filter((p) => p.slug === s.slug).map((p) => p.url);
+      const list = [...(s.cover ? [s.cover] : []), ...(s.gallery ?? []), ...uploaded];
+      bySlug.set(s.slug, list);
+    });
 
-    const everything = services.flatMap((s) =>
-      s.gallery.map((src) => ({ src, label: s.slug.replace(/-/g, " ") })),
-    );
+    const source = preview
+      ? services
+          .map((s) => ({ src: bySlug.get(s.slug)?.[0] ?? "", label: s.title || s.slug.replace(/-/g, " ") }))
+          .filter((it) => it.src)
+      : services.flatMap((s) =>
+          (bySlug.get(s.slug) ?? []).map((src) => ({
+            src,
+            label: s.title || s.slug.replace(/-/g, " "),
+          })),
+        );
 
-    const source = preview ? covers : everything;
     const seen = new Set<string>();
     return source.filter((it) => {
       if (seen.has(it.src)) return false;
       seen.add(it.src);
       return true;
     });
-  }, [services, preview]);
+  }, [services, photos, preview]);
 
   const totalPages = preview ? 1 : Math.max(1, Math.ceil(all.length / PAGE_SIZE));
 
@@ -103,7 +113,7 @@ export const Gallery = ({ preview = false }: { preview?: boolean }) => {
     }
   };
 
-  const showSkeletons = isLoading && all.length === 0;
+  const showSkeletons = (isLoading || photosLoading) && all.length === 0;
 
   return (
     <section id="gallery" className="relative py-28 lg:py-36">
