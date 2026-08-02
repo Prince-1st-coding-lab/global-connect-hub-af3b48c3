@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
+import { useSeo } from "@/hooks/useSeo";
 import { formatRwf, useProductCategories, useProducts, type Product } from "@/hooks/useProducts";
 
 export const ProductCard = ({ product }: { product: Product }) => {
@@ -55,14 +55,14 @@ const ShopPage = () => {
   const { data: categories = [] } = useProductCategories();
   const { data: products = [], isLoading } = useProducts({ categoryId });
 
+  useSeo({
+    title: "Shop Furniture & Interior Products | Noble Spaces",
+    description: "Browse and buy furniture, décor and interior products from Noble Spaces Rwanda — delivered across Kigali.",
+    path: "/shop",
+  });
+
   return (
     <div className="pt-28">
-      <Helmet>
-        <title>Shop Furniture & Interior Products | Noble Spaces</title>
-        <meta name="description" content="Browse and buy furniture, décor and interior products from Noble Spaces Rwanda — delivered across Kigali." />
-        <link rel="canonical" href="https://connect-localize-share.lovable.app/shop" />
-      </Helmet>
-
       <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
         <span className="text-xs uppercase tracking-[0.3em] text-gold">— Shop</span>
         <h1 className="mt-4 font-display text-5xl font-semibold leading-tight lg:text-6xl">Our products</h1>
