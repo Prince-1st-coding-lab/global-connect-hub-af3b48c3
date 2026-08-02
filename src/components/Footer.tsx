@@ -155,10 +155,13 @@ export const Footer = () => {
             {[
               { to: "/", label: t("nav.home") },
               { to: "/services", label: t("nav.services") },
+              { to: "/shop", label: "Shop" },
+              { to: "/blog", label: "Journal" },
               { to: "/about", label: t("nav.about") },
               { to: "/gallery", label: t("nav.gallery") },
               { to: "/contact", label: t("nav.contact") },
             ].map((l) => (
+
               <li key={l.to}>
                 <Link
                   to={l.to}
