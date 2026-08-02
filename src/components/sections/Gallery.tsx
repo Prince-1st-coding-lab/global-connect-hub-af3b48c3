@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
+import { useServicePhotos } from "@/hooks/useServicePhotos";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Lightbox } from "@/components/Lightbox";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
