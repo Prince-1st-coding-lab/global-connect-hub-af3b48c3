@@ -213,12 +213,7 @@ export const Navbar = () => {
           </Tooltip>
           <LanguageSwitcher />
           <Tooltip>
-            <TooltipTrigger asChild>
-              
-            </TooltipTrigger>
-            
-          </Tooltip>
-          <Tooltip>
+
             <TooltipTrigger asChild>
               <button
                 onClick={() => setOpen(!open)}
