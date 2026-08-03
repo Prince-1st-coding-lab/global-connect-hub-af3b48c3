@@ -24,6 +24,8 @@ export const Navbar = () => {
 
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
   const { data: services } = useServices();
+  const { count, setOpen: setCartOpen } = useCart();
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
