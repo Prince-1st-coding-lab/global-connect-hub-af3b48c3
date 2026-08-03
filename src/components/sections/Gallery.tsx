@@ -56,7 +56,8 @@ const GalleryImage = forwardRef<HTMLButtonElement, GalleryImageProps>(
       </div>
     </button>
   );
-};
+});
+GalleryImage.displayName = "GalleryImage";
 
 export const Gallery = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
