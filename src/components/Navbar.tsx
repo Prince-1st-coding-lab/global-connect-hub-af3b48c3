@@ -3,11 +3,12 @@ import { useTranslation } from "react-i18next";
 import { NavLink, useLocation, Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { Menu, X, Instagram, Facebook, ChevronDown, Lock } from "lucide-react";
+import { Menu, X, Instagram, Facebook, ChevronDown, Lock, ShoppingBag } from "lucide-react";
 import { getServiceIndex } from "@/data/services";
 import { useServices } from "@/hooks/useServices";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
+import { useCart } from "@/context/CartContext";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type ServiceItem = { title: string; desc: string };
@@ -23,6 +24,8 @@ export const Navbar = () => {
 
   const items = t("services.items", { returnObjects: true }) as ServiceItem[];
   const { data: services } = useServices();
+  const { count, setOpen: setCartOpen } = useCart();
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,9 +53,12 @@ export const Navbar = () => {
   const links = [
     { to: "/", label: t("nav.home"), end: true },
     { to: "/about", label: t("nav.about") },
+    { to: "/shop", label: "Shop" },
+    { to: "/blog", label: "Journal" },
     { to: "/gallery", label: t("nav.gallery") },
     { to: "/contact", label: t("nav.contact") },
   ];
+
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-light uppercase tracking-[0.2em] transition-colors ${
@@ -125,6 +131,9 @@ export const Navbar = () => {
             )}
           </div>
 
+          <NavLink to="/shop" className={linkClass}>
+            Shop
+          </NavLink>
           <NavLink to="/gallery" className={linkClass}>
             {t("nav.gallery")}
           </NavLink>
@@ -134,6 +143,26 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setCartOpen(true)}
+                aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+                className="relative flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+              >
+                <ShoppingBag className="h-3.5 w-3.5" />
+                {count > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[0.6rem] font-medium text-primary-foreground">
+                    {count}
+                  </span>
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Your cart</p>
+            </TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <a
@@ -184,12 +213,7 @@ export const Navbar = () => {
           </Tooltip>
           <LanguageSwitcher />
           <Tooltip>
-            <TooltipTrigger asChild>
-              
-            </TooltipTrigger>
-            
-          </Tooltip>
-          <Tooltip>
+
             <TooltipTrigger asChild>
               <button
                 onClick={() => setOpen(!open)}

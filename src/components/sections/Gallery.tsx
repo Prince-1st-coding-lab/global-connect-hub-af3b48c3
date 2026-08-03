@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { forwardRef, useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
@@ -17,7 +17,8 @@ type GalleryImageProps = {
   onOpen: () => void;
 };
 
-const GalleryImage = ({ src, alt, featured, onOpen }: GalleryImageProps) => {
+const GalleryImage = forwardRef<HTMLButtonElement, GalleryImageProps>(
+  ({ src, alt, featured, onOpen }, ref) => {
   const [loaded, setLoaded] = useState(false);
 
   // Reset loaded state when src changes (e.g. on page change with reused DOM nodes)
@@ -27,6 +28,7 @@ const GalleryImage = ({ src, alt, featured, onOpen }: GalleryImageProps) => {
 
   return (
     <button
+      ref={ref}
       type="button"
       onClick={onOpen}
       aria-label={`Open ${alt}`}
@@ -54,7 +56,8 @@ const GalleryImage = ({ src, alt, featured, onOpen }: GalleryImageProps) => {
       </div>
     </button>
   );
-};
+});
+GalleryImage.displayName = "GalleryImage";
 
 export const Gallery = ({ preview = false }: { preview?: boolean }) => {
   const { t } = useTranslation();
