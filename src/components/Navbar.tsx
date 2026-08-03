@@ -128,6 +128,9 @@ export const Navbar = () => {
             )}
           </div>
 
+          <NavLink to="/shop" className={linkClass}>
+            Shop
+          </NavLink>
           <NavLink to="/gallery" className={linkClass}>
             {t("nav.gallery")}
           </NavLink>
@@ -137,6 +140,26 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setCartOpen(true)}
+                aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+                className="relative flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+              >
+                <ShoppingBag className="h-3.5 w-3.5" />
+                {count > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[0.6rem] font-medium text-primary-foreground">
+                    {count}
+                  </span>
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Your cart</p>
+            </TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <a
