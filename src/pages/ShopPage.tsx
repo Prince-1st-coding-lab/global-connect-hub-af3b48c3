@@ -1,59 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ShoppingBag } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCart } from "@/context/CartContext";
 import { useSeo } from "@/hooks/useSeo";
-import { formatRwf, useProductCategories, useProducts, type Product } from "@/hooks/useProducts";
+import { useProductCategories, useProducts } from "@/hooks/useProducts";
+import { ProductCard } from "@/components/shop/ProductCard";
 
-export const ProductCard = ({ product }: { product: Product }) => {
-  const { add } = useCart();
-  const image = product.images[0];
-  const soldOut = product.stock <= 0;
-
-  return (
-    <article className="group overflow-hidden rounded-3xl border border-gold/15 bg-card transition-all hover:border-gold/50">
-      <Link to={`/shop/${product.slug}`} className="block aspect-[4/3] overflow-hidden bg-muted">
-        {image ? (
-          <img src={image} alt={product.name} loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-xs text-muted-foreground">No image</div>
-        )}
-      </Link>
-      <div className="space-y-3 p-5">
-        <Link to={`/shop/${product.slug}`} className="block font-display text-lg leading-tight hover:text-gold">
-          {product.name}
-        </Link>
-        {product.short_description && (
-          <p className="line-clamp-2 text-sm text-muted-foreground">{product.short_description}</p>
-        )}
-        <div className="flex items-center gap-2">
-          <span className="font-display text-lg text-gold">{formatRwf(product.price)}</span>
-          {product.compare_at_price ? (
-            <span className="text-xs text-muted-foreground line-through">{formatRwf(product.compare_at_price)}</span>
-          ) : null}
-        </div>
-        <Button
-          size="sm"
-          className="w-full"
-          disabled={soldOut}
-          onClick={() =>
-            add({ productId: product.id, slug: product.slug, name: product.name, price: product.price, image })
-          }
-        >
-          <ShoppingBag className="mr-2 h-3.5 w-3.5" /> {soldOut ? "Sold out" : "Add to cart"}
-        </Button>
-      </div>
-    </article>
-  );
-};
+export { ProductCard };
 
 const ShopPage = () => {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const { data: categories = [] } = useProductCategories();
-  const { data: products = [], isLoading } = useProducts({ categoryId });
+  const { data: products = [], isLoading, isError } = useProducts({ categoryId });
 
   useSeo({
     title: "Shop Furniture & Interior Products | Noble Spaces",
@@ -94,16 +50,24 @@ const ShopPage = () => {
           </div>
         )}
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-80 rounded-3xl" />)
-            : products.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
-
-        {!isLoading && products.length === 0 && (
-          <p className="mt-16 rounded-3xl border border-dashed border-gold/25 p-12 text-center text-sm text-muted-foreground">
-            No products published yet — please check back soon.
+        {isError ? (
+          <p className="mt-16 rounded-3xl border border-destructive/30 p-12 text-center text-sm text-muted-foreground">
+            We couldn't load products right now. Please refresh the page or try again shortly.
           </p>
+        ) : (
+          <>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {isLoading
+                ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-96 rounded-3xl" />)
+                : products.map((p) => <ProductCard key={p.id} product={p} />)}
+            </div>
+
+            {!isLoading && products.length === 0 && (
+              <p className="mt-16 rounded-3xl border border-dashed border-gold/25 p-12 text-center text-sm text-muted-foreground">
+                No products published yet — please check back soon.
+              </p>
+            )}
+          </>
         )}
       </section>
     </div>
