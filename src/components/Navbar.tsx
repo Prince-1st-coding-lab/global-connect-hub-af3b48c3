@@ -50,9 +50,12 @@ export const Navbar = () => {
   const links = [
     { to: "/", label: t("nav.home"), end: true },
     { to: "/about", label: t("nav.about") },
+    { to: "/shop", label: "Shop" },
+    { to: "/blog", label: "Journal" },
     { to: "/gallery", label: t("nav.gallery") },
     { to: "/contact", label: t("nav.contact") },
   ];
+
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-light uppercase tracking-[0.2em] transition-colors ${
