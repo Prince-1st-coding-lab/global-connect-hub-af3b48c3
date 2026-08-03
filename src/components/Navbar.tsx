@@ -3,11 +3,12 @@ import { useTranslation } from "react-i18next";
 import { NavLink, useLocation, Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { Menu, X, Instagram, Facebook, ChevronDown, Lock } from "lucide-react";
+import { Menu, X, Instagram, Facebook, ChevronDown, Lock, ShoppingBag } from "lucide-react";
 import { getServiceIndex } from "@/data/services";
 import { useServices } from "@/hooks/useServices";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
+import { useCart } from "@/context/CartContext";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type ServiceItem = { title: string; desc: string };
