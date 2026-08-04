@@ -19,9 +19,36 @@ const ProductDetail = () => {
 
   useSeo({
     title: product ? `${product.name} | Noble Spaces` : "Product | Noble Spaces",
-    description: product?.short_description ?? product?.description?.slice(0, 155) ?? "Quality furniture and interior products from Noble Spaces Rwanda.",
+    description:
+      product?.short_description ??
+      product?.description?.slice(0, 155) ??
+      "Quality furniture and interior products from Noble Spaces Rwanda.",
     path: `/shop/${slug}`,
+    type: "product",
+    image: product?.images?.[0] ?? null,
+    jsonLd: product
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: product.short_description ?? product.description ?? undefined,
+          image: product.images,
+          sku: product.slug,
+          brand: { "@type": "Brand", name: "Noble Spaces" },
+          offers: {
+            "@type": "Offer",
+            price: product.price,
+            priceCurrency: product.currency || "RWF",
+            availability:
+              product.stock > 0
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            url: `https://noblespaces.rw/shop/${product.slug}`,
+          },
+        }
+      : null,
   });
+
 
   if (isLoading) {
     return (
