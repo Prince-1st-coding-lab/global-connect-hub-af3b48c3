@@ -35,6 +35,32 @@ const normalise = (row: Record<string, unknown>): Product => ({
   images: Array.isArray(row.images) ? (row.images as string[]) : [],
 });
 
+/** Storage paths (non-http) are signed against the private `media` bucket. */
+const resolveImages = async (rows: Product[]): Promise<Product[]> => {
+  const paths = Array.from(
+    new Set(rows.flatMap((r) => r.images).filter((u) => !!u && !u.startsWith("http"))),
+  );
+  if (paths.length === 0) return rows;
+  const { data } = await supabase.storage.from("media").createSignedUrls(paths, 60 * 60);
+  const map = new Map<string, string>();
+  (data ?? []).forEach((d) => {
+    if (d.path && d.signedUrl) map.set(d.path, d.signedUrl);
+  });
+  return rows.map((r) => ({ ...r, images: r.images.map((i) => map.get(i) ?? i) }));
+};
+
+export const uploadProductImage = async (file: File): Promise<string> => {
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const path = `products/${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from("media").upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (error) throw error;
+  return path;
+};
+
+
 export const useProductCategories = (includeInactive = false) =>
   useQuery({
     queryKey: ["product-categories", includeInactive],
