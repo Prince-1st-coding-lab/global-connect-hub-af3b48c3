@@ -64,6 +64,13 @@ export const SiteLayout = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [pathname]);
+
+  useEffect(() => {
+    // Pages that own their metadata (useSeo) are skipped here.
+    if (/^\/(shop|blog)(\/|$)/.test(pathname)) return;
+
     const meta =
       titles[pathname] ??
       (pathname.startsWith("/services/")
@@ -73,6 +80,7 @@ export const SiteLayout = () => {
             keywords: "Noble Spaces service, Kigali interior service, Rwanda furniture",
           }
         : titles["/"]);
+
 
     document.title = meta.title;
     upsertMeta('meta[name="description"]', "name", "description", meta.desc);
@@ -101,9 +109,8 @@ export const SiteLayout = () => {
       "robots",
       sensitive ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
     );
-
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname]);
+
 
   return (
     <div className="relative overflow-x-hidden bg-background text-foreground">

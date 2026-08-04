@@ -26,6 +26,8 @@ import AdminQuotes from "./pages/admin/AdminQuotes";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminPhotos from "./pages/admin/AdminPhotos";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminBlog from "./pages/admin/AdminBlog";
 import AdminNotificationsPage from "./pages/admin/AdminNotificationsPage";
 import BookNow from "./pages/BookNow.tsx";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -70,6 +72,8 @@ const App = () => (
               <Route path="messages" element={<AdminMessages />} />
               <Route path="services" element={<AdminServices />} />
               <Route path="photos" element={<AdminPhotos />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="blog" element={<AdminBlog />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
             </Route>
           </Routes>

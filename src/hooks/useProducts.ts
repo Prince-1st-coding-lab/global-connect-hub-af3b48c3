@@ -35,6 +35,32 @@ const normalise = (row: Record<string, unknown>): Product => ({
   images: Array.isArray(row.images) ? (row.images as string[]) : [],
 });
 
+/** Storage paths (non-http) are signed against the private `media` bucket. */
+const resolveImages = async (rows: Product[]): Promise<Product[]> => {
+  const paths = Array.from(
+    new Set(rows.flatMap((r) => r.images).filter((u) => !!u && !u.startsWith("http"))),
+  );
+  if (paths.length === 0) return rows;
+  const { data } = await supabase.storage.from("media").createSignedUrls(paths, 60 * 60);
+  const map = new Map<string, string>();
+  (data ?? []).forEach((d) => {
+    if (d.path && d.signedUrl) map.set(d.path, d.signedUrl);
+  });
+  return rows.map((r) => ({ ...r, images: r.images.map((i) => map.get(i) ?? i) }));
+};
+
+export const uploadProductImage = async (file: File): Promise<string> => {
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const path = `products/${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from("media").upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (error) throw error;
+  return path;
+};
+
+
 export const useProductCategories = (includeInactive = false) =>
   useQuery({
     queryKey: ["product-categories", includeInactive],
@@ -57,7 +83,7 @@ export const useProducts = (opts: { includeInactive?: boolean; categoryId?: stri
       if (opts.categoryId) q = q.eq("category_id", opts.categoryId);
       const { data, error } = await q;
       if (error) throw error;
-      return (data ?? []).map((r) => normalise(r as Record<string, unknown>));
+      return resolveImages((data ?? []).map((r) => normalise(r as Record<string, unknown>)));
     },
     staleTime: 30_000,
   });
@@ -69,8 +95,10 @@ export const useProduct = (slug?: string) =>
     queryFn: async (): Promise<Product | null> => {
       const { data, error } = await supabase.from("products").select("*").eq("slug", slug!).maybeSingle();
       if (error) throw error;
-      return data ? normalise(data as Record<string, unknown>) : null;
+      if (!data) return null;
+      return (await resolveImages([normalise(data as Record<string, unknown>)]))[0];
     },
   });
+
 
 export const formatRwf = (amount: number) => `RWF ${amount.toLocaleString("en-US")}`;

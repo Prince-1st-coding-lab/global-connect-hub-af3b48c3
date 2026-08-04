@@ -2,11 +2,13 @@ import { NavLink, useLocation } from "react-router-dom";
 import {
   Bell,
   CalendarCheck,
+  FileText,
   Image,
   LayoutDashboard,
   MessageSquare,
   Quote,
   Receipt,
+  ShoppingBag,
   Sparkles,
   Star,
 } from "lucide-react";
@@ -46,11 +48,15 @@ const GROUPS: { label: string; items: Item[] }[] = [
     items: [
       { title: "Services", url: "/admin/services", icon: Sparkles },
       { title: "Service photos", url: "/admin/photos", icon: Image },
+      { title: "Products", url: "/admin/products", icon: ShoppingBag },
     ],
   },
   {
     label: "Content",
-    items: [{ title: "Testimonials", url: "/admin/testimonials", icon: Star }],
+    items: [
+      { title: "Journal", url: "/admin/blog", icon: FileText },
+      { title: "Testimonials", url: "/admin/testimonials", icon: Star },
+    ],
   },
 ];
 

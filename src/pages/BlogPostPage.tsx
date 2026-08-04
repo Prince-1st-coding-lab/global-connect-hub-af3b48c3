@@ -30,7 +30,23 @@ const BlogPostPage = () => {
     title: post ? `${post.seo_title ?? post.title} | Noble Spaces` : "Article | Noble Spaces",
     description: post?.seo_description ?? post?.excerpt ?? "Interior design insights from Noble Spaces Rwanda.",
     path: `/blog/${slug}`,
+    type: "article",
+    image: post?.cover_url ?? null,
+    jsonLd: post
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.seo_title ?? post.title,
+          description: post.seo_description ?? post.excerpt ?? undefined,
+          image: post.cover_url ? [post.cover_url] : undefined,
+          datePublished: post.published_at ?? undefined,
+          mainEntityOfPage: `https://noblespaces.rw/blog/${post.slug}`,
+          author: { "@type": "Organization", name: "Noble Spaces" },
+          publisher: { "@type": "Organization", name: "Noble Spaces" },
+        }
+      : null,
   });
+
 
   if (isLoading) {
     return <div className="mx-auto max-w-3xl px-6 pt-40"><Skeleton className="h-96 rounded-3xl" /></div>;
