@@ -83,7 +83,7 @@ export const useProducts = (opts: { includeInactive?: boolean; categoryId?: stri
       if (opts.categoryId) q = q.eq("category_id", opts.categoryId);
       const { data, error } = await q;
       if (error) throw error;
-      return (data ?? []).map((r) => normalise(r as Record<string, unknown>));
+      return resolveImages((data ?? []).map((r) => normalise(r as Record<string, unknown>)));
     },
     staleTime: 30_000,
   });
@@ -95,8 +95,10 @@ export const useProduct = (slug?: string) =>
     queryFn: async (): Promise<Product | null> => {
       const { data, error } = await supabase.from("products").select("*").eq("slug", slug!).maybeSingle();
       if (error) throw error;
-      return data ? normalise(data as Record<string, unknown>) : null;
+      if (!data) return null;
+      return (await resolveImages([normalise(data as Record<string, unknown>)]))[0];
     },
   });
+
 
 export const formatRwf = (amount: number) => `RWF ${amount.toLocaleString("en-US")}`;
