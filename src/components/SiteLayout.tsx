@@ -109,9 +109,8 @@ export const SiteLayout = () => {
       "robots",
       sensitive ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
     );
-
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname]);
+
 
   return (
     <div className="relative overflow-x-hidden bg-background text-foreground">
