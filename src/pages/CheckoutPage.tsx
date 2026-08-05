@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/context/CartContext";
 import { formatRwf } from "@/hooks/useProducts";
 import { useSeo } from "@/hooks/useSeo";
+import { notifyAdminEmail } from "@/lib/notify";
+
 
 const DELIVERY_FEES: Record<string, number> = { Kigali: 5000, Other: 15000 };
 
@@ -181,21 +183,28 @@ const CheckoutPage = () => {
       return;
     }
 
-    void supabase.functions.invoke("send-email", {
-      body: {
-        event: "order_confirmation",
-        to: d.email,
-        dedupeKey: `order-${order.id}`,
-        subject: `Your Noble Spaces order #${order.id.slice(0, 8)}`,
-        heading: "Thank you for your order",
-        intro: `Hi ${d.customer_name}, we've received your order and will contact you shortly to confirm delivery.`,
-        rows: [
-          ...lines.map((l) => ({ label: `${l.name} × ${l.quantity}`, value: formatRwf(l.price * l.quantity) })),
-          { label: "Delivery", value: formatRwf(deliveryFee) },
-          { label: "Total", value: formatRwf(total) },
-        ],
-      },
+    void notifyAdminEmail({
+      event: "order",
+      dedupeKey: `order-${order.id}`,
+      subject: `New order #${order.id.slice(0, 8)} — ${formatRwf(total)}`,
+      title: "New order received",
+      lines: [
+        { label: "Customer", value: d.customer_name },
+        { label: "Phone", value: d.phone },
+        { label: "Email", value: d.email },
+        ...lines.map((l) => ({ label: `${l.name} × ${l.quantity}`, value: formatRwf(l.price * l.quantity) })),
+        { label: "Delivery", value: formatRwf(deliveryFee) },
+        { label: "Total", value: formatRwf(total) },
+        { label: "Payment", value: PAYMENT_METHODS.find((m) => m.value === d.payment_method)?.label ?? d.payment_method },
+        {
+          label: "Address",
+          value: [d.street_address, d.village, d.cell, d.sector, d.city, d.district, d.province, d.country]
+            .filter(Boolean)
+            .join(", "),
+        },
+      ],
     });
+
 
     setSubmitting(false);
     clear();
