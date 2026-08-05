@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useServices } from "@/hooks/useServices";
 import { PayOptionsDialog, type BookingPayload } from "@/components/PayOptionsDialog";
+import { notifyAdminEmail } from "@/lib/notify";
+
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00",
@@ -117,6 +119,21 @@ const BookNow = () => {
       toast({ title: "Could not save booking", description: error.message, variant: "destructive" });
       return;
     }
+    void notifyAdminEmail({
+      event: "quote",
+      subject: `New quotation request — ${bookingPayload.serviceTitle}`,
+      title: "New quotation request",
+      lines: [
+        { label: "Service", value: bookingPayload.serviceTitle },
+        { label: "Date", value: bookingPayload.bookingDate },
+        { label: "Time", value: bookingPayload.timeSlot },
+        { label: "Name", value: bookingPayload.name },
+        { label: "Phone", value: bookingPayload.phone },
+        { label: "Email", value: bookingPayload.email ?? "" },
+        { label: "Details", value: bookingPayload.description ?? "" },
+      ],
+    });
+
     const message = [
       "*Noble Spaces — Quotation request*",
       "",
@@ -163,6 +180,21 @@ const BookNow = () => {
       title: "Booking received",
       description: "Our team will contact you shortly to confirm your appointment.",
     });
+    void notifyAdminEmail({
+      event: "booking",
+      subject: `New booking — ${bookingPayload.serviceTitle}`,
+      title: "New booking",
+      lines: [
+        { label: "Service", value: bookingPayload.serviceTitle },
+        { label: "Date", value: bookingPayload.bookingDate },
+        { label: "Time", value: bookingPayload.timeSlot },
+        { label: "Name", value: bookingPayload.name },
+        { label: "Phone", value: bookingPayload.phone },
+        { label: "Email", value: bookingPayload.email ?? "" },
+        { label: "Details", value: bookingPayload.description ?? "" },
+      ],
+    });
+
     setDate(undefined); setSlot(""); setName(""); setPhone(""); setEmail(""); setDescription("");
   };
 

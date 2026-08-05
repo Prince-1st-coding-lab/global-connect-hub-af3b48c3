@@ -7,6 +7,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { notifyAdminEmail } from "@/lib/notify";
+
 
 export type BookingPayload = {
   serviceSlug: string;
@@ -93,8 +95,24 @@ export const PayOptionsDialog = ({ open, onOpenChange, booking, onDone }: Props)
       toast({ title: "Could not save booking", description: error.message, variant: "destructive" });
       return false;
     }
+    void notifyAdminEmail({
+      event: "booking",
+      subject: `New booking (${method}) — ${booking.serviceTitle}`,
+      title: "New booking",
+      lines: [
+        { label: "Service", value: booking.serviceTitle },
+        { label: "Date", value: booking.bookingDate },
+        { label: "Time", value: booking.timeSlot },
+        { label: "Name", value: booking.name },
+        { label: "Phone", value: booking.phone },
+        { label: "Email", value: booking.email ?? "" },
+        { label: "Payment", value: method },
+        { label: "Details", value: booking.description ?? "" },
+      ],
+    });
     return true;
   };
+
 
   const confirmPayment = async (method: "Mobile Money" | "Bank transfer") => {
     const ok = await persist(method);
