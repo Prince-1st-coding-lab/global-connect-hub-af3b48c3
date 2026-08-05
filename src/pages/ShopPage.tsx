@@ -1,21 +1,49 @@
-import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Link, useSearchParams } from "react-router-dom";
 import { useSeo } from "@/hooks/useSeo";
 import { useProductCategories, useProducts } from "@/hooks/useProducts";
+import { ProductBrowser, type BrowseState } from "@/components/shop/ProductBrowser";
 import { ProductCard } from "@/components/shop/ProductCard";
 
 export { ProductCard };
 
 const ShopPage = () => {
-  const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [params, setParams] = useSearchParams();
   const { data: categories = [] } = useProductCategories();
-  const { data: products = [], isLoading, isError } = useProducts({ categoryId });
+  const categorySlug = params.get("category");
+  const category = categories.find((c) => c.slug === categorySlug) ?? null;
+  const { data: products = [], isLoading, isError } = useProducts({ categoryId: category?.id ?? null });
+
+  const state: BrowseState = {
+    q: params.get("q") ?? "",
+    sort: params.get("sort") ?? "newest",
+    max: params.get("max") ?? "",
+    inStock: params.get("stock") === "1",
+  };
+
+  const patch = (next: Partial<BrowseState>) => {
+    const merged = { ...state, ...next };
+    const p = new URLSearchParams();
+    if (categorySlug) p.set("category", categorySlug);
+    if (merged.q) p.set("q", merged.q);
+    if (merged.sort && merged.sort !== "newest") p.set("sort", merged.sort);
+    if (merged.max) p.set("max", merged.max);
+    if (merged.inStock) p.set("stock", "1");
+    setParams(p, { replace: true });
+  };
 
   useSeo({
     title: "Shop Furniture & Interior Products | Noble Spaces",
-    description: "Browse and buy furniture, décor and interior products from Noble Spaces Rwanda — delivered across Kigali.",
+    description:
+      "Browse and buy furniture, décor and interior products from Noble Spaces Rwanda — delivered across Kigali.",
     path: "/shop",
   });
+
+  const setCategory = (slug: string | null) => {
+    const p = new URLSearchParams(params);
+    if (slug) p.set("category", slug);
+    else p.delete("category");
+    setParams(p, { replace: true });
+  };
 
   return (
     <div className="pt-28">
@@ -23,15 +51,18 @@ const ShopPage = () => {
         <span className="text-xs uppercase tracking-[0.3em] text-gold">— Shop</span>
         <h1 className="mt-4 font-display text-5xl font-semibold leading-tight lg:text-6xl">Our products</h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          Ready-made pieces from our workshop. Add to cart and check out with mobile money, bank transfer or cash on delivery.
+          Ready-made pieces from our workshop. Add to cart and check out with mobile money, bank transfer or
+          cash on delivery.
         </p>
 
         {categories.length > 0 && (
           <div className="mt-10 flex flex-wrap gap-2">
             <button
-              onClick={() => setCategoryId(null)}
+              onClick={() => setCategory(null)}
               className={`rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors ${
-                categoryId === null ? "border-gold bg-gold/10 text-gold" : "border-border text-muted-foreground hover:text-gold"
+                !categorySlug
+                  ? "border-gold bg-gold/10 text-gold"
+                  : "border-border text-muted-foreground hover:text-gold"
               }`}
             >
               All
@@ -39,9 +70,11 @@ const ShopPage = () => {
             {categories.map((c) => (
               <button
                 key={c.id}
-                onClick={() => setCategoryId(c.id)}
+                onClick={() => setCategory(c.slug)}
                 className={`rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors ${
-                  categoryId === c.id ? "border-gold bg-gold/10 text-gold" : "border-border text-muted-foreground hover:text-gold"
+                  categorySlug === c.slug
+                    ? "border-gold bg-gold/10 text-gold"
+                    : "border-border text-muted-foreground hover:text-gold"
                 }`}
               >
                 {c.name}
@@ -50,25 +83,22 @@ const ShopPage = () => {
           </div>
         )}
 
-        {isError ? (
-          <p className="mt-16 rounded-3xl border border-destructive/30 p-12 text-center text-sm text-muted-foreground">
-            We couldn't load products right now. Please refresh the page or try again shortly.
+        {category && (
+          <p className="mt-4 text-sm text-muted-foreground">
+            Viewing <span className="text-gold">{category.name}</span> ·{" "}
+            <Link to={`/shop/category/${category.slug}`} className="underline hover:text-gold">
+              open collection page
+            </Link>
           </p>
-        ) : (
-          <>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {isLoading
-                ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-96 rounded-3xl" />)
-                : products.map((p) => <ProductCard key={p.id} product={p} />)}
-            </div>
-
-            {!isLoading && products.length === 0 && (
-              <p className="mt-16 rounded-3xl border border-dashed border-gold/25 p-12 text-center text-sm text-muted-foreground">
-                No products published yet — please check back soon.
-              </p>
-            )}
-          </>
         )}
+
+        <ProductBrowser
+          products={products}
+          isLoading={isLoading}
+          isError={isError}
+          state={state}
+          onChange={patch}
+        />
       </section>
     </div>
   );
