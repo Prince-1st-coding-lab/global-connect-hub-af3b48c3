@@ -8,9 +8,12 @@ import {
   MessageSquare,
   Quote,
   Receipt,
+  Settings,
   ShoppingBag,
   Sparkles,
   Star,
+  Tags,
+
 } from "lucide-react";
 import {
   Sidebar,
@@ -49,6 +52,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
       { title: "Services", url: "/admin/services", icon: Sparkles },
       { title: "Service photos", url: "/admin/photos", icon: Image },
       { title: "Products", url: "/admin/products", icon: ShoppingBag },
+      { title: "Categories", url: "/admin/categories", icon: Tags },
     ],
   },
   {
@@ -58,7 +62,12 @@ const GROUPS: { label: string; items: Item[] }[] = [
       { title: "Testimonials", url: "/admin/testimonials", icon: Star },
     ],
   },
+  {
+    label: "System",
+    items: [{ title: "Settings", url: "/admin/settings", icon: Settings }],
+  },
 ];
+
 
 export const AdminSidebar = () => {
   const { state } = useSidebar();
