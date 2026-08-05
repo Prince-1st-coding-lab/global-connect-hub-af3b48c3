@@ -117,6 +117,21 @@ const BookNow = () => {
       toast({ title: "Could not save booking", description: error.message, variant: "destructive" });
       return;
     }
+    void notifyAdminEmail({
+      event: "quote",
+      subject: `New quotation request — ${bookingPayload.serviceTitle}`,
+      title: "New quotation request",
+      lines: [
+        { label: "Service", value: bookingPayload.serviceTitle },
+        { label: "Date", value: bookingPayload.bookingDate },
+        { label: "Time", value: bookingPayload.timeSlot },
+        { label: "Name", value: bookingPayload.name },
+        { label: "Phone", value: bookingPayload.phone },
+        { label: "Email", value: bookingPayload.email ?? "" },
+        { label: "Details", value: bookingPayload.description ?? "" },
+      ],
+    });
+
     const message = [
       "*Noble Spaces — Quotation request*",
       "",
