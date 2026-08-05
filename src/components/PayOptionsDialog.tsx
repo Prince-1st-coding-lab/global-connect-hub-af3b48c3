@@ -7,6 +7,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { notifyAdminEmail } from "@/lib/notify";
+
 
 export type BookingPayload = {
   serviceSlug: string;
