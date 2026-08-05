@@ -31,7 +31,10 @@ import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminNotificationsPage from "./pages/admin/AdminNotificationsPage";
+import AdminCategories from "./pages/admin/AdminCategories";
+import AdminSettings from "./pages/admin/AdminSettings";
 import BookNow from "./pages/BookNow.tsx";
+
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancelled from "./pages/PaymentCancelled";
 import NotFound from "./pages/NotFound.tsx";
@@ -52,7 +55,9 @@ const App = () => (
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/:slug" element={<ServiceDetail />} />
               <Route path="/shop" element={<ShopPage />} />
+              <Route path="/shop/category/:slug" element={<CategoryPage />} />
               <Route path="/shop/:slug" element={<ProductDetail />} />
+
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
@@ -75,7 +80,10 @@ const App = () => (
               <Route path="services" element={<AdminServices />} />
               <Route path="photos" element={<AdminPhotos />} />
               <Route path="products" element={<AdminProducts />} />
+              <Route path="categories" element={<AdminCategories />} />
               <Route path="blog" element={<AdminBlog />} />
+              <Route path="settings" element={<AdminSettings />} />
+
               <Route path="testimonials" element={<AdminTestimonials />} />
             </Route>
           </Routes>
