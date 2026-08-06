@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
+import { TrendingBanner } from "@/components/sections/TrendingBanner";
 import { ShopStrip } from "@/components/sections/ShopStrip";
 import { About } from "@/components/sections/About";
 import { Gallery } from "@/components/sections/Gallery";
@@ -10,11 +11,13 @@ const Home = () => (
   <>
     <Hero />
     <Services preview />
+    <TrendingBanner />
     <ShopStrip />
     <About />
     <Gallery preview />
     <Testimonials preview />
     <Contact preview />
+
   </>
 );
 
