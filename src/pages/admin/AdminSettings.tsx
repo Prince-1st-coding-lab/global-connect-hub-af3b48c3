@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,9 +36,13 @@ const AdminSettings = () => {
   const save = useSaveSetting();
   const [form, setForm] = useState<EmailSettings>(DEFAULTS);
   const [testing, setTesting] = useState(false);
+  const hydrated = useRef(false);
 
+  // Hydrate the form once from the saved settings; never overwrite what the admin is typing.
   useEffect(() => {
-    if (!isLoading) setForm({ ...DEFAULTS, ...value, events: { ...DEFAULTS.events, ...value.events } });
+    if (isLoading || hydrated.current) return;
+    hydrated.current = true;
+    setForm({ ...DEFAULTS, ...value, events: { ...DEFAULTS.events, ...value.events } });
   }, [isLoading, value]);
 
   const submit = async () => {

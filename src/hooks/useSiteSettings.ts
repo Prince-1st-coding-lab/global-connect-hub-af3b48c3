@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -25,7 +26,13 @@ export const useSiteSettings = () => {
 /** Reads a single settings group with defaults applied. */
 export const useSetting = <T extends Record<string, unknown>>(key: string, fallback: T) => {
   const { settings, isLoading } = useSiteSettings();
-  return { value: { ...fallback, ...(settings[key] ?? {}) } as T, isLoading };
+  const raw = settings[key];
+  const value = useMemo(
+    () => ({ ...fallback, ...(raw ?? {}) }) as T,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [raw],
+  );
+  return { value, isLoading };
 };
 
 export const useSaveSetting = () => {
